@@ -102,3 +102,72 @@ def test_body_hash_only_when_parsed() -> None:
         SAMPLE
     )
     assert RobotsPolicy.from_response(UA, 404).body_sha256() is None
+
+
+# --- RFC 9309 matching, independent of the Python version (CI runs 3.12) ---
+
+
+def _policy(body: str, ua: str = UA) -> RobotsPolicy:
+    return RobotsPolicy.from_response(ua, 200, body)
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "User-agent: *\nDisallow: /booking/\nAllow: /booking/showtimes\n",
+        "User-agent: *\nAllow: /booking/showtimes\nDisallow: /booking/\n",
+    ],
+)
+def test_longest_match_wins_regardless_of_order(body: str) -> None:
+    policy = _policy(body)
+    assert policy.can_fetch("https://e.com/booking/showtimes")
+    assert not policy.can_fetch("https://e.com/booking/123")
+
+
+def test_allow_wins_a_tie() -> None:
+    policy = _policy("User-agent: *\nDisallow: /page\nAllow: /page\n")
+    assert policy.can_fetch("https://e.com/page")
+
+
+@pytest.mark.parametrize(
+    ("path", "allowed"),
+    [
+        ("/api/x.json", False),
+        ("/api/x.json?y=1", True),  # $ anchors the end
+        ("/a/b/private/c", False),  # * matches any sequence
+        ("/search?q=1", False),  # query string is part of the match
+        ("/search", True),
+    ],
+)
+def test_wildcards_and_end_anchor(path: str, allowed: bool) -> None:
+    body = "User-agent: *\nDisallow: /*.json$\nDisallow: /*/private/\nDisallow: /search?\n"
+    assert _policy(body).can_fetch(f"https://e.com{path}") is allowed
+
+
+def test_empty_disallow_allows_everything() -> None:
+    assert _policy("User-agent: *\nDisallow:\n").can_fetch("https://e.com/anything")
+
+
+def test_agent_match_is_case_insensitive_and_groups_merge() -> None:
+    body = (
+        "User-agent: moviespkbot\nDisallow: /a/\n\n"
+        "User-agent: *\nDisallow: /\n\n"
+        "User-agent: MOVIESPKBOT\nDisallow: /b/\n"
+    )
+    policy = _policy(body)
+    assert policy.can_fetch("https://e.com/c")
+    assert not policy.can_fetch("https://e.com/a/1")
+    assert not policy.can_fetch("https://e.com/b/1")
+
+
+def test_multiple_agents_share_one_group_and_comments_are_ignored() -> None:
+    body = "User-agent: OtherBot\nUser-agent: MoviesPKBot  # us\nDisallow: /x  # no\n"
+    assert not _policy(body).can_fetch("https://e.com/x/1")
+
+
+def test_no_matching_group_allows_all() -> None:
+    assert _policy("User-agent: BadBot\nDisallow: /\n").can_fetch("https://e.com/")
+
+
+def test_robots_txt_itself_is_always_allowed() -> None:
+    assert _policy("User-agent: *\nDisallow: /\n").can_fetch("https://e.com/robots.txt")

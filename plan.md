@@ -337,7 +337,7 @@ flowchart LR
 
 ### 6.2 Libraries (all open source, $0)
 
-- **Scraper:** `httpx[http2]`, `tenacity`, `selectolax`, `beautifulsoup4`, `pydantic>=2`, `rapidfuzz`, `pymongo`, `PyYAML`, `structlog`, **`Pillow`** (resize, WebP), **`boto3`** (S3-compatible client for R2). Optional extra `[browser]`: `playwright`. Dev: `ruff`, `mypy`, `pytest`, `pytest-cov`, `respx` (httpx mocking), `mongomock`, `pip-audit`, `jsonschema` (contract fixtures against `shared/schemas`, §13); `botocore.stub.Stubber` for S3 unit tests (ships with boto3). Robots parsing: stdlib `urllib.robotparser`.
+- **Scraper:** `httpx[http2]`, `tenacity`, `selectolax`, `beautifulsoup4`, `pydantic>=2`, `rapidfuzz`, `pymongo`, `PyYAML`, `structlog`, **`Pillow`** (resize, WebP), **`boto3`** (S3-compatible client for R2). Optional extra `[browser]`: `playwright`. Dev: `ruff`, `mypy`, `pytest`, `pytest-cov`, `respx` (httpx mocking), `mongomock`, `pip-audit`, `jsonschema` (contract fixtures against `shared/schemas`, §13); `botocore.stub.Stubber` for S3 unit tests (ships with boto3). Robots parsing: an in-house RFC 9309 matcher in `core/robots.py` (stdlib `urllib.robotparser` is not used: Python 3.12 applies the first matching rule instead of the most specific one, so its results depend on the interpreter version).
 - **API:** `express`, `zod`, `mongodb`, `helmet`, `pino`, `pino-http`. Dev: `typescript`, `eslint`, `vitest` or `jest`, `supertest`, `mongodb-memory-server`.
 - **Web:** `next`, `react`, `react-dom`, `tailwindcss`, `@tanstack/react-query`. Dev: `@playwright/test`, `@lhci/cli`, `vitest` or `jest`, `@testing-library/react`.
 - **Images Worker (`images-worker/`):** dev-only: `wrangler` **≥ 4.107.0** (needed for `cross_version_cache`; `cache.enabled` alone needs ≥ 4.69.0 [V C-3, C-4]), `typescript`, `@cloudflare/workers-types`, `vitest`, `@cloudflare/vitest-pool-workers`, `eslint`. No runtime dependencies.
@@ -705,7 +705,7 @@ Adapters only parse. Fetching goes through `ctx.http`, which owns robots checks,
 ### 10.2 HTTP client rules (`scraper/src/moviespk_scraper/core/`)
 
 - **robots.txt:**
-  - Fetched once per host per run through the same client and parsed with `urllib.robotparser`.
+  - Fetched once per host per run through the same client and parsed by the RFC 9309 matcher in `core/robots.py` (longest match wins, `Allow` on ties, `*` and `$` wildcards; not `urllib.robotparser`, see §6.2).
   - Every URL is checked against the group for `SCRAPER_USER_AGENT`. A disallowed URL raises `RobotsDisallowedError` before any request.
   - Per RFC 9309: a 4xx on robots.txt = allow all; a 5xx or network failure = treat as disallowed for this run (fail safe), run status `blocked`.
   - `Crawl-delay` is honored when larger than `min_delay_ms`.
