@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/Envelope.json",
+  "title": "Envelope",
+  "description": "Success envelope {data, meta} for every API response (plan §9.1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["data", "meta"],
+  "properties": {
+    "data": {},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generatedAt"],
+      "properties": {
+        "generatedAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+        "dataAsOf": { "$ref": "common.json#/$defs/UtcDateTime" }
+      }
+    }
+  }
+}

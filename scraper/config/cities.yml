@@ -1,0 +1,48 @@
+# Single source of truth for cities (plan §8.3). After editing, run
+#   python scripts/gen_constants.py
+# and commit the regenerated shared/constants/cities.json.
+#
+# center: [lng, lat] — approximate city centres, to be confirmed on a map in P0-08.
+# default_radius_km must be one of 5, 10, 25, 50.
+# Slugs must not collide with reserved web paths (shared/constants/reserved-paths.json).
+
+- slug: lahore
+  name: Lahore
+  center: [74.3587, 31.5204]
+  default_radius_km: 25
+- slug: karachi
+  name: Karachi
+  center: [67.0011, 24.8607]
+  default_radius_km: 25
+- slug: islamabad
+  name: Islamabad
+  center: [73.0479, 33.6844]
+  default_radius_km: 25
+- slug: rawalpindi
+  name: Rawalpindi
+  center: [73.0169, 33.5651]
+  default_radius_km: 25
+- slug: faisalabad
+  name: Faisalabad
+  center: [73.0791, 31.4504]
+  default_radius_km: 25
+- slug: multan
+  name: Multan
+  center: [71.5249, 30.1575]
+  default_radius_km: 25
+- slug: hyderabad
+  name: Hyderabad
+  center: [68.3578, 25.3960]
+  default_radius_km: 25
+- slug: sialkot
+  name: Sialkot
+  center: [74.5229, 32.4945]
+  default_radius_km: 10
+- slug: gujrat
+  name: Gujrat
+  center: [74.0789, 32.5731]
+  default_radius_km: 10
+- slug: sargodha
+  name: Sargodha
+  center: [72.6711, 32.0836]
+  default_radius_km: 10

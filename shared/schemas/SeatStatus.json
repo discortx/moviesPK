@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/SeatStatus.json",
+  "title": "SeatStatus",
+  "description": "Seat status of a showtime. 'unknown' is never treated as 'sold_out' (plan §10.6).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status"],
+  "properties": {
+    "status": { "enum": ["available", "filling", "sold_out", "unknown"] },
+    "available": { "type": "integer", "minimum": 0 },
+    "total": { "type": "integer", "minimum": 1 },
+    "asOf": { "$ref": "common.json#/$defs/UtcDateTime" }
+  }
+}

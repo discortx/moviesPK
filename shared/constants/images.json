@@ -1,0 +1,4 @@
+{
+  "posterWidths": [185, 342, 780],
+  "posterKeyPattern": "^movies/[0-9a-f]{24}/poster-[0-9a-f]{8}$"
+}

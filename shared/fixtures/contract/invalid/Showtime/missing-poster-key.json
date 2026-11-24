@@ -1,0 +1,30 @@
+{
+  "id": "0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c",
+  "cinemaId": "cinepax-packages-mall",
+  "movieId": "6740a1b2c3d4e5f6a7b8c9d0",
+  "startsAt": "2026-12-01T19:15:00.000Z",
+  "endsAt": "2026-12-01T21:23:00.000Z",
+  "hall": "Screen 2",
+  "format": "2D",
+  "language": "en",
+  "seats": {
+    "status": "filling",
+    "available": 20,
+    "total": 120,
+    "asOf": "2026-12-01T13:37:00.000Z"
+  },
+  "bookingUrl": "https://web.cinepax.com/booking/abc",
+  "status": "active",
+  "cinema": {
+    "name": "Cinepax Packages Mall",
+    "city": "lahore"
+  },
+  "movie": {
+    "title": "Example Movie",
+    "slug": "example-movie-2026",
+    "genres": [
+      "action"
+    ],
+    "runtimeMin": 128
+  }
+}

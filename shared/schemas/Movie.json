@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/Movie.json",
+  "title": "Movie",
+  "description": "Movie item returned by the API. poster is {key, width, height} of the w780 variant, or null (plan §8.1, §11.3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "slug",
+    "title",
+    "genres",
+    "languages",
+    "rating",
+    "poster",
+    "matchStatus",
+    "nowShowing"
+  ],
+  "properties": {
+    "id": { "$ref": "common.json#/$defs/ObjectIdHex" },
+    "tmdbId": { "type": "integer", "minimum": 1 },
+    "slug": { "$ref": "common.json#/$defs/Slug" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "originalTitle": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "synopsis": { "type": "string", "maxLength": 2000 },
+    "genres": { "type": "array", "items": { "$ref": "common.json#/$defs/Genre" } },
+    "runtimeMin": { "type": "integer", "minimum": 30, "maximum": 300 },
+    "languages": { "type": "array", "items": { "$ref": "common.json#/$defs/Language" } },
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "certification": { "type": "string", "minLength": 1, "maxLength": 20 },
+        "tmdbScore": { "type": "number", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "poster": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["key", "width", "height"],
+          "properties": {
+            "key": { "$ref": "common.json#/$defs/PosterKey" },
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 }
+          }
+        }
+      ]
+    },
+    "trailerUrl": { "$ref": "common.json#/$defs/Url" },
+    "releaseDate": { "$ref": "common.json#/$defs/Date" },
+    "matchStatus": { "enum": ["matched", "provisional", "unmatched"] },
+    "nowShowing": { "type": "boolean" }
+  }
+}

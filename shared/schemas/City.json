@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/City.json",
+  "title": "City",
+  "description": "City item (from the generated shared/constants/cities.json; served by /cities).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "center", "defaultRadiusKm"],
+  "properties": {
+    "slug": { "$ref": "common.json#/$defs/Slug" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "center": { "$ref": "common.json#/$defs/LatLng" },
+    "defaultRadiusKm": { "enum": [5, 10, 25, 50] }
+  }
+}

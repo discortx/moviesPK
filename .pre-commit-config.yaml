@@ -1,0 +1,34 @@
+# Pinned by tag; `pre-commit autoupdate` keeps them current.
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.6
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^(scraper|scripts)/
+      - id: ruff-format
+        files: ^(scraper|scripts)/
+  - repo: local
+    hooks:
+      - id: eslint-api
+        name: eslint (api)
+        entry: npm --prefix api run lint --
+        language: system
+        files: ^api/.*\.(ts|js)$
+        pass_filenames: false
+      - id: eslint-web
+        name: eslint (web)
+        entry: npm --prefix web run lint --
+        language: system
+        files: ^web/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: false
+      - id: prettier
+        name: prettier
+        entry: npx --no-install prettier --check
+        language: system
+        files: ^(api|web|images-worker|shared)/.*\.(ts|tsx|js|json|css|md)$
+        exclude: (package-lock\.json|/fixtures/)

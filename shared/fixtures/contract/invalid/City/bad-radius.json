@@ -1,0 +1,9 @@
+{
+  "slug": "lahore",
+  "name": "Lahore",
+  "center": {
+    "lat": 31.5204,
+    "lng": 74.3587
+  },
+  "defaultRadiusKm": 7
+}

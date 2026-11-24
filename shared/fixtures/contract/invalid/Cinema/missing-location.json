@@ -1,0 +1,24 @@
+{
+  "_id": "cinepax-packages-mall",
+  "chain": "Cinepax",
+  "name": "Cinepax Packages Mall",
+  "city": "lahore",
+  "address": "Packages Mall, Walton Road, Lahore",
+  "phone": "+92 42 000 000 000",
+  "websiteUrl": "https://web.cinepax.com/",
+  "bookingUrlTemplate": "https://web.cinepax.com/booking/{showId}",
+  "facilities": [
+    "3D",
+    "Dolby Atmos"
+  ],
+  "enabled": true,
+  "seatsEnabled": true,
+  "lastScrapedAt": "2026-11-24T02:09:13.000Z",
+  "health": {
+    "status": "ok",
+    "lastSuccessAt": "2026-11-24T02:09:13.000Z",
+    "lastRunAt": "2026-11-24T02:09:13.000Z"
+  },
+  "createdAt": "2026-11-20T00:00:00.000Z",
+  "updatedAt": "2026-11-24T02:09:13.000Z"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "6740a1b2c3d4e5f6a7b8c9d0",
+  "tmdbId": 1234567,
+  "slug": "example-movie-2026",
+  "title": "Example Movie",
+  "originalTitle": "Example Movie",
+  "year": 2026,
+  "synopsis": "A placeholder synopsis.",
+  "genres": [
+    "Action"
+  ],
+  "runtimeMin": 128,
+  "languages": [
+    "en"
+  ],
+  "rating": {
+    "certification": "PG-13",
+    "tmdbScore": 7.4
+  },
+  "poster": {
+    "key": "movies/6740a1b2c3d4e5f6a7b8c9d0/poster-1a2b3c4d",
+    "width": 780,
+    "height": 1170
+  },
+  "trailerUrl": "https://www.youtube.com/watch?v=example",
+  "releaseDate": "2026-11-20",
+  "matchStatus": "matched",
+  "nowShowing": true
+}

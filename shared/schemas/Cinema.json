@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/Cinema.json",
+  "title": "Cinema",
+  "description": "Stored cinemas document (plan §8.1). location is GeoJSON; phone is omitted when absent, never an empty string.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "_id",
+    "chain",
+    "name",
+    "city",
+    "address",
+    "location",
+    "websiteUrl",
+    "facilities",
+    "enabled",
+    "seatsEnabled",
+    "health",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "_id": { "$ref": "common.json#/$defs/Slug" },
+    "chain": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "city": { "$ref": "common.json#/$defs/Slug" },
+    "address": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "location": { "$ref": "common.json#/$defs/GeoPoint" },
+    "phone": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "websiteUrl": { "$ref": "common.json#/$defs/Url" },
+    "bookingUrlTemplate": { "$ref": "common.json#/$defs/Url" },
+    "facilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 60 }
+    },
+    "enabled": { "type": "boolean" },
+    "seatsEnabled": { "type": "boolean" },
+    "lastScrapedAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "health": { "$ref": "common.json#/$defs/CinemaHealth" },
+    "createdAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "updatedAt": { "$ref": "common.json#/$defs/UtcDateTime" }
+  }
+}

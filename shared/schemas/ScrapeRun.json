@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/ScrapeRun.json",
+  "title": "ScrapeRun",
+  "description": "One scrape_runs record per cinema and job (plan §8.1). Error messages are at most 300 characters and never contain headers or cookies.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job", "cinemaId", "startedAt", "status", "counts", "errors"],
+  "properties": {
+    "job": { "enum": ["full", "seats", "canary"] },
+    "cinemaId": { "$ref": "common.json#/$defs/Slug" },
+    "startedAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "finishedAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "status": { "enum": ["ok", "partial", "failed", "blocked", "drift"] },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "movies",
+        "showtimes",
+        "upserted",
+        "invalid",
+        "cancelled",
+        "imagesUploaded",
+        "imagesFailed"
+      ],
+      "properties": {
+        "movies": { "type": "integer", "minimum": 0 },
+        "showtimes": { "type": "integer", "minimum": 0 },
+        "upserted": { "type": "integer", "minimum": 0 },
+        "invalid": { "type": "integer", "minimum": 0 },
+        "cancelled": { "type": "integer", "minimum": 0 },
+        "imagesUploaded": { "type": "integer", "minimum": 0 },
+        "imagesFailed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "message"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1, "maxLength": 60 },
+          "message": { "type": "string", "maxLength": 300 },
+          "url": { "type": "string", "maxLength": 2048 }
+        }
+      }
+    },
+    "githubRunId": { "type": "string", "pattern": "^[0-9]+$" }
+  }
+}

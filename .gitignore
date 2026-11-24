@@ -1,0 +1,34 @@
+# Environment files (names only in .env.example)
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+.vercel/
+.wrangler/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Scraper debug output (uploaded as Actions artifacts, never committed)
+scraper/debug/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/

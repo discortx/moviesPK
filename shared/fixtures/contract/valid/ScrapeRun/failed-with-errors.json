@@ -1,0 +1,24 @@
+{
+  "job": "full",
+  "cinemaId": "cinepax-packages-mall",
+  "startedAt": "2026-11-24T02:07:01.000Z",
+  "finishedAt": "2026-11-24T02:09:13.000Z",
+  "status": "failed",
+  "counts": {
+    "movies": 6,
+    "showtimes": 84,
+    "upserted": 0,
+    "invalid": 0,
+    "cancelled": 1,
+    "imagesUploaded": 3,
+    "imagesFailed": 0
+  },
+  "errors": [
+    {
+      "type": "SchemaDriftError",
+      "message": "missing field 'sessions'",
+      "url": "/api/sessions"
+    }
+  ],
+  "githubRunId": "12345678901"
+}

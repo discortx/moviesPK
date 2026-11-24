@@ -1,0 +1,14 @@
+{
+  "name": "moviespk-scripts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Operational Node scripts (create_indexes.js)",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "mongodb": "^7.9.1"
+  }
+}

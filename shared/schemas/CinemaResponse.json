@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/CinemaResponse.json",
+  "title": "CinemaResponse",
+  "description": "Cinema item returned by the API: location as {lat, lng}; distanceKm only on /cinemas/nearby (plan §9.1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "chain",
+    "name",
+    "city",
+    "address",
+    "location",
+    "websiteUrl",
+    "facilities",
+    "seatsEnabled",
+    "health"
+  ],
+  "properties": {
+    "id": { "$ref": "common.json#/$defs/Slug" },
+    "chain": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "city": { "$ref": "common.json#/$defs/Slug" },
+    "address": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "location": { "$ref": "common.json#/$defs/LatLng" },
+    "phone": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "websiteUrl": { "$ref": "common.json#/$defs/Url" },
+    "bookingUrlTemplate": { "$ref": "common.json#/$defs/Url" },
+    "facilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 60 }
+    },
+    "seatsEnabled": { "type": "boolean" },
+    "health": { "$ref": "common.json#/$defs/CinemaHealth" },
+    "lastScrapedAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "distanceKm": { "type": "number", "minimum": 0 }
+  }
+}

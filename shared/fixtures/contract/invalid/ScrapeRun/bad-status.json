@@ -1,0 +1,18 @@
+{
+  "job": "full",
+  "cinemaId": "cinepax-packages-mall",
+  "startedAt": "2026-11-24T02:07:01.000Z",
+  "finishedAt": "2026-11-24T02:09:13.000Z",
+  "status": "success",
+  "counts": {
+    "movies": 6,
+    "showtimes": 84,
+    "upserted": 84,
+    "invalid": 0,
+    "cancelled": 1,
+    "imagesUploaded": 3,
+    "imagesFailed": 0
+  },
+  "errors": [],
+  "githubRunId": "12345678901"
+}

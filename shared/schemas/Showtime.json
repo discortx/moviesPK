@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.moviespk.local/Showtime.json",
+  "title": "Showtime",
+  "description": "Showtime item returned by the API. id = sha1 of the canonical five-component input (plan §8.1); hall is omitted when its canonical value is empty.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "cinemaId",
+    "movieId",
+    "startsAt",
+    "format",
+    "language",
+    "seats",
+    "status",
+    "cinema",
+    "movie"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "cinemaId": { "$ref": "common.json#/$defs/Slug" },
+    "movieId": { "$ref": "common.json#/$defs/ObjectIdHex" },
+    "startsAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "endsAt": { "$ref": "common.json#/$defs/UtcDateTime" },
+    "hall": { "type": "string", "minLength": 1, "maxLength": 60 },
+    "format": { "$ref": "common.json#/$defs/Format" },
+    "language": { "$ref": "common.json#/$defs/Language" },
+    "seats": { "$ref": "SeatStatus.json" },
+    "bookingUrl": { "$ref": "common.json#/$defs/Url" },
+    "status": { "enum": ["active", "cancelled"] },
+    "cinema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "city"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "city": { "$ref": "common.json#/$defs/Slug" }
+      }
+    },
+    "movie": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "slug", "posterKey", "genres"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "slug": { "$ref": "common.json#/$defs/Slug" },
+        "posterKey": {
+          "oneOf": [{ "type": "null" }, { "$ref": "common.json#/$defs/PosterKey" }]
+        },
+        "genres": { "type": "array", "items": { "$ref": "common.json#/$defs/Genre" } },
+        "runtimeMin": { "type": "integer", "minimum": 30, "maximum": 300 }
+      }
+    }
+  }
+}

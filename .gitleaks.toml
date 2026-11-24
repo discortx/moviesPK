@@ -1,0 +1,14 @@
+title = "MoviesPK gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "mongodb-uri-with-credentials"
+description = "MongoDB connection string with embedded credentials"
+regex = '''mongodb(\+srv)?://[^\s:/@]+:[^\s@/]+@[^\s/]+'''
+tags = ["mongodb", "uri"]
+
+[allowlist]
+description = "Documentation placeholders"
+paths = ['''\.env\.example$''', '''docs/archive/''']

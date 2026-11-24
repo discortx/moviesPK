@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "moviespk-scraper"
+version = "0.1.0"
+description = "MoviesPK cinema showtime scraper (non-commercial)"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+  "httpx[http2]>=0.28",
+  "tenacity>=9.0",
+  "selectolax>=1.0",
+  "beautifulsoup4>=4.12",
+  "pydantic>=2.9",
+  "rapidfuzz>=3.10",
+  "pymongo>=4.10",
+  "PyYAML>=6.0",
+  "structlog>=24.4",
+  "Pillow>=11.0",
+  "boto3>=1.35",
+]
+
+[project.optional-dependencies]
+browser = ["playwright>=1.48"]
+dev = [
+  "ruff>=0.17",
+  "mypy>=1.13",
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "respx>=0.21",
+  "mongomock>=4.2",
+  "pip-audit>=2.7",
+  "jsonschema>=4.23",
+  "types-PyYAML",
+]
+
+[project.scripts]
+moviespk-scraper = "moviespk_scraper.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "../scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
+ignore = ["S101"]  # assert is fine in tests
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S"]
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = "src"
+packages = ["moviespk_scraper"]
+plugins = ["pydantic.mypy"]
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["moviespk_scraper.core.*", "moviespk_scraper.pipeline.*", "moviespk_scraper.models.*"]
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "integration: needs a MongoDB at MONGODB_URI_SCRAPER (CI service container)",
+]
+addopts = "-ra"
