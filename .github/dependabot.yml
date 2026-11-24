@@ -1,4 +1,9 @@
 version: 2
+
+# Rules shared by the npm packages:
+# - react and react-dom must move together (react-dom pins react exactly).
+# - @types/node tracks the Node runtime in .nvmrc (24), not the newest Node.
+# - TypeScript majors wait until typescript-eslint supports them.
 updates:
   - package-ecosystem: pip
     directory: /scraper
@@ -8,10 +13,25 @@ updates:
     directory: /api
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /web
     schedule:
       interval: weekly
+    groups:
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      next:
+        patterns: ["next", "eslint-config-next"]
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /scripts
     schedule:
