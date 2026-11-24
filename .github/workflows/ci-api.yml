@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   changes:
+    name: api-changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -38,6 +39,7 @@ jobs:
           fi
 
   test:
+    name: api-test
     needs: changes
     if: needs.changes.outputs.run == 'true'
     runs-on: ubuntu-latest

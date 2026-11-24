@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   changes:
+    name: web-changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -39,6 +40,7 @@ jobs:
           fi
 
   test:
+    name: web-test
     needs: changes
     if: needs.changes.outputs.run == 'true'
     runs-on: ubuntu-latest

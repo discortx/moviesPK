@@ -21,9 +21,9 @@ Project contact email (Q6): _pending_.
 - [ ] Secret scanning and **push protection** enabled; a fake token pushed to a scratch
       branch is blocked (evidence link: _pending_).
 - [ ] Default `GITHUB_TOKEN` permission: **read-only**.
-- [ ] `main` protected: PR required; required checks `ci-scraper / test`,
-      `ci-api / test`, `ci-web / test`, `ci-secrets / gitleaks` (plus each workflow's
-      `changes` job). Jobs skipped by the `changes` gate report as passing, so path
+- [ ] `main` protected: PR required; required checks `scraper-test`, `api-test`, `web-test`, `gitleaks`
+      (plus `scraper-changes`, `api-changes`, `web-changes`).
+      Jobs skipped by the `changes` gate report as passing, so path
       filtering does not block unrelated PRs.
 - [ ] Dependabot alerts and version updates enabled.
 
