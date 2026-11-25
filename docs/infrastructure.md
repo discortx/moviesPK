@@ -8,9 +8,9 @@ check, plan §18.2; P4-01 audit).
 
 | Service | Account / project | Region | Payment method | Checked |
 |---|---|---|---|---|
-| GitHub | `discortx/moviesPK` (public) | — | none (_owner to confirm_) | _pending_ |
+| GitHub | `discortx/moviesPK` (public) | — | none | 2026-11-25 |
 | MongoDB Atlas | project `moviespk`, free cluster | Mumbai | none (no card asked at sign-up) | 2026-11-25 |
-| Vercel Hobby | `moviespk-web` (root `web/`), `moviespk-api` (root `api/`, Express) | functions: set to `bom1` (Mumbai) to match Atlas | none | 2026-11-25 |
+| Vercel Hobby | `moviespk-web` (root `web/`), `moviespk-api` (root `api/`, Express) | API functions: `bom1` (Mumbai), same region as Atlas (`x-vercel-id` checked 2026-11-25) | none | 2026-11-25 |
 | TMDB | API key (non-commercial) | — | none | 2026-11-25 |
 | Cloudflare | account (no zone, no domain) | — | **yes, R2 only** (OD9) | 2026-11-25 |
 
@@ -20,7 +20,7 @@ Project contact email (Q6): `kalime5891@gmail.com` (owner-approved for publicati
 
 - [x] Secret scanning and **push protection** enabled; a fake token pushed to a scratch
       branch is blocked (owner test 2026-11-25).
-- [ ] Default `GITHUB_TOKEN` permission: **read-only**.
+- [x] Default `GITHUB_TOKEN` permission: **read-only** (owner-checked 2026-11-25).
 - [x] `main` protected: PR required; required checks `scraper-test`, `api-test`, `web-test`, `gitleaks`
       (plus `scraper-changes`, `api-changes`, `web-changes`).
       Jobs skipped by the `changes` gate report as passing, so path
@@ -31,8 +31,8 @@ Project contact email (Q6): `kalime5891@gmail.com` (owner-approved for publicati
 
 | Environment | Secrets (names only) | Variables | Protection |
 |---|---|---|---|
-| `production` | `MONGODB_URI_SCRAPER`, `TMDB_API_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `CF_WORKERS_DEPLOY_TOKEN` | `MONGODB_DB=moviespk`, `R2_ACCOUNT_ID`, `R2_BUCKET=moviespk-prod` | _pending_ |
-| `dev` | `MONGODB_URI_SCRAPER`, `TMDB_API_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | `MONGODB_DB=moviespk_dev`, `R2_ACCOUNT_ID`, `R2_BUCKET=moviespk-dev` | _pending_ |
+| `production` | `MONGODB_URI_SCRAPER`, `TMDB_API_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `CF_WORKERS_DEPLOY_TOKEN` | `MONGODB_DB=moviespk`, `R2_ACCOUNT_ID`, `R2_BUCKET=moviespk-prod` | none (scheduled scraper runs must not wait for approval) |
+| `dev` | `MONGODB_URI_SCRAPER`, `TMDB_API_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | `MONGODB_DB=moviespk_dev`, `R2_ACCOUNT_ID`, `R2_BUCKET=moviespk-dev` | none |
 | `images-approval` | **none** | **none** | required reviewer = owner; branches: `main` only |
 
 Repository variable: `SCRAPER_USER_AGENT` = `MoviesPKBot/1.0 (+https://github.com/discortx/moviesPK; kalime5891@gmail.com)`.
@@ -69,7 +69,7 @@ Owner-checked 2026-11-25.
 |---|---|
 | Subscriptions (Billing → Subscriptions) | **R2 only** |
 | Workers plan (Workers & Pages → Plans) | **Free** |
-| `workers.dev` subdomain | created: `<account-subdomain>.workers.dev` (_name to record_) |
+| `workers.dev` subdomain | `moviespk.workers.dev` (Worker URL: `https://moviespk-img.moviespk.workers.dev`) |
 | Buckets | `moviespk-prod`, `moviespk-dev`: **private** (no `r2.dev`, no custom domain, no CORS) |
 | Budget alert | $1 to the owner's email; **includes R2** (resolves U-CF3) |
 | R2 tokens | `moviespk-scraper-prod` (Object Read & Write, `moviespk-prod` only) → env `production`; `moviespk-scraper-dev` (`moviespk-dev` only) → env `dev`. Dev token denied on prod: tested 2026-11-25 |

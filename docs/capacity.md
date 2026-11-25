@@ -15,3 +15,29 @@ The usage log for plan §7.4.3 item 6, §18.2 (monthly check) and P4-03. One row
 | 2026-11-25 | peak | Atlas operations | 100 ops/s | < 20 ops/s during `full` | | < 20% (forecast) | plan §7.3 | Bulk writes | |
 | 2026-11-25 | total | Atlas storage | 512 MB | < 30 MB | | < 6% (forecast) | plan §7.3 | `scrape_runs` 30-day TTL | |
 | 2026-11-25 | month | Actions minutes | free for public repos | 1,500–3,000 min | | n/a | plan §7.3 | | |
+
+## Monthly R2 and Z1 check (plan §18.2; template from P0-11)
+
+Copy this block once a month (driven by the keepalive maintenance issue, P2-06), fill it in, and add the usage numbers as rows in the table above.
+
+```markdown
+### Monthly check YYYY-MM (by <owner>, date YYYY-MM-DD)
+
+Z1 (accounts)
+- [ ] Cloudflare: payment method present, **only the R2 subscription** (Billing → Subscriptions)
+- [ ] Cloudflare: Workers plan = **Free**; no zone; no other product
+- [ ] GitHub, Atlas, Vercel, TMDB: no payment method
+
+R2 usage (Cloudflare dashboard → R2 → Metrics, previous calendar month)
+- Storage (GB-month): ____ / 10 (____%)
+- Class A operations: ____ / 1,000,000 (____%)
+- Class B operations: ____ / 10,000,000 (____%)
+- Invoice: $____ (expected $0; any charge → open an issue and explain it)
+- [ ] `moviespk-prod` and `moviespk-dev` still private (no `r2.dev`, no custom domain, no CORS)
+
+Worker
+- Peak-day requests: ____ / 100,000 (____%) on YYYY-MM-DD
+- [ ] Budget alert still configured ($1, includes R2)
+
+Follow-up: none / <issue link>
+```

@@ -1,6 +1,6 @@
 # ADR-0008: Zero-cost architecture and gate G0
 
-- **Status:** **Proposed**: becomes Accepted when the owner records the G0 decision below.
+- **Status:** **Accepted** (G0 passed 2026-11-25; the owner records it by merging this ADR).
 - **Date:** 2026-11-25
 - **Decided by:** the owner (`plan.md` §3.3, decisions OD4–OD11).
 - **Related:**
@@ -75,12 +75,19 @@ Evidence date: 2026-11-25 unless stated.
 | ≥ 5 viable cinemas (Allowed, Go, coordinates) | **Met: 5** (target 10+) | `docs/cinema-investigation/` |
 | ≥ 5 reachable from a GitHub Actions runner (P0-09) | **Met: 5 of 5** | `docs/cinema-investigation/README.md` |
 | P0-05 finished, no blocker: rewrite caching `x-vercel-cache: HIT`; Atlas sign-up with no card | **Rewrite caching met** (HIT through `moviespk-web` → `moviespk-api`, 2026-11-25); Atlas no-card: **met**; items 2–7: **no blocker** (2 and 5 are accepted Risks) | `docs/free-tier-verification.md` §8 |
-| Cloudflare: account, R2 only, Workers Free, `workers.dev` subdomain, private buckets, scoped tokens, budget alert (or monthly check) | **Met** (owner-checked 2026-11-25; alert includes R2; dev token denied on prod) | `docs/infrastructure.md` |
+| Cloudflare: account, R2 only, Workers Free, `workers.dev` subdomain, private buckets, scoped tokens, budget alert (or monthly check) | **Met** (owner-checked 2026-11-25: `moviespk.workers.dev`; alert includes R2; dev token denied on prod; P0-11 quotes re-verified) | `docs/infrastructure.md` |
 | Usage forecast under 25% of free allowances | **Met (forecast)**: Worker 9.2% of daily limit; R2 storage 1.0%, Class A 0.1%, Class B 0.7% | `plan.md` §7.4.2; `docs/capacity.md` |
-| Payment method only on Cloudflare (R2 only); none on GitHub, Atlas, Vercel, TMDB | **Met** for Cloudflare, Atlas, Vercel, TMDB (2026-11-25); GitHub: _owner to confirm_ | `docs/infrastructure.md` |
+| Payment method only on Cloudflare (R2 only); none on GitHub, Atlas, Vercel, TMDB | **Met** (owner-checked 2026-11-25) | `docs/infrastructure.md` |
 | Non-commercial status confirmed (OD5) | **Met** 2026-11-23 | `plan.md` §3.3 |
 | CI green on the skeleton | **Met** | required checks on `main` |
 | Push protection blocks a fake secret | **Met** (owner test, 2026-11-25) | `docs/infrastructure.md` |
+
+### Phase 0 notes
+
+- **P0-01:** `pre-commit` is not installed on the owner's Windows machine, so `pre-commit run --all-files` was not run locally. The same checks (gitleaks, ruff, eslint, prettier) run in CI on every PR and are required checks on `main`.
+- **P0-02:** Docker is not installed on the owner's machine, so `docker compose up mongo` was not demonstrated locally. MongoDB 7 is exercised by the `mongo:7` service container in `ci-scraper` and locally by `mongodb-memory-server` (`docs/dev-setup.md`).
+- **P0-05 item 1** was run on the real `moviespk-web` → `moviespk-api` pair instead of two throwaway projects; same topology (see `docs/free-tier-verification.md` §8).
+- **API region:** the API functions run in `bom1` (Mumbai), the Atlas region.
 
 ### Owner decisions recorded here
 
@@ -89,4 +96,12 @@ Evidence date: 2026-11-25 unless stated.
 
 ### G0 decision
 
-_Pending._ To be filled by the owner: **GO / NO-GO**, date, scope.
+**GO**, 2026-11-25. Scope: **minimum launch (≥ 5 cinemas)**; target 10+ through P2-01 rows.
+
+Every G0 criterion in the table above is met. Accepted risks carried into Phase 1:
+- R2 has no hard spend cap (R20); monthly check in `docs/capacity.md`.
+- Workers Caching has no GA/beta label (U-CF1, R22); behaviour tested in P1-21.
+- Vercel runtime logs keep query strings for 1 h on Hobby (P5-2).
+- GitHub's "repository activity" for the 60-day schedule rule is undefined (P5-5); keepalive in P2-06.
+
+Next: Phase 1, starting with P1-01 (HTTP client).

@@ -7,7 +7,7 @@
   - **[V]:** verified against the provider's official documentation on the date checked.
   - **[I]:** our technical inference from verified facts.
   - **[U]:** unverified. Every [U] row names the task that resolves it.
-- **Quotation note:** the quotes were collected with an automated fetch tool. Quotes marked "~" may be lightly paraphrased. P0-11 re-copies them word for word from the page before they are cited anywhere else.
+- **Quotation note:** the quotes were collected with an automated fetch tool. Quotes once marked "~" were re-copied word for word in P0-11 on 2026-11-25 (§9); no "~" quotes remain.
 - **This file is not legal advice and makes no billing guarantee.** Free tiers change. Re-verify every quarter (`plan.md` Z5).
 
 ---
@@ -49,7 +49,7 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | R2-8 | Hard spend cap | **None for R2.** The spend-management (spending limits) feature covers Workers and Durable Objects only: "A Workers limit does not include Durable Objects, Workers AI, Workers KV, R2, or other products used by your application." | [V] | https://developers.cloudflare.com/workers/platform/spend-management/ ; https://developers.cloudflare.com/billing/manage/spend-management/ |
 | R2-9 | Budget alerts | Email only. Alerts are based on the **account-wide** cumulative usage-based spend for the billing period, for Pay-as-you-go accounts only. "Budget alerts are informational only. They do not pause or limit usage." The page does not say explicitly that R2 spend is included. | [V] (existence, behaviour) / [U] (R2 included; available on this account) → P0-12 | https://developers.cloudflare.com/billing/manage/budget-alerts/ |
 | R2-10 | "Usage Based Billing" notification | Needs a **Professional plan or higher** (a paid zone plan) and a Pay-as-you-go account. R2 is not listed as a supported product. **Not usable:** a Professional plan is Forbidden under Z1. | [V] | https://developers.cloudflare.com/notifications/notification-available/ |
-| R2-11 | Failed payment | If a payment fails, R2 buckets become inaccessible and requests return errors. | [V] ~ | https://developers.cloudflare.com/billing/understand/billing-policy/ |
+| R2-11 | Failed payment | "If your payment method fails, we may suspend your access to the usage-based billing services for which we conducted the preauthorization. In the case of R2, you will not be able to access your R2 buckets and requests will return errors, but your data will remain secure." (Re-copied 2026-11-25; the page also warns that data may be deleted if the payment method is not updated within 30 days.) | [V] | https://developers.cloudflare.com/billing/understand/billing-policy/ |
 | R2-12 | HTTP metadata on upload | The S3-compatible PutObject supports `Content-Type` and `Cache-Control` as system metadata, so boto3 `ContentType=` and `CacheControl=` are stored with the object. | [V] | https://developers.cloudflare.com/r2/api/s3/api/ |
 | R2-13 | API token scoping | "If you select the **Object Read and Write** or **Object Read** permissions, you can scope your token to a set of buckets." A set can contain one bucket. | [V] | https://developers.cloudflare.com/r2/api/tokens/ |
 | R2-14 | Lifecycle rules | Rules can delete objects by age or on a date, filter by prefix, abort incomplete multipart uploads, and move objects to Infrequent Access. A move to Infrequent Access costs one Class A operation. **MoviesPK does not use lifecycle rules** (deletion is driven by the database; see `plan.md` §11.3.5). | [V] | https://developers.cloudflare.com/r2/buckets/object-lifecycles/ |
@@ -72,10 +72,10 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | # | Item | Finding | Tag | Source |
 |---|---|---|---|---|
 | C-1 | Existence and plans | Launched 2026-07-06. "Workers Cache is available today to every Worker on any plan." The docs use both names, "Workers Cache" and "Workers Caching". | [V] | https://blog.cloudflare.com/workers-cache/ (BLOG) ; https://developers.cloudflare.com/workers/cache/ |
-| C-2 | GA or beta | **No page labels it beta, open beta or GA.** | [U] → P0-11 (re-check); risk R22 | — |
+| C-2 | GA or beta | **No label** on the overview, configuration, debugging or limitations pages (re-checked 2026-11-25). Nearest wording: "At launch, all Workers Caching responses are subject to the Free plan size limit regardless of your account's plan. This restriction is temporary and will be lifted in a future update…" | [V] no label; risk R22 stays | https://developers.cloudflare.com/workers/cache/ |
 | C-3 | How to enable | TOML: a `[cache]` table with `enabled = true`. JSONC: `"cache": { "enabled": true }`. The allowed keys are `enabled` (required) and `cross_version_cache` (optional). **Minimum Wrangler 4.69.0**: "Check that your wrangler version is 4.69.0 or above, and that wrangler.toml or wrangler.jsonc has cache.enabled = true". | [V] | https://developers.cloudflare.com/workers/cache/configuration/ ; https://developers.cloudflare.com/workers/cache/debugging/ |
 | C-4 | `cross_version_cache` | `true` removes the Worker version from the cache key, so entries are shared across deployments until they expire or are purged. "The cross_version_cache option requires Wrangler 4.107.0 or above." Per-entrypoint settings (an `exports` map) also need 4.107.0 or above. | [V] | https://developers.cloudflare.com/workers/cache/configuration/ |
-| C-5 | Version in the cache key by default | Yes. A new deployment starts with a cold cache unless `cross_version_cache = true` (~ "cache hit rate resets on every deployment"). | [V] ~ | same ; https://developers.cloudflare.com/workers/cache/cache-keys/ |
+| C-5 | Version in the cache key by default | "By default, the **Worker version is part of the cache key**. Each deployed version has its own isolated cache, so a new deployment starts from an empty cache and never serves responses written by a previous version." "The trade-off is that **cache hit rate resets on every deployment**." `cross_version_cache = true` shares entries across versions. | [V] | https://developers.cloudflare.com/workers/cache/configuration/ |
 | C-6 | Works on `*.workers.dev` | "The cache works on workers.dev." `workers.dev`, routes and custom domains of the same Worker share one cache. | [V] | https://developers.cloudflare.com/workers/cache/ ; BLOG |
 | C-7 | Cache key | Entrypoint + path + **query string** + Worker version (by default) + `ctx.props`, plus a few headers that guard against cache poisoning. "The cache key does not include the host." Method, body, Cookie, User-Agent and Authorization are not part of the key. | [V] | https://developers.cloudflare.com/workers/cache/cache-keys/ |
 | C-8 | TTL headers and precedence | `Cloudflare-CDN-Cache-Control` takes precedence over `CDN-Cache-Control`, which takes precedence over `Cache-Control`. `Set-Cookie`, `private` and `no-store` cause a bypass. With no cache headers, heuristic TTLs apply by status code (200 → 2 h, 301 → 20 min, 404 → 3 min): "Omitting `Cache-Control` is not the same as opting out of the cache." | [V] | https://developers.cloudflare.com/workers/cache/configuration/ |
@@ -86,8 +86,8 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | C-13 | Do HITs count toward the **Free** 100,000/day limit? | Not stated explicitly. The Free limit is a daily request count, and C-12 says hits are requests. **Plan assumption: every image request counts, HIT or MISS** (conservative). | [I] / [U] → P1-22 (Worker request graph vs probe count) | same ; https://developers.cloudflare.com/workers/platform/limits/ |
 | C-14 | Methods and ranges | "Only `GET` and `HEAD` requests are cached. Other methods always invoke your Worker." For a Range request, Cloudflare strips `Range`, caches the full 200 response and serves a 206 slice. | [V] | https://developers.cloudflare.com/workers/cache/ ; …/limitations/ |
 | C-15 | Purge | From Worker code only: `ctx.cache.purge()` by tags, path prefixes or everything. Purge rate limits are always the Free-tier limits. Whether purge works on `workers.dev` is not stated. **MoviesPK never purges**: keys are immutable and a changed image gets a new key. | [V] (mechanism) / [U] (workers.dev; not needed) | https://developers.cloudflare.com/workers/cache/purge/ |
-| C-16 | Local tests | A local Vitest run does not exercise Workers Caching. The cache must be tested on the deployed Worker (P1-21). | [V] ~ | https://developers.cloudflare.com/workers/cache/debugging/ |
-| C-17 | Turning caching off | Disabling the cache does not purge entries already cached. | [V] ~ | https://developers.cloudflare.com/workers/cache/configuration/ |
+| C-16 | Local tests | "Local Vitest tests do not exercise Workers Caching. Test cache behavior on a Preview with its own cache or a deployed test Worker with caching enabled. Check for `Cf-Cache-Status: HIT` using the two-request debugging example." (Moved to the limitations page.) | [V] | https://developers.cloudflare.com/workers/cache/limitations/ |
+| C-17 | Turning caching off | "Disabling caching does not purge previously cached responses — it only stops Cloudflare from consulting or populating the cache on subsequent requests. If you re-enable caching later, any entries that are still within their TTL become usable again." | [V] | https://developers.cloudflare.com/workers/cache/configuration/ |
 
 ### 3.1 The older Cache API (`caches.default`, `cache.match`, `cache.put`)
 
@@ -118,7 +118,7 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | D-2 | URL format | `<YOUR_WORKER_NAME>.<YOUR_SUBDOMAIN>.workers.dev`; the Worker name comes from `name` in the Wrangler configuration (63 characters at most). | [V] | same |
 | D-3 | Disable and re-enable | Per Worker, `workers_dev = false` disables the `workers.dev` route on the next deploy, and `true` re-enables it. A dashboard-only change is undone by the next `wrangler deploy`. Disabling it does **not** turn off Preview, Version or Deployment URLs (set `preview_urls = false` separately). | [V] | same |
 | D-4 | Production use | "It's recommended to run production Workers on a Workers route or custom domain." This is a recommendation, not a prohibition. MoviesPK accepts it as risk R23 (no domain, OD2). | [V] | same |
-| D-5 | Zone features | Rules and settings of the account's own zones do not apply to `workers.dev`. Browser Integrity Check always applies on `workers.dev` and cannot be turned off. WAF and Cache Rules on `workers.dev` are not addressed. MoviesPK uses none of them (OD10). | [V] ~ | same |
+| D-5 | Zone features | Browser Integrity Check: "All requests to a `workers.dev` hostname are evaluated by Browser Integrity Check (BIC) on the Cloudflare-managed `workers.dev` zone. This includes Preview URLs and Version URLs." "You cannot turn off this check for a `workers.dev` hostname." **Corrected 2026-11-25:** the page does not say whether the account's own zone rules, WAF or Cache Rules apply to `workers.dev`; that earlier claim is withdrawn. Irrelevant to MoviesPK: there is no zone (OD10). Consequence of BIC: health checks and scripts that fetch posters must send a normal `User-Agent`. | [V] (BIC only) | https://developers.cloudflare.com/workers/configuration/routing/workers-dev/ |
 
 ## 6. Deployment from CI
 
@@ -133,7 +133,7 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 
 | ID | Item | Resolved by |
 |---|---|---|
-| U-CF1 | Workers Caching: GA or beta status (C-2) | P0-11 (re-check); P1-21 (behaviour); risk R22 |
+| U-CF1 | Workers Caching: GA or beta status (C-2). Re-checked 2026-11-25: still no label | P0-11 (re-check); P1-21 (behaviour); risk R22 |
 | U-CF2 | ✅ resolved 2026-11-25 (only R2 subscribed, Workers Free) — Workers Free needs no payment method; adding a payment method for R2 does **not** subscribe the account to Workers Paid (W-6, W-7) | P0-12 (screenshots of the billing and Workers plan pages) |
 | U-CF3 | ✅ resolved 2026-11-25 (alert set, includes R2) — A budget alert is available on the account and includes R2 spend (R2-9) | P0-12. If it is unavailable or excludes R2, the monthly usage record (`plan.md` §7.4.3 item 6, §18.2) is the only spend signal. This is recorded and accepted by the owner (OD11). |
 | U-CF4 | Binding `get()`/`head()` are billed as Class B (B-5) | P1-22 |
@@ -159,3 +159,22 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | P5-6 | Firewall configuration rollback on Hobby | 2026-11-25 | Available on all plans: "it takes effect globally within 300ms and can be instantly rolled back to prior configurations"; "Vercel WAF is available on all plans". Restore from Firewall → View Audit Log. How long audit-log history is kept is not documented. | **OK** | https://vercel.com/docs/vercel-firewall/vercel-waf (updated 2026-07-29) |
 | P5-7a | Sentry free plan needs a card? | 2026-11-25 | Not stated directly. Sign-up starts a 14-day Business trial "with no credit card" and then "you will be automatically assigned a free Developer plan". Sentry is optional (D7) and not planned for v1. | **OK (inferred; only relevant if Sentry is adopted)** | https://docs.sentry.io/pricing/ ; https://sentry.io/pricing/ |
 | P5-7b | Docker Desktop licence fit | 2026-11-25 | Personal subscription: "Use is limited to a single, individual developer acting in a personal, non-commercial capacity to develop Open Source Software or free applications." Fits this project (OD5). Docker is optional anyway: dev setup also supports native MongoDB or mongodb-memory-server. | **OK** | https://www.docker.com/legal/docker-subscription-service-agreement/ (§3.1(b)) |
+
+---
+
+## 9. P0-11 re-verification (2026-11-25)
+
+Every page above was re-opened on 2026-11-25. Results:
+
+| Row | Status | Note |
+|---|---|---|
+| R2-1, R2-3, R2-4, R2-5 (allowances and prices) | unchanged | Free: "10 GB-month / month", "1 million requests / month" (Class A), "10 million requests / month" (Class B), egress "Free". Standard: "$0.015 / GB-month", "$4.50 / million requests" (Class A), "$0.36 / million requests" (Class B). https://developers.cloudflare.com/r2/pricing/ |
+| R2-11 | re-copied | Exact quote now in the row; "may suspend" rather than "always" |
+| W-1 (Workers Free daily limit) | unchanged | "Accounts on the Workers Free plan have a daily request limit of 100,000 requests, resetting at midnight UTC. When a Worker exceeds this limit, Cloudflare returns **Error 1027**." Routes can be set to fail open; a `workers.dev` Worker has no route, so it returns the error. Either way, **nothing is billed**. https://developers.cloudflare.com/workers/platform/limits/ |
+| C-2 (status label) | unchanged | Still no beta/GA label (U-CF1 stays open; risk R22) |
+| C-3, C-4 (Wrangler minimums) | unchanged | "Requires Wrangler 4.69.0 or above." / "The `cross_version_cache` option requires Wrangler 4.107.0 or above." |
+| C-5, C-17 | re-copied | Exact quotes now in the rows |
+| C-16 | moved | Now on the limitations page; exact quote in the row |
+| D-5 | **corrected** | Only the Browser Integrity Check part is documented; the zone/WAF/Cache Rules claim is withdrawn. No effect on the design (no zone) |
+
+**Verdict:** no change breaks plan §7.4 or §11.3. Nothing to escalate before P0-12.
