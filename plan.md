@@ -1064,10 +1064,10 @@ No purge. The worst case is the edge TTL plus SWR (5 + 10 min), plus ISR at most
 | **P5 Operate** | Maintenance routine (§18.2) | ongoing | — |
 
 **G0 — go/no-go before P1 (owner records the decision in `docs/adr/0008-zero-cost-architecture.md`):**
-- [ ] At least 5 viable cinemas (target 10+): robots/terms verdict Allowed (or written permission recorded), technical verdict Go, coordinates entered.
-- [ ] At least 5 of them reachable from a GitHub Actions runner (P0-09).
-- [ ] P0-05 finished with no blocker: rewrite caching between projects tested on a throwaway pair of projects (`x-vercel-cache: HIT`); Atlas sign-up confirmed with no card. Vercel Hobby quotas and Firewall availability are already verified (architecture §10.7).
-- [ ] **Cloudflare (P0-11, P0-12):**
+- [x] At least 5 viable cinemas (target 10+): robots/terms verdict Allowed (or written permission recorded), technical verdict Go, coordinates entered.
+- [x] At least 5 of them reachable from a GitHub Actions runner (P0-09).
+- [x] P0-05 finished with no blocker: rewrite caching between projects tested on a throwaway pair of projects (`x-vercel-cache: HIT`); Atlas sign-up confirmed with no card. Vercel Hobby quotas and Firewall availability are already verified (architecture §10.7).
+- [x] **Cloudflare (P0-11, P0-12):**
   - account created;
   - R2 enabled;
   - billing alert configured (or its absence recorded and the monthly manual check scheduled);
@@ -1077,10 +1077,10 @@ No purge. The worst case is the edge TTL plus SWR (5 + 10 min), plus ISR at most
   - buckets private;
   - scoped tokens created;
   - usage forecast under **25%** of the free allowances (§7.4.2: Worker 9.2% of the daily limit; R2 storage 1.0%, Class A 0.1%, Class B 0.7%).
-- [ ] Payment method **only on Cloudflare (R2 only)**; none on GitHub, Atlas, Vercel or TMDB (screenshot or note in `docs/infrastructure.md`).
+- [x] Payment method **only on Cloudflare (R2 only)**; none on GitHub, Atlas, Vercel or TMDB (screenshot or note in `docs/infrastructure.md`).
 - [x] Owner confirms non-commercial status (OD5): **done 2026-11-23**.
 - G0 is a **technical and practical** gate only. The criteria are viable cinemas, reliable extraction, hosting limits, database capacity, caching and workflow reliability. A formal legal consultation is **not** a G0 condition (OD8).
-- [ ] CI green on the skeleton; push protection demonstrably blocks a fake secret.
+- [x] CI green on the skeleton; push protection demonstrably blocks a fake secret.
 
 **If G0 fails:**
 - Fewer than 5 viable or reachable cinemas → widen the candidate list (one more 2 d investigation batch), or ask cinemas for written permission. If still under 5, **NO-GO**: the product goal cannot be met within the rules.
@@ -1101,24 +1101,24 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
 
 ### Phase 0 — Foundations and investigation (10.0 d)
 
-- [ ] **P0-01 — Repository, licence and secret hygiene** · Must · 0.5 d · deps: none
+- [x] **P0-01 — Repository, licence and secret hygiene** · Must · 0.5 d · deps: none
   - Objective: a public monorepo that cannot accidentally leak secrets.
   - Details: create the `moviespk` public repo with folders `scraper/`, `api/`, `web/`, `images-worker/`, `shared/`, `scripts/`, `docs/`, `.github/`. Add a `LICENSE` (owner choice, Q3), `README.md` (purpose, non-commercial note, no-secrets rule), `.gitignore` (`.env*` except `.env.example`, `node_modules`, `.venv`, `__pycache__`, `.next`, `.wrangler`), `.env.example` (names from §6.3), `.pre-commit-config.yaml` (gitleaks, ruff, eslint, prettier), `.gitleaks.toml`, a PR template with the fixture-review checkbox. Enable secret scanning and push protection; set the default `GITHUB_TOKEN` permission to read-only; protect `main` (PR + required checks). Copy `architecture.md`, `project_statement.md`, `plan.md` and `docs/` into the repo.
   - Accept: pushing a fake token on a scratch branch is blocked (evidence in the PR); `pre-commit run --all-files` passes.
   - Tests: manual negative test, recorded.
 
-- [ ] **P0-02 — Tooling for the three packages and local Mongo** · Must · 1.5 d · deps: P0-01
+- [x] **P0-02 — Tooling for the three packages and local Mongo** · Must · 1.5 d · deps: P0-01
   - Details: `scraper/pyproject.toml` (Python 3.12, deps per §6.2, `[browser]` extra, ruff, mypy strict for `core/` `pipeline/` `models/`, pytest config); `api/` (TypeScript strict, ESLint, test runner, `src/app.ts` default-exporting an Express app with a placeholder `/api/v1/health`, `src/server.ts` for local); `web/` (Next.js App Router, Tailwind, TS strict, ESLint); `.nvmrc` (Node 20 LTS or newer LTS); `docker-compose.yml` with `mongo:7` only (dev DB `moviespk_dev`); `docs/dev-setup.md` (Docker or native MongoDB). The `images-worker/` package is scaffolded separately in P1-18.
     - **`docs/performance.md` template:** the single place for performance evidence. One section per measurement, each with date, environment (dev/preview/prod), method or command, raw numbers, the §3.2 target and a verdict: API cold start (P1-14); edge HIT vs MISS latency through the rewrite (P1-16); Worker cache and header test (P1-21); Worker load probe (P1-22); Lighthouse LCP and JS size (P3-13); load test p95 hit/miss (P4-03).
   - Accept: on a clean checkout, `ruff check && mypy && pytest` (scraper), `npm run lint && npm run typecheck && npm test` (api, web) all pass; `docker compose up mongo` works; `python -m moviespk_scraper --help` prints usage; `docs/performance.md` exists with the six empty sections.
   - Tests: one smoke test per package.
 
-- [ ] **P0-03 — CI workflows, path filters, Dependabot** · Must · 1.0 d · deps: P0-02
+- [x] **P0-03 — CI workflows, path filters, Dependabot** · Must · 1.0 d · deps: P0-02
   - Details: `ci-scraper.yml` (ruff, mypy, pytest with a `mongo:7` service, pip-audit, gitleaks), `ci-api.yml`, `ci-web.yml` (lint, typecheck, test, build; e2e and Lighthouse added in P3), path filters per §13, pip and npm caches, all actions pinned by SHA, `.github/dependabot.yml` (pip, npm ×2, github-actions; weekly; npm for `images-worker/` added in P1-18). Required status checks on `main`.
   - Accept: a PR touching only `scraper/**` runs only `ci-scraper`; all three pass on the skeleton; no workflow on `pull_request` references `secrets.`.
   - Tests: CI itself; `grep -R "secrets\." .github/workflows/ci-*.yml` returns nothing.
 
-- [ ] **P0-04 — Accounts and credentials with no payment method** · Must · 1.0 d · deps: P0-01
+- [x] **P0-04 — Accounts and credentials with no payment method** · Must · 1.0 d · deps: P0-01
   - Details:
     - Atlas: project `moviespk`, free cluster (region nearest Pakistan offered for free, e.g. Mumbai if available), DB users per §12.2, network access `0.0.0.0/0`.
     - Vercel Hobby: projects `moviespk-web` (root `web/`) and `moviespk-api` (root `api/`, Express preset), Git integration on `main` plus previews.
@@ -1130,7 +1130,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: the scraper user can write to `moviespk_dev` from a throwaway Actions run; the API user's write is rejected; both Vercel projects deploy the skeleton; GitHub, Atlas, Vercel and TMDB show no payment method; a throwaway `workflow_dispatch` job with `environment: images-approval` waits for the owner's approval and runs after it. If required reviewers are not available for this public repository (P0-05 item 4), this is recorded and escalated before P1-20.
   - Tests: `scripts/check_db_access.py` (prints OK or FAIL, never the URI).
 
-- [ ] **P0-05 — Free-tier and platform verification (remaining items)** · Must · **0.5 d (re-estimated from 1.0 d)** · deps: P0-04
+- [x] **P0-05 — Free-tier and platform verification (remaining items)** · Must · **0.5 d (re-estimated from 1.0 d)** · deps: P0-04
   - Already verified on 2026-11-23 (architecture §10.7; **not repeated**):
     - Vercel Hobby quotas (1,000,000 invocations/month, Active CPU, Fast Data Transfer, CDN requests, ISR) and what is paused;
     - Firewall (1 rate-limit rule within 3 custom rules);
@@ -1149,12 +1149,12 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: every item has a verdict; any Blocker is escalated before G0.
   - Tests: none (evidence document).
 
-- [ ] **P0-06 — Shared schemas, constants and index script** · Must · 1.5 d · deps: P0-02
+- [x] **P0-06 — Shared schemas, constants and index script** · Must · 1.5 d · deps: P0-02
   - Details: `shared/schemas/*.json` (JSON Schema for `Cinema` (stored document: GeoJSON `location`, optional `phone`) and `CinemaResponse` (API item: `location: {lat, lng}`, optional `phone`, `distanceKm` on nearby), `City` (`center: {lat, lng}`), `Movie` with `poster {key, width, height}`, `Showtime` (optional `hall`), `SeatStatus` (the four values of §10.6), `ScrapeRun`, response envelopes and `Error`) as the single contract; `shared/constants/*.json` (formats, seat statuses, genres, languages, match statuses, run statuses, poster widths `[185, 342, 780]` and the poster key pattern, §11.3.9; and `cities.json` generated from `cities.yml` by **`scripts/gen_constants.py`** with a `--check` mode, §9.2); Pydantic models in `scraper/src/moviespk_scraper/models/` and Zod schemas in `api/src/schemas/` written by hand to match; the contract fixtures `shared/fixtures/contract/` and the two contract suites per the §13 mechanism; the showtime ID function `pipeline/ids.py` (§8.1 canonical input); `scripts/create_indexes.js` (§8.2, idempotent, prints the index list); `scripts/seed_dev.py` (2 cinemas, 3 movies, about 30 showtimes across PKT midnight, at least one without a hall; IDs from `pipeline/ids.py`).
   - Accept: §8.1 sample documents validate on both sides; every valid contract fixture passes and every invalid one fails in JSON Schema, Pydantic and Zod; an enum mismatch between either language and `shared/constants` fails CI; `gen_constants.py --check` fails after an uncommitted `cities.yml` edit; the hall cases of §8.1 give one ID; running the index script twice shows no errors and includes the TTL index with `expireAfterSeconds: 0`.
   - Tests: Contract; scraper unit; integration (index script against the service container).
 
-- [ ] **P0-07 — Robots and evidence helper** · Must · 0.5 d · deps: P0-02
+- [x] **P0-07 — Robots and evidence helper** · Must · 0.5 d · deps: P0-02
   - Details: `scraper/src/moviespk_scraper/core/robots.py` (parse, per-path check, normalized-text SHA-256) and CLI `scripts/snapshot_evidence.py --cinema <id> --paths ...`. It prints per-path Allowed/Disallowed and the robots and terms hashes as a YAML snippet for `cinemas.yml`. It stores no copies of third-party pages in the repo (hashes and short notes only).
   - Accept: two runs on unchanged pages give the same hashes; a sample robots.txt yields the expected per-path verdicts.
   - Tests: scraper unit.
@@ -1189,12 +1189,12 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: every Allowed candidate has a reachability result; the reachable count is in the README.
   - Tests: the run is the evidence.
 
-- [ ] **P0-10 — ADR-0008 and gate G0** · Must · 0.5 d (re-estimated, unchanged) · deps: P0-03, P0-05, P0-06, P0-08, P0-09, P0-12
+- [x] **P0-10 — ADR-0008 and gate G0** · Must · 0.5 d (re-estimated, unchanged) · deps: P0-03, P0-05, P0-06, P0-08, P0-09, P0-12
   - Details: write `docs/adr/0008-zero-cost-architecture.md` (decisions OD4–OD10, the §4.2 deviations, the G0 outcome; it refers to ADR-0009 for images). Set ADR-0007's status to Superseded (with owner approval, Q7). The `architecture.md` amendments were completed in plan v2.1 (architecture v1.2) and are no longer part of this task. Present the `project_statement.md` name proposal (§4.3) to the owner; it is non-blocking. Run the G0 checklist (§14).
   - Accept: G0 decision and date recorded; scope chosen (full vs 5-cinema launch, Q1).
   - Tests: none.
 
-- [ ] **P0-11 — Cloudflare R2 / Workers / Workers Caching verification (v2.1)** · Must · 0.5 d · deps: P0-01
+- [x] **P0-11 — Cloudflare R2 / Workers / Workers Caching verification (v2.1)** · Must · 0.5 d · deps: P0-01
   - Objective: confirm the facts in `docs/free-tier-verification.md` (items 1–6 of the v2.1 verification brief) before money-relevant setup.
   - Details:
     - Re-open each source URL in `docs/free-tier-verification.md`.
@@ -1205,7 +1205,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: no row changed in a way that breaks §7.4 or §11.3, or the change is escalated before P0-12; all "~" quotes are replaced with exact quotes.
   - Tests: none (evidence document).
 
-- [ ] **P0-12 — Cloudflare account setup: R2 only, Workers Free (v2.1)** · Must · 0.5 d · deps: P0-04, P0-11
+- [x] **P0-12 — Cloudflare account setup: R2 only, Workers Free (v2.1)** · Must · 0.5 d · deps: P0-04, P0-11
   - Details:
     1. Create a Cloudflare account with the owner's email (no zone, no domain added).
     2. Add a payment method and subscribe to **R2 only** (checkout flow [V R2-7]).
