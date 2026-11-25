@@ -1,0 +1,65 @@
+# TEMPORARY (plan P0-04, P0-12). Lives only on the scratch branch probe/g0-checks; never merge.
+# Evidence for gate G0:
+#   db       — the scraper user can write to moviespk_dev (P0-04)
+#   r2       — the dev R2 token lists moviespk-dev and is denied on moviespk-prod (P0-12)
+#   approval — a job in environment images-approval waits for the owner's approval (P0-04)
+# Prints OK/FAIL only; never prints a URI or key.
+name: probe-g0
+
+on:
+  push:
+    branches: [probe/g0-checks]
+
+permissions:
+  contents: read
+
+jobs:
+  db:
+    runs-on: ubuntu-latest
+    environment: dev
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - run: pip install pymongo
+      - name: Scraper user can write to moviespk_dev
+        env:
+          MONGODB_URI_SCRAPER: ${{ secrets.MONGODB_URI_SCRAPER }}
+          MONGODB_DB: moviespk_dev
+        run: python scripts/check_db_access.py
+
+  r2:
+    runs-on: ubuntu-latest
+    environment: dev
+    timeout-minutes: 5
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      ENDPOINT: https://${{ vars.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+    steps:
+      - name: Dev token lists moviespk-dev
+        run: |
+          if aws s3api list-objects-v2 --bucket moviespk-dev --max-keys 1 --endpoint-url "$ENDPOINT" > /dev/null; then
+            echo "OK   dev token can list moviespk-dev"
+          else
+            echo "FAIL dev token cannot list moviespk-dev"; exit 1
+          fi
+      - name: Dev token is denied on moviespk-prod
+        run: |
+          if out=$(aws s3api list-objects-v2 --bucket moviespk-prod --max-keys 1 --endpoint-url "$ENDPOINT" 2>&1); then
+            echo "FAIL dev token can read moviespk-prod (must be denied)"; exit 1
+          elif echo "$out" | grep -q AccessDenied; then
+            echo "OK   dev token gets AccessDenied on moviespk-prod"
+          else
+            echo "FAIL unexpected error (not AccessDenied):"; echo "$out" | grep -o 'An error occurred ([A-Za-z]*)' ; exit 1
+          fi
+
+  approval:
+    runs-on: ubuntu-latest
+    environment: images-approval
+    timeout-minutes: 5
+    steps:
+      - run: echo "OK   ran after the owner approved the images-approval environment"
