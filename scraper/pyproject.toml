@@ -62,7 +62,12 @@ plugins = ["pydantic.mypy"]
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = ["moviespk_scraper.core.*", "moviespk_scraper.pipeline.*", "moviespk_scraper.models.*"]
+module = [
+  "moviespk_scraper.core.*",
+  "moviespk_scraper.pipeline.*",
+  "moviespk_scraper.models.*",
+  "moviespk_scraper.db.*",
+]
 strict = true
 
 [tool.pytest.ini_options]

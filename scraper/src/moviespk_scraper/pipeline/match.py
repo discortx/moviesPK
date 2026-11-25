@@ -19,6 +19,7 @@ import threading
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from typing import Any
 
 from rapidfuzz import fuzz
 from structlog.typing import FilteringBoundLogger
@@ -46,6 +47,20 @@ class Alias:
     tmdb_id: int | None = None
     local_key: str | None = None
     cinema_id: str | None = None
+
+    @classmethod
+    def from_document(cls, doc: dict[str, Any]) -> Alias:
+        """A ``movie_aliases`` document (``_id`` = alias or ``alias|cinemaId``)."""
+        key = str(doc["_id"]).split("|", 1)[0]
+        movie_key = str(doc.get("movieKey", ""))
+        source: AliasSource = doc.get("source", "pending")
+        return cls(
+            key=key,
+            source=source,
+            tmdb_id=int(movie_key) if movie_key.isdigit() else None,
+            local_key=None if movie_key.isdigit() else movie_key or None,
+            cinema_id=doc.get("cinemaId"),
+        )
 
     @classmethod
     def from_config(cls, entry: AliasConfig) -> Alias:

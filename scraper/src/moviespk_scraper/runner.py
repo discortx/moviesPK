@@ -27,6 +27,7 @@ from .core.config import CinemaConfig
 from .core.errors import run_status_for
 from .core.http import ScraperHttpClient
 from .core.logging import get_logger
+from .db.client import DB
 from .models.vocab import Job, RunStatus
 from .pipeline.match import Matcher, MatchResult
 from .pipeline.normalize import (
@@ -35,6 +36,7 @@ from .pipeline.normalize import (
     normalize_movie,
     normalize_showtime,
 )
+from .pipeline.upsert import upsert_cinema
 from .pipeline.validate import validate
 
 MAX_PARALLEL_CINEMAS = 3
@@ -51,6 +53,7 @@ class CinemaResult:
     normalized_showtimes: list[NormalizedShowtime] = field(default_factory=list)
     invalid: int = 0
     matches: dict[str, MatchResult] = field(default_factory=dict)  # by title key
+    upserted: int = 0
     error: str | None = None
     duration_s: float = 0.0
 
@@ -77,6 +80,8 @@ class Services:
     """Run-wide services shared by every cinema (one TMDB client and matcher per run)."""
 
     matcher: Matcher = field(default_factory=lambda: Matcher(None))
+    #: The database to write to; ``None`` for a dry run (nothing is written).
+    db: DB | None = None
 
 
 def _match_all(
@@ -133,6 +138,18 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
         )
         return result
     result.matches = _match_all(services, cinema, checked.movies, checked.showtimes)
+    if services.db is not None:
+        counts = upsert_cinema(
+            services.db, cinema, checked.movies, checked.showtimes, result.matches, ctx.now
+        )
+        result.upserted = counts.showtimes
+        ctx.log.info(
+            "upsert.done",
+            phase="upsert",
+            movies=counts.movies,
+            showtimes=counts.showtimes,
+            aliases=counts.aliases,
+        )
     return result
 
 

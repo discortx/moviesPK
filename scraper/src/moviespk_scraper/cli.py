@@ -14,6 +14,7 @@ import sys
 import time
 from collections import Counter
 from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TextIO
 
@@ -23,8 +24,11 @@ from .core.config import CONFIG_DIR, ConfigError, load_config
 from .core.http import ScraperHttpClient
 from .core.logging import configure_logging
 from .core.offline import FixtureTransport, captured_at
+from .db import repositories as repo
+from .db.client import DatabaseUnavailableError, DbSettings, connect
 from .pipeline.match import Alias, AliasTable, Matcher
 from .pipeline.normalize import NormalizedShowtime
+from .pipeline.sync_cinemas import sync_cinemas
 from .runner import CinemaResult, RunReport, Services, run_job
 from .services.tmdb import TmdbClient
 
@@ -114,12 +118,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.job not in IMPLEMENTED_JOBS:
         return _error(f"job {args.job!r} is not implemented yet")
-    if not args.dry_run:
-        return _error(
-            "only --dry-run is available until the pipeline writes to the database "
-            "(plan P1-07 … P1-11)"
-        )
-
     try:
         config = load_config(args.config_dir)
     except ConfigError as exc:
@@ -157,8 +155,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     tmdb_key = os.environ.get("TMDB_API_KEY", "").strip()
     # Offline runs never reach the network, TMDB included; aliases still apply.
     tmdb = TmdbClient(tmdb_key) if tmdb_key and args.offline is None else None
-    aliases = AliasTable(manual=[Alias.from_config(a) for a in config.aliases])
-    services = Services(matcher=Matcher(tmdb, aliases))
+    db_client = None
+    db = None
+    stored_aliases: list[Alias] = []
+    if not args.dry_run:
+        if args.offline is not None:
+            return _error("--offline runs are always --dry-run (fixtures are never written)")
+        try:
+            db_client, db = connect(DbSettings.from_env())
+        except DatabaseUnavailableError as exc:
+            return _error(str(exc))
+        stored_aliases = [Alias.from_document(d) for d in repo.load_aliases(db)]
+        sync = sync_cinemas(db, config.cinemas, datetime.now(UTC))
+        print(f"cinemas synced: {sync.upserted} from cinemas.yml, {sync.disabled_missing} disabled")
+    aliases = AliasTable(
+        manual=[Alias.from_config(a) for a in config.aliases], stored=stored_aliases
+    )
+    services = Services(matcher=Matcher(tmdb, aliases), db=db)
     try:
         with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
             report = run_job(
@@ -174,6 +187,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     finally:
         if tmdb is not None:
             tmdb.close()
+        if db_client is not None:
+            db_client.close()
     if tmdb is None:
         reason = "offline run" if args.offline is not None else "TMDB_API_KEY not set"
         print(f"note: TMDB matching skipped ({reason}); only aliases were applied")
