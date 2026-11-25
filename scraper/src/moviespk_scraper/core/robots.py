@@ -16,7 +16,8 @@ interpreter version.
   ``Disallow`` matches nothing. ``/robots.txt`` itself is always allowed.
 
 RFC 9309 status handling:
-* 2xx → parse the body;
+* 2xx → parse the body, unless it is an HTML page (a soft 404, e.g. a redirect to an
+  error page), which counts as a missing robots.txt → allow everything;
 * 4xx → allow everything;
 * 5xx or a network failure → disallow everything for this run (fail safe, run ``blocked``).
 """
@@ -118,6 +119,11 @@ def _parse(body: str) -> list[_Group]:
     return groups
 
 
+def _looks_like_html(body: str) -> bool:
+    """A robots.txt never starts with ``<``; an HTML page (error page, soft 404) does."""
+    return body.lstrip("﻿ \t\r\n").startswith("<")
+
+
 @dataclass
 class RobotsPolicy:
     """Parsed robots.txt for one host, evaluated for one user agent."""
@@ -138,6 +144,10 @@ class RobotsPolicy:
         if 400 <= status < 500:
             return cls(user_agent, status, "allow_all")
         if 200 <= status < 300:
+            if _looks_like_html(body):
+                # Some sites redirect /robots.txt to an HTML error page served as 200.
+                # That is a missing robots.txt, not an empty one: same as 4xx.
+                return cls(user_agent, status, "allow_all")
             token = product_token(user_agent).lower()
             groups = _parse(body)
             selected = [g for g in groups if token in g.agents] or [

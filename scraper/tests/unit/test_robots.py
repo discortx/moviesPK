@@ -82,6 +82,18 @@ def test_5xx_or_network_failure_blocks(status: int | None) -> None:
     assert policy.blocked
 
 
+@pytest.mark.parametrize(
+    "body",
+    ["<!DOCTYPE html><html><body>Error</body></html>", "﻿\n  <html><head></head></html>"],
+)
+def test_html_soft_404_counts_as_missing(body: str) -> None:
+    policy = RobotsPolicy.from_response(UA, 200, body)
+    assert policy.mode == "allow_all"
+    assert policy.can_fetch("https://example.com/anything")
+    assert not policy.blocked
+    assert policy.body_sha256() is None
+
+
 def test_crawl_delay_honoured_only_when_larger() -> None:
     policy = RobotsPolicy.from_response(UA, 200, SAMPLE)
     assert policy.crawl_delay_ms() == 5000
