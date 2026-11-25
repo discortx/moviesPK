@@ -1273,7 +1273,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: running the fixture pipeline twice against the service container leaves identical collection contents (hash of sorted documents without `updatedAt`); a movie re-created with the same `tmdbId` keeps the same showtime IDs; a showtime scraped once without a hall and once with `hall: "  "` is stored once (same ID, `hall` omitted).
   - Tests: scraper integration.
 
-- [ ] **P1-11 — Reconcile and guards** · Must · 1.0 d · deps: P1-10
+- [x] **P1-11 — Reconcile and guards** · Must · 1.0 d · deps: P1-10
   - Details: `pipeline/reconcile.py` and the zero-result and invalid-rate guards (§8.4).
   - Accept: 1 miss keeps `active`; 2 misses → `cancelled`; a `failed` or zero-result run changes no showtime; past shows are left to the TTL.
   - Tests: scraper integration.

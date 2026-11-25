@@ -17,6 +17,7 @@ CINEMAS = "cinemas"
 MOVIES = "movies"
 SHOWTIMES = "showtimes"
 ALIASES = "movie_aliases"
+SCRAPE_RUNS = "scrape_runs"
 
 
 def bulk_upsert(db: DB, collection: str, ops: Sequence[UpdateOne]) -> BulkWriteResult | None:
@@ -114,3 +115,20 @@ def alias_op(
         {"$set": doc, "$setOnInsert": {"createdAt": now}},
         upsert=True,
     )
+
+
+# --- scrape runs ---------------------------------------------------------------------------
+
+
+def recent_ok_showtime_counts(db: DB, cinema_id: str, limit: int) -> list[int]:
+    """Showtime counts of the cinema's latest ``ok`` ``full`` runs, newest first."""
+    cursor = (
+        db[SCRAPE_RUNS]
+        .find(
+            {"cinemaId": cinema_id, "job": "full", "status": "ok"},
+            {"counts.showtimes": 1},
+        )
+        .sort("startedAt", -1)
+        .limit(limit)
+    )
+    return [int(d["counts"]["showtimes"]) for d in cursor if "counts" in d]

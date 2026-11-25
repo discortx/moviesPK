@@ -80,6 +80,7 @@ class UpsertCounts:
     movies: int
     showtimes: int
     aliases: int
+    showtime_ids: frozenset[str] = frozenset()
 
 
 def _cinema_fields(movie: NormalizedMovie) -> Document:
@@ -183,7 +184,8 @@ def _upsert_movie(db: DB, movie: NormalizedMovie, match: MatchResult, now: datet
 
 def showtime_update(
     cinema: CinemaConfig, movie: StoredMovie, show: NormalizedShowtime, now: datetime
-) -> UpdateOne:
+) -> tuple[str, UpdateOne]:
+    """The showtime's id and its upsert."""
     sid = showtime_id(cinema.id, movie.key, show.starts_at, show.hall, show.format)
     movie_block: Document = {
         "title": movie.title,
@@ -224,7 +226,7 @@ def showtime_update(
     update: Document = {"$set": fields, "$setOnInsert": {"seats": {"status": "unknown"}}}
     if unset:
         update["$unset"] = unset
-    return UpdateOne({"_id": sid}, update, upsert=True)
+    return sid, UpdateOne({"_id": sid}, update, upsert=True)
 
 
 def _alias_ops(db: DB, matches: dict[str, MatchResult], now: datetime) -> list[UpdateOne]:
@@ -280,11 +282,12 @@ def upsert_cinema(
             )
         stored[key] = upsert_movie(db, movie, match, now)
 
-    ops = [
+    built = [
         showtime_update(cinema, stored[s.title_key], s, now)
         for s in showtimes
         if s.title_key in stored
     ]
+    ops = [op for _, op in built]
     repo.bulk_upsert(db, repo.SHOWTIMES, ops)
 
     latest: dict[Any, datetime] = {}
@@ -296,4 +299,9 @@ def upsert_cinema(
 
     alias_ops = _alias_ops(db, matches, now)
     repo.bulk_upsert(db, repo.ALIASES, alias_ops)
-    return UpsertCounts(movies=len(stored), showtimes=len(ops), aliases=len(alias_ops))
+    return UpsertCounts(
+        movies=len(stored),
+        showtimes=len(ops),
+        aliases=len(alias_ops),
+        showtime_ids=frozenset(sid for sid, _ in built),
+    )

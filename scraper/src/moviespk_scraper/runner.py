@@ -6,8 +6,8 @@
 * a cinema's error becomes its run status through :func:`run_status_for`; one cinema's
   failure never stops the others.
 
-Pipeline steps 5-8 (upsert, images, reconcile, health, alerts) are added by P1-10 …
-P1-13; until then the ``full`` job fetches, parses, normalizes, validates and matches.
+Steps not yet built: images (P1-23), health and alerts (P1-12/P1-13). A dry run (no
+database) stops after matching; a writing run also upserts and reconciles.
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ from .core.config import CinemaConfig
 from .core.errors import run_status_for
 from .core.http import ScraperHttpClient
 from .core.logging import get_logger
+from .db import repositories as repo
 from .db.client import DB
 from .models.vocab import Job, RunStatus
 from .pipeline.match import Matcher, MatchResult
@@ -36,6 +37,7 @@ from .pipeline.normalize import (
     normalize_movie,
     normalize_showtime,
 )
+from .pipeline.reconcile import MEDIAN_RUNS, guard_reason, reconcile
 from .pipeline.upsert import upsert_cinema
 from .pipeline.validate import validate
 
@@ -54,6 +56,7 @@ class CinemaResult:
     invalid: int = 0
     matches: dict[str, MatchResult] = field(default_factory=dict)  # by title key
     upserted: int = 0
+    cancelled: int = 0
     error: str | None = None
     duration_s: float = 0.0
 
@@ -137,18 +140,39 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
             + ", ".join(f"{k} x{v}" for k, v in checked.reasons.most_common(3))
         )
         return result
+    history = (
+        repo.recent_ok_showtime_counts(services.db, cinema.id, MEDIAN_RUNS)
+        if services.db is not None
+        else []
+    )
+    reason = guard_reason(len(checked.showtimes), history)
+    if reason is not None:  # zero-result / median guard: nothing is written (§8.4)
+        result.status = "failed"
+        result.error = reason
+        return result
     result.matches = _match_all(services, cinema, checked.movies, checked.showtimes)
     if services.db is not None:
         counts = upsert_cinema(
             services.db, cinema, checked.movies, checked.showtimes, result.matches, ctx.now
         )
         result.upserted = counts.showtimes
+        # Reconcile only an ok run, and only up to the latest show this run saw.
+        rec = reconcile(
+            services.db,
+            cinema.id,
+            counts.showtime_ids,
+            now=ctx.now,
+            until=max(s.starts_at for s in checked.showtimes),
+        )
+        result.cancelled = rec.cancelled
         ctx.log.info(
             "upsert.done",
             phase="upsert",
             movies=counts.movies,
             showtimes=counts.showtimes,
             aliases=counts.aliases,
+            missed=rec.missed,
+            cancelled=rec.cancelled,
         )
     return result
 
