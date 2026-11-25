@@ -1263,7 +1263,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: invalid rows counted; a 21% invalid fixture fails the cinema; HTML in a synopsis is stripped; lengths are capped.
   - Tests: scraper unit.
 
-- [ ] **P1-09 — TMDB client and matcher** · Must · 2.0 d (re-estimated, unchanged) · deps: P1-07, P0-04
+- [x] **P1-09 — TMDB client and matcher** · Must · 2.0 d (re-estimated, unchanged) · deps: P1-07, P0-04
   - Details: `services/tmdb.py` (httpx; key from env; **at most 5 req/s** shared by API calls and image downloads; exponential backoff on 429 and retries on 5xx; timeout 10 s; `/configuration` read weekly) and `pipeline/match.py` per §10.4. Load YAML manual aliases before DB aliases. Pass `poster_path` to the image step (P1-23); it is not stored. Maintain `tmdbRefreshedAt`.
   - Accept: with mocked TMDB: score ≥90 → matched with a poster path handed to the image step; 75 → provisional, alias pending; no results → unmatched; alias hit → zero TMDB calls; TMDB 503 → provisional with no crash; one search per unique title per run; request spacing ≥ 200 ms.
   - Tests: scraper unit.

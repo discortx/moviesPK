@@ -12,6 +12,7 @@ import argparse
 import os
 import sys
 import time
+from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
 from typing import TextIO
@@ -22,8 +23,10 @@ from .core.config import CONFIG_DIR, ConfigError, load_config
 from .core.http import ScraperHttpClient
 from .core.logging import configure_logging
 from .core.offline import FixtureTransport, captured_at
+from .pipeline.match import Alias, AliasTable, Matcher
 from .pipeline.normalize import NormalizedShowtime
-from .runner import CinemaResult, RunReport, run_job
+from .runner import CinemaResult, RunReport, Services, run_job
+from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
 IMPLEMENTED_JOBS = ("full",)
@@ -85,6 +88,15 @@ def print_report(report: RunReport, out: TextIO) -> None:
         )
         if r.error:
             out.write(f"  error: {r.error}\n")
+        if r.matches:
+            counts = Counter(m.status for m in r.matches.values())
+            out.write(
+                f"  matches: {counts['matched']} matched, {counts['provisional']} provisional, "
+                f"{counts['unmatched']} unmatched\n"
+            )
+            review = sorted(k for k, m in r.matches.items() if m.status != "matched")
+            if review:
+                out.write(f"  to review: {', '.join(review)}\n")
         for s in _samples(r):
             local = s.starts_at.astimezone(PKT).strftime("%Y-%m-%d %H:%M")
             hall = f" · {s.hall}" if s.hall else ""
@@ -142,15 +154,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _error("set SCRAPER_USER_AGENT (MoviesPKBot/1.0 (+<repo URL>; <contact email>))")
 
     configure_logging(os.environ.get("LOG_LEVEL", "INFO"), stream=sys.stderr)
-    with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
-        report = run_job(
-            http,
-            args.job,
-            cinemas,
-            dry_run=args.dry_run,
-            clock=time.monotonic,
-            debug_dir=args.debug_dir,
-            now=now,
-        )
+    tmdb_key = os.environ.get("TMDB_API_KEY", "").strip()
+    # Offline runs never reach the network, TMDB included; aliases still apply.
+    tmdb = TmdbClient(tmdb_key) if tmdb_key and args.offline is None else None
+    aliases = AliasTable(manual=[Alias.from_config(a) for a in config.aliases])
+    services = Services(matcher=Matcher(tmdb, aliases))
+    try:
+        with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
+            report = run_job(
+                http,
+                args.job,
+                cinemas,
+                dry_run=args.dry_run,
+                clock=time.monotonic,
+                debug_dir=args.debug_dir,
+                now=now,
+                services=services,
+            )
+    finally:
+        if tmdb is not None:
+            tmdb.close()
+    if tmdb is None:
+        reason = "offline run" if args.offline is not None else "TMDB_API_KEY not set"
+        print(f"note: TMDB matching skipped ({reason}); only aliases were applied")
     print_report(report, sys.stdout)
     return report.exit_code
