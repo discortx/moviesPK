@@ -1159,7 +1159,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: two runs on unchanged pages give the same hashes; a sample robots.txt yields the expected per-path verdicts.
   - Tests: scraper unit.
 
-- [ ] **P0-08 — Cinema investigation and final list** · Must · **1.5 d (re-estimated from 3.0 d)** · deps: P0-07
+- [x] **P0-08 — Cinema investigation and final list** · Must · **1.5 d (re-estimated from 3.0 d)** · deps: P0-07
   - Scope reduced: `docs/cinema-viability-audit.md` (2026-11-23) already evaluated 29 venues. It found **21 VERIFIED VIABLE** venues on 3 adapters (A Cinepax JSON, B Vista HTML, C Arena/CineGold), with the data source, robots status, terms note, showtime window and recommended first five.
   - Details:
     - Convert the audit into one `docs/cinema-investigation/<chain>.md` per adapter group (A, B, C, plus D/E only if conditional venues are pursued), using the template below.
@@ -1184,7 +1184,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: every venue to be enabled has both verdicts, evidence and coordinates; the first adapter is named.
   - Tests: config validation passes once P1-03 exists (re-run then).
 
-- [ ] **P0-09 — GitHub runner reachability probe** · Must · 0.5 d · deps: P0-07, P0-08
+- [x] **P0-09 — GitHub runner reachability probe** · Must · 0.5 d · deps: P0-07, P0-08
   - Details: a temporary `probe-reachability.yml` (`workflow_dispatch` only, scratch branch, no secrets) that, for each Allowed candidate, checks robots.txt and then makes one GET to its main endpoint with the real User-Agent. Records status, challenge page yes/no and the date in each investigation doc. Delete the workflow afterwards.
   - Accept: every Allowed candidate has a reachability result; the reachable count is in the README.
   - Tests: the run is the evidence.
@@ -1366,9 +1366,12 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
 
   | Row | Cinema / chain (branches) | Source | Effort | Robots verdict | Seats allowed | Est. d | Status |
   |---|---|---|---|---|---|---|---|
-  | A01 | first cinema (P1-06) | | | | | 0 | done in P1 |
-  | A02–A09 | *fill from P0-08* | | | | | 8 × 2 | not started |
-  | | **Σ (placeholder)** | | | | | **16.0** | |
+  | A01 | Cinepax Packages Mall (`0000000014`), first cinema (P1-06) | json (adapter A) | S | Allowed (robots 404) | candidate (`seatsAvailable`, §10.6) | 0 | done in P1 |
+  | A02 | Cinepax World Trade Center (`0000000011`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | not started |
+  | A03 | Cinepax Ocean Mall (`0000000002`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | not started |
+  | A04 | Universal Cinemas Emporium Mall (`8888`), new Vista adapter B | html (B) | M | Allowed (robots soft 404) | no | 2.0 | not started |
+  | A05 | CineStar Township (`0005`), branch of B (other operator) | html (B) | S | Allowed (robots soft 404) | no | 0.5 | not started |
+  | | **Σ (from P0-08, 2026-11-25)** | | | | | **3.5** | |
 
   Replace the placeholder with the real sum at G0 and update §16. A branch of an existing chain is usually 0.5 d.
 
