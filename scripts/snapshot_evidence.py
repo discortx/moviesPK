@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 import time
 from datetime import UTC, datetime
@@ -34,6 +35,7 @@ from moviespk_scraper.core.robots import RobotsPolicy, normalized_text_sha256, r
 ROOT = Path(__file__).resolve().parents[1]
 CINEMAS_YML = ROOT / "scraper" / "config" / "cinemas.yml"
 MIN_DELAY_S = 1.5
+SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
 TIMEOUT = httpx.Timeout(30.0, connect=10.0)
 
 
@@ -97,10 +99,20 @@ def main(argv: list[str] | None = None) -> int:
     if not args.user_agent:
         print("error: set SCRAPER_USER_AGENT or pass --user-agent", file=sys.stderr)
         return 2
+    if not SLUG.fullmatch(args.cinema):
+        print(
+            f"error: cinema id {args.cinema!r} must be a slug: lowercase letters, digits and "
+            "single hyphens (e.g. cinepax-world-trade-center)",
+            file=sys.stderr,
+        )
+        return 2
     base_url = args.base_url or _base_url_from_config(args.cinema)
     if not base_url or urlsplit(base_url).scheme not in ("http", "https"):
         print("error: --base-url is required (cinema not found in cinemas.yml)", file=sys.stderr)
         return 2
+    # A relative --terms-url (e.g. /terms) is resolved against the base URL.
+    if args.terms_url:
+        args.terms_url = urljoin(base_url, args.terms_url)
 
     headers = {"User-Agent": args.user_agent}
     with httpx.Client(headers=headers, timeout=TIMEOUT, follow_redirects=True) as client:
