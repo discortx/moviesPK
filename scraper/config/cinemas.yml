@@ -1,5 +1,5 @@
-# Cinema list (plan §8.3, P0-08). Draft: every venue stays `enabled: false` until its
-# P0-09 runner probe passes and its adapter exists (P2-01).
+# Cinema list (plan §8.3, P0-08). A venue is enabled once its runner probe passed (P0-09)
+# and its adapter exists (P1-06 / P2-01).
 #
 # - location is [lng, lat], taken from a map by hand (no geocoding).
 # - evidence comes from scripts/snapshot_evidence.py; re-run it whenever the canary reports
@@ -22,7 +22,7 @@
   location: [74.35692149646812, 31.47168923714777]
   min_delay_ms: 1500
   max_concurrency: 1
-  enabled: false
+  enabled: true # first cinema (P1-13); dev database until SCRAPE_ENVIRONMENT=production
   seats_allowed: false # seatsAvailable is in the session JSON; decide under §10.6
   robots_policy: respect
   evidence: &cinepax_evidence
