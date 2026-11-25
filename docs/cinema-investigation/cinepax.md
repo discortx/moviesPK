@@ -9,7 +9,7 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 | Showtime horizon | 2–3 days ahead |
 | Seat data | `seatsAvailable` count per session, inside the same `/api/movies` response (0 extra requests per show). Not enabled yet; decide under plan §10.6. |
 | Branches | Packages Mall `0000000014`, World Trade Center `0000000011`, Ocean Mall `0000000002` (enabled in this draft); 7 more branches listed by `/api/cinemas` |
-| Booking link | `/pages/booking.html?filmCode=<film id>&cinemaId=<branch>` (per film, not per session) |
+| Booking link | `/pages/booking.html?filmCode=<film id>&movie=<title>&cinemaId=<branch>&cinema=<name>` (per film, not per session) |
 | Branch coordinates | See below; taken from a map by hand, `[lng, lat]` |
 | Robots evidence | `/robots.txt` returns HTTP 404 → allow all (RFC 9309). `/api/cinemas` Allowed, `/api/movies` Allowed (2026-11-25) |
 | Terms | `https://web.cinepax.com/api/cms/pages/terms` (sha256 `62dc051d…46a2d56`, 2026-11-25). Ticket sales, patron conduct, Lahore jurisdiction. No clause on automated access, bots or copying found (audit 2026-11-23; owner re-read 2026-11-25: no such clause). |
@@ -33,7 +33,7 @@ Implemented in `scraper/src/moviespk_scraper/adapters/cinepax.py` (P1-06, 2026-1
 - **Late shows:** Cinepax files a show after midnight under the previous `businessDate` with `lateNight: true`. The start is `calendarDate` + the clock time of `showtime` (PKT → UTC in the normalizer). Fixture case: Ocean Mall, *Resident Evil*, 00:15 listed under 27 Nov → starts 2026-11-28 00:15 PKT. A `showtime` whose date disagrees with `calendarDate` is treated as drift.
 - **Fields used:** film `id` (local key), `title`, `duration`, `genre`, `rating`, `description`, `releaseDate`; session `sessionId`, `showtime`, `calendarDate`, `screenName`, screen `type` (format), `seatsAvailable`. Posters, backdrops and cast are ignored (cinema artwork is never mirrored).
 - **Drift:** a non-200 answer, non-JSON, a non-list, a film or session missing a required key, or a film from another branch → `SchemaDriftError`; the cleaned payload is saved to `debug/`.
-- **Booking link:** per film and branch, not per session: `https://web.cinepax.com/pages/booking.html?filmCode={filmId}&cinemaId={branch}` (owner-observed 2026-11-25; the site's own link also carries `movie`, `cinema`, `poster` and `rating` display parameters, which are left out).
+- **Booking link:** per film and branch, not per session: `https://web.cinepax.com/pages/booking.html?filmCode={filmId}&movie={movieTitle}&cinemaId={branch}&cinema={cinemaName}` (owner-checked 2026-11-25). Without `cinema` the page shows the cinema name the visitor last browsed (it showed "AMANAH MALL" for a Packages Mall link), so `movie` and `cinema` are included, URL-encoded; `poster` and `rating` are left out.
 
 ## Runner reachability (P0-09)
 

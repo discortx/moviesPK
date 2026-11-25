@@ -6,8 +6,8 @@
 * a cinema's error becomes its run status through :func:`run_status_for`; one cinema's
   failure never stops the others.
 
-Pipeline steps 3-8 (validate, match, upsert, images, reconcile, health, alerts) are added
-by P1-08 … P1-13; until then the ``full`` job fetches, parses and normalizes.
+Pipeline steps 4-8 (match, upsert, images, reconcile, health, alerts) are added by
+P1-09 … P1-13; until then the ``full`` job fetches, parses, normalizes and validates.
 """
 
 from __future__ import annotations
@@ -34,6 +34,7 @@ from .pipeline.normalize import (
     normalize_movie,
     normalize_showtime,
 )
+from .pipeline.validate import validate
 
 MAX_PARALLEL_CINEMAS = 3
 SHOWTIME_DAYS = 7
@@ -47,6 +48,7 @@ class CinemaResult:
     showtimes: list[RawShowtime] = field(default_factory=list)
     normalized_movies: list[NormalizedMovie] = field(default_factory=list)
     normalized_showtimes: list[NormalizedShowtime] = field(default_factory=list)
+    invalid: int = 0
     error: str | None = None
     duration_s: float = 0.0
 
@@ -72,14 +74,29 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig) -> CinemaResult:
     adapter = registry.get_adapter(cinema.adapter)
     movies = adapter.list_movies(ctx, cinema)
     showtimes = adapter.list_showtimes(ctx, cinema, days=SHOWTIME_DAYS)
-    return CinemaResult(
+    checked = validate(
+        [normalize_movie(m, ctx.log) for m in movies],
+        [normalize_showtime(s, ctx.log) for s in showtimes],
+        now=ctx.now,
+        log=ctx.log,
+    )
+    result = CinemaResult(
         cinema.id,
         "ok",
         movies=movies,
         showtimes=showtimes,
-        normalized_movies=[normalize_movie(m, ctx.log) for m in movies],
-        normalized_showtimes=[normalize_showtime(s, ctx.log) for s in showtimes],
+        normalized_movies=checked.movies,
+        normalized_showtimes=checked.showtimes,
+        invalid=checked.invalid,
     )
+    if checked.failed:
+        result.status = "failed"
+        result.error = (
+            f"{checked.invalid} of {checked.total} showtimes invalid "
+            f"({checked.invalid_rate:.0%} > {checked.max_invalid_rate:.0%}): "
+            + ", ".join(f"{k} x{v}" for k, v in checked.reasons.most_common(3))
+        )
+    return result
 
 
 JOB_STEPS: dict[Job, Callable[[RunContext, CinemaConfig], CinemaResult]] = {"full": _run_full}

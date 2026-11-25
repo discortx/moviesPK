@@ -113,7 +113,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110453",
       "seats_available": 93,
       "seats_total": null
@@ -125,7 +125,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003184&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003184&movie=Hope+%28Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110462",
       "seats_available": 48,
       "seats_total": null
@@ -137,7 +137,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&movie=Godzilla+Minus+Zero+%28Japanes+With+Eng+Subtitles%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110458",
       "seats_available": 107,
       "seats_total": null
@@ -149,7 +149,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110454",
       "seats_available": 89,
       "seats_total": null
@@ -161,7 +161,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110583",
       "seats_available": 48,
       "seats_total": null
@@ -173,7 +173,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003214&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003214&movie=Chakkven+%28Punjabi%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110459",
       "seats_available": 107,
       "seats_total": null
@@ -185,7 +185,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&movie=Godzilla+Minus+Zero+%28Japanes+With+Eng+Subtitles%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110455",
       "seats_available": 93,
       "seats_total": null
@@ -197,7 +197,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110584",
       "seats_available": 48,
       "seats_total": null
@@ -209,7 +209,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003144&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003144&movie=Singh+vs+Kaur+2+%28Punjabi%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110460",
       "seats_available": 107,
       "seats_total": null
@@ -221,7 +221,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110587",
       "seats_available": 93,
       "seats_total": null
@@ -233,7 +233,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003205&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003205&movie=Ebenezer&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110585",
       "seats_available": 48,
       "seats_total": null
@@ -245,7 +245,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110588",
       "seats_available": 88,
       "seats_total": null
@@ -257,7 +257,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110461",
       "seats_available": 101,
       "seats_total": null
@@ -269,7 +269,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110586",
       "seats_available": 48,
       "seats_total": null
@@ -281,7 +281,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&movie=Carry+On+Jatta+4&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110582",
       "seats_available": 107,
       "seats_total": null
@@ -293,7 +293,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110477",
       "seats_available": 93,
       "seats_total": null
@@ -305,7 +305,7 @@
       "hall": "Screen 4",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110478",
       "seats_available": 90,
       "seats_total": null
@@ -317,7 +317,7 @@
       "hall": "Platinum 2",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110500",
       "seats_available": 46,
       "seats_total": null
@@ -329,7 +329,7 @@
       "hall": "Screen 5",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&cinemaId=0000000014",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&movie=Carry+On+Jatta+4&cinemaId=0000000014&cinema=CINEPAX+PACKAGES+MALL",
       "external_id": "110589",
       "seats_available": 107,
       "seats_total": null
