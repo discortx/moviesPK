@@ -26,7 +26,7 @@ __pycache__/
 htmlcov/
 
 # Scraper debug output (uploaded as Actions artifacts, never committed)
-scraper/debug/
+debug/
 
 # OS / editor
 .DS_Store

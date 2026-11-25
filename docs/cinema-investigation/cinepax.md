@@ -27,8 +27,13 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 
 ## Adapter notes
 
-- Use the session's **calendar** date and time for `startsAt` (PKT → UTC), not `businessDate`; `lateNight` sessions fall after midnight.
-- One `/api/movies` request per branch per run; `/api/cinemas` once per run.
+Implemented in `scraper/src/moviespk_scraper/adapters/cinepax.py` (P1-06, 2026-11-25):
+
+- **One request per branch per run:** `GET /api/movies?cinemaId=<branch>`; movies and showtimes are both read from it. `/api/cinemas` is not needed.
+- **Late shows:** Cinepax files a show after midnight under the previous `businessDate` with `lateNight: true`. The start is `calendarDate` + the clock time of `showtime` (PKT → UTC in the normalizer). Fixture case: Ocean Mall, *Resident Evil*, 00:15 listed under 27 Nov → starts 2026-11-28 00:15 PKT. A `showtime` whose date disagrees with `calendarDate` is treated as drift.
+- **Fields used:** film `id` (local key), `title`, `duration`, `genre`, `rating`, `description`, `releaseDate`; session `sessionId`, `showtime`, `calendarDate`, `screenName`, screen `type` (format), `seatsAvailable`. Posters, backdrops and cast are ignored (cinema artwork is never mirrored).
+- **Drift:** a non-200 answer, non-JSON, a non-list, a film or session missing a required key, or a film from another branch → `SchemaDriftError`; the cleaned payload is saved to `debug/`.
+- **Booking link:** `booking_url_template` supports `{branch}`, `{sessionId}`, `{filmId}`. The real Cinepax booking URL pattern is still to be confirmed (one click on a showtime); until then no `bookingUrl` is set.
 
 ## Runner reachability (P0-09)
 

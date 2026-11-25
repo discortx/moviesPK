@@ -1248,7 +1248,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: first-cinema fixtures include at least 2 movies and several showtimes (a midnight-crossing show if one exists).
   - Tests: fixture refresh (process).
 
-- [ ] **P1-06 — First adapter** · Must · 2.0 d · deps: P1-03, P1-05
+- [x] **P1-06 — First adapter** · Must · 2.0 d · deps: P1-03, P1-05
   - Details: `adapters/<chain>.py` → `RawMovie`/`RawShowtime`; raise `SchemaDriftError` on missing keys or selectors; build `bookingUrl` from the template; branch parameterization; debug artifact on parse failure (§10.3).
   - Accept: fixture output equals the snapshot; a drift fixture (key removed) raises `SchemaDriftError`; if the site lists after-midnight shows under the previous evening, a fixture case maps such a show to the next PKT calendar date (§10.3 step 2).
   - Tests: adapter fixture.

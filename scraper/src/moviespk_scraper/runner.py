@@ -16,6 +16,7 @@ from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from pathlib import Path
 
 from structlog.typing import FilteringBoundLogger
 
@@ -77,10 +78,11 @@ def run_cinema(
     now: datetime,
     clock: Callable[[], float],
     log: FilteringBoundLogger | None = None,
+    debug_dir: Path | None = None,
 ) -> CinemaResult:
     log = (log or get_logger()).bind(job=job, cinemaId=cinema.id)
     budget = CinemaBudget(cinema.id, clock=clock)
-    ctx = RunContext(http=http, job=job, now=now, log=log, budget=budget)
+    ctx = RunContext(http=http, job=job, now=now, log=log, budget=budget, debug_dir=debug_dir)
     log.info("cinema.start", phase="start")
     try:
         result = JOB_STEPS[job](ctx, cinema)
@@ -109,10 +111,16 @@ def run_job(
     clock: Callable[[], float],
     now: datetime | None = None,
     log: FilteringBoundLogger | None = None,
+    debug_dir: Path | None = None,
 ) -> RunReport:
     started = now or datetime.now(UTC)
     with ThreadPoolExecutor(max_workers=MAX_PARALLEL_CINEMAS) as pool:
         results = list(
-            pool.map(lambda c: run_cinema(http, job, c, now=started, clock=clock, log=log), cinemas)
+            pool.map(
+                lambda c: run_cinema(
+                    http, job, c, now=started, clock=clock, log=log, debug_dir=debug_dir
+                ),
+                cinemas,
+            )
         )
     return RunReport(job=job, dry_run=dry_run, started_at=started, results=results)

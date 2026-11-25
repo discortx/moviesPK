@@ -1,0 +1,519 @@
+{
+  "movies": [
+    {
+      "title": "18+Belkis (Turkish Urdu Dubbed)",
+      "local_key": "F000003188",
+      "original_title": null,
+      "runtime_min": 85,
+      "genres": [
+        "Entertainment"
+      ],
+      "languages": [],
+      "synopsis": "Left homeless after a dark tragedy, three orphaned sisters seek shelter with a mysterious witch named Belkıs, only to bring a malevolent force into her home that threatens them all.",
+      "release_date": "2026-11-20",
+      "rating": "A"
+    },
+    {
+      "title": "18+Clayface (English)",
+      "local_key": "F000003115",
+      "original_title": null,
+      "runtime_min": 108,
+      "genres": [
+        "Entertainment"
+      ],
+      "languages": [],
+      "synopsis": "Rising Hollywood star Matt Hagen descends into a horrifying revenge-filled monster when scientific ambition strips him of his identity and humanity.",
+      "release_date": "2026-10-23",
+      "rating": "A"
+    },
+    {
+      "title": "18+Other Mommy",
+      "local_key": "F000003166",
+      "original_title": null,
+      "runtime_min": 93,
+      "genres": [
+        "Entertainment"
+      ],
+      "languages": [],
+      "synopsis": "Bela, an 8-year-old girl living in a home with marital problems, confronts a sinister entity which comes out of her closet. The presence, whom she calls \"Other Mommy,\" becomes increasingly threatening to her and her family.",
+      "release_date": "2026-10-09",
+      "rating": "A"
+    },
+    {
+      "title": "18+Resident Evil (English)",
+      "local_key": "F000003117",
+      "original_title": null,
+      "runtime_min": 90,
+      "genres": [
+        "Action"
+      ],
+      "languages": [],
+      "synopsis": "Follows a hapless courier tasked with delivering a package to a remote hospital. He soon finds himself caught in the middle of an outbreak and must fight through hordes of mutated creatures to survive.",
+      "release_date": "2026-09-18",
+      "rating": "A"
+    },
+    {
+      "title": "Ghost Soldier",
+      "local_key": "F000003192",
+      "original_title": null,
+      "runtime_min": 90,
+      "genres": [
+        "Action, Thriller"
+      ],
+      "languages": [],
+      "synopsis": "A weapon systems engineer and former Green Beret protects his Wyoming neighbors against a ruthless corporation threatening their rural community.",
+      "release_date": "2026-11-13",
+      "rating": "M"
+    },
+    {
+      "title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "local_key": "F000003213",
+      "original_title": null,
+      "runtime_min": 135,
+      "genres": [
+        "Action"
+      ],
+      "languages": [],
+      "synopsis": "Set in 1949, the Shikishima family confronts a fresh catastrophe two years after surviving their previous ordeal with the legendary monster.",
+      "release_date": "2026-11-20",
+      "rating": "M"
+    },
+    {
+      "title": "Spider-Man: Brand New Day (2D Eng)",
+      "local_key": "F000002892",
+      "original_title": null,
+      "runtime_min": 150,
+      "genres": [
+        "Action, Adventure"
+      ],
+      "languages": [],
+      "synopsis": "A forgotten Peter Parker lives alone as a full-time Spider-Man until mounting pressure triggers a dangerous change and a powerful new enemy emerges.",
+      "release_date": "2026-07-31",
+      "rating": "U"
+    },
+    {
+      "title": "Street Fighter (English)",
+      "local_key": "F000003174",
+      "original_title": null,
+      "runtime_min": 120,
+      "genres": [
+        "Action"
+      ],
+      "languages": [],
+      "synopsis": "Street Fighters Ryu and Ken reunite when Chun-Li recruits them for the World Warrior Tournament. As they face a hidden conspiracy, they must confront each other and their past-or face destruction.",
+      "release_date": "2026-10-16",
+      "rating": "M"
+    },
+    {
+      "title": "The Hunger Games: Sunrise on the Reaping",
+      "local_key": "F000003199",
+      "original_title": null,
+      "runtime_min": 158,
+      "genres": [
+        "Science Fiction, Action, Adventure"
+      ],
+      "languages": [],
+      "synopsis": "Revisit the world of Panem 24 years before the events of The Hunger Games, starting on the morning of the reaping of the 50th Hunger Games, also known as the Second Quarter Quell.",
+      "release_date": "2026-11-20",
+      "rating": "M"
+    }
+  ],
+  "showtimes": [
+    {
+      "movie_title": "18+Clayface (English)",
+      "starts_at": "2026-11-25T23:00:00",
+      "movie_local_key": "F000003115",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88394",
+      "seats_available": 29,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-25T23:15:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88389",
+      "seats_available": 35,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Other Mommy",
+      "starts_at": "2026-11-25T23:30:00",
+      "movie_local_key": "F000003166",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88384",
+      "seats_available": 48,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-26T12:45:00",
+      "movie_local_key": "F000003213",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88396",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Spider-Man: Brand New Day (2D Eng)",
+      "starts_at": "2026-11-26T13:00:00",
+      "movie_local_key": "F000002892",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88405",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-26T13:15:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88400",
+      "seats_available": 47,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T15:00:00",
+      "movie_local_key": "F000003199",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88401",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Resident Evil (English)",
+      "starts_at": "2026-11-26T15:30:00",
+      "movie_local_key": "F000003117",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88397",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Street Fighter (English)",
+      "starts_at": "2026-11-26T15:45:00",
+      "movie_local_key": "F000003174",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88714",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T17:45:00",
+      "movie_local_key": "F000003199",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88398",
+      "seats_available": 46,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-26T18:00:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88402",
+      "seats_available": 45,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Ghost Soldier",
+      "starts_at": "2026-11-26T18:15:00",
+      "movie_local_key": "F000003192",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88407",
+      "seats_available": 34,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T20:00:00",
+      "movie_local_key": "F000003199",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88403",
+      "seats_available": 46,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-26T20:15:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88408",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-27T16:00:00",
+      "movie_local_key": "F000003199",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88432",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Clayface (English)",
+      "starts_at": "2026-11-27T19:15:00",
+      "movie_local_key": "F000003115",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88540",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-27T21:15:00",
+      "movie_local_key": "F000003199",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88427",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-27T22:30:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88430",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-27T23:45:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88431",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Resident Evil (English)",
+      "starts_at": "2026-11-28T00:15:00",
+      "movie_local_key": "F000003117",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88428",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-28T13:00:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88544",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-28T17:30:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88440",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-28T20:30:00",
+      "movie_local_key": "F000003199",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88438",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-28T22:00:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88442",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-28T23:30:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88446",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Resident Evil (English)",
+      "starts_at": "2026-11-28T23:45:00",
+      "movie_local_key": "F000003117",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88453",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-30T12:45:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88569",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-30T13:00:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88565",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-30T15:30:00",
+      "movie_local_key": "F000003199",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88570",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-30T17:00:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88575",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-30T21:30:00",
+      "movie_local_key": "F000003188",
+      "hall": "GOLD-2",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88567",
+      "seats_available": 49,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-30T22:45:00",
+      "movie_local_key": "F000003213",
+      "hall": "PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88573",
+      "seats_available": 36,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Resident Evil (English)",
+      "starts_at": "2026-11-30T23:15:00",
+      "movie_local_key": "F000003117",
+      "hall": "GOLD-1",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "88564",
+      "seats_available": 49,
+      "seats_total": null
+    }
+  ]
+}

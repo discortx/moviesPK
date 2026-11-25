@@ -8,8 +8,10 @@ themselves with :func:`register`.
 
 from __future__ import annotations
 
+import importlib
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import cast
 
 from .base import CinemaAdapter, FetchMode
 
@@ -35,9 +37,19 @@ class AdapterNotImplementedError(RuntimeError):
     pass
 
 
+def _lazy(module: str, cls: str) -> AdapterFactory:
+    """Import the adapter only when it is needed (keeps the registry free of cycles)."""
+
+    def factory() -> CinemaAdapter:
+        adapter_cls = getattr(importlib.import_module(module, __package__), cls)
+        return cast(CinemaAdapter, adapter_cls())
+
+    return factory
+
+
 _ADAPTERS: dict[str, AdapterSpec] = {
     # Group A: Cinepax public JSON (docs/cinema-investigation/cinepax.md). P1-06.
-    "cinepax": AdapterSpec("cinepax", "json"),
+    "cinepax": AdapterSpec("cinepax", "json", _lazy(".cinepax", "CinepaxAdapter")),
     # Group B: Vista HTML: Universal, CineStar (docs/cinema-investigation/vista.md). P2-01.
     "vista": AdapterSpec("vista", "html"),
 }

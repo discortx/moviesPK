@@ -13,6 +13,7 @@ import pytest
 
 from moviespk_scraper.core.http import ScraperHttpClient
 from moviespk_scraper.core.offline import MANIFEST, FixtureTransport
+from moviespk_scraper.core.redact import clean_body
 
 ROOT = Path(__file__).resolve().parents[3]
 FIXTURES = ROOT / "scraper" / "tests" / "fixtures"
@@ -42,7 +43,7 @@ def test_json_secrets_are_redacted_but_ids_survive() -> None:
         "auth": "z",
         "tokenCount": 3,  # not a string: left alone
     }
-    body, ext = cap.clean_body("application/json", json.dumps(data).encode())
+    body, ext = clean_body("application/json", json.dumps(data).encode())
     out = json.loads(body)
     assert ext == ".json"
     assert out["sessionId"] == "110453" and out["cinemaId"] == "0000000014"
@@ -57,7 +58,7 @@ def test_hidden_form_tokens_are_redacted() -> None:
         '<input type="hidden" name="__VIEWSTATE" value="dGVzdA==">'
         '<input name="cinemaId" value="8888"></form>'
     )
-    body, ext = cap.clean_body("text/html; charset=utf-8", html.encode())
+    body, ext = clean_body("text/html; charset=utf-8", html.encode())
     text = body.decode()
     assert ext == ".html"
     assert "secret123" not in text and "dGVzdA==" not in text

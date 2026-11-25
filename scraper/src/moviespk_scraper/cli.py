@@ -58,6 +58,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="ignore the unchanged-poster shortcut (manual recovery only)",
     )
+    run.add_argument(
+        "--debug-dir",
+        type=Path,
+        default=Path("debug"),
+        help="where raw payloads are kept when parsing fails (uploaded as an artifact)",
+    )
     run.add_argument("--config-dir", type=Path, default=CONFIG_DIR, help=argparse.SUPPRESS)
     return parser
 
@@ -135,6 +141,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     configure_logging(os.environ.get("LOG_LEVEL", "INFO"), stream=sys.stderr)
     with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
-        report = run_job(http, args.job, cinemas, dry_run=args.dry_run, clock=time.monotonic)
+        report = run_job(
+            http,
+            args.job,
+            cinemas,
+            dry_run=args.dry_run,
+            clock=time.monotonic,
+            debug_dir=args.debug_dir,
+        )
     print_report(report, sys.stdout)
     return report.exit_code
