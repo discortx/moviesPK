@@ -1,0 +1,276 @@
+[
+  {
+    "id": "0000000012",
+    "name": "CINEPAX AMANAH MALL",
+    "location": "AMANAH MALL",
+    "phone": "04235131682",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "12",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/5874036/5874036-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000010",
+    "name": "CINEPAX BOULEVARD MALL",
+    "location": "BOULEVARD MALL, HYDERABAD",
+    "phone": "+923453011616",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "0010",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000004",
+    "name": "CINEPAX HOTELONE",
+    "location": "HOTELONE 99/C, PEOPLES COLONY, FAISALABAD.",
+    "phone": "+923349246372",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "0005",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/2795690/2795690-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": [
+      {
+        "screen": "Screen_1",
+        "flipRows": true,
+        "flipSeats": false
+      }
+    ]
+  },
+  {
+    "id": "0000000003",
+    "name": "CINEPAX JINNAH PARK",
+    "location": "JINNAH PARK, KECHARI ROAD",
+    "phone": "051-8467156",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "0003",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/2795690/2795690-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000006",
+    "name": "CINEPAX KINGS MALL",
+    "location": "KINGS MALL, PUNJAB,PAKISTAN.",
+    "phone": "0321-9246372",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": false,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": [
+      {
+        "screen": "Silver-1",
+        "flipRows": true,
+        "flipSeats": false
+      },
+      {
+        "screen": "Platinum",
+        "flipRows": true,
+        "flipSeats": false
+      },
+      {
+        "screen": "Silver-2",
+        "flipRows": true,
+        "flipSeats": false
+      }
+    ]
+  },
+  {
+    "id": "0000000013",
+    "name": "CINEPAX MALL OF SIALKOT",
+    "location": "MALL OF SIALKOT",
+    "phone": "+9252-4298022",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/2795690/2795690-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000009",
+    "name": "CINEPAX NAYYAR MALL",
+    "location": "NAYYAR MALL, G.T ROAD, INDUSTRIES, GUJRAT.",
+    "phone": "+923332463725",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "0009",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/5874036/5874036-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000002",
+    "name": "CINEPAX OCEAN MALL",
+    "location": "4TH FLOOR, OCEAN TOWER,, PAKISTAN",
+    "phone": "021-35140898",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "0002",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000014",
+    "name": "CINEPAX PACKAGES MALL",
+    "location": "Walton Road, , Lahore, Punjab",
+    "phone": "0423-2325976 |+92302-6265019",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/2795690/2795690-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  },
+  {
+    "id": "0000000011",
+    "name": "CINEPAX WORLD TRADE CENTER",
+    "location": "WORLD TRADE CENTRE - GIGA MALL, ISLAMABAD.",
+    "phone": "0512725546",
+    "email": "",
+    "currency": "PKR",
+    "hopk": "11",
+    "features": [],
+    "image": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80",
+    "latitude": null,
+    "longitude": null,
+    "mapEmbedUrl": null,
+    "whatsapp": null,
+    "videoUrl": "https://videos.pexels.com/video-files/5874036/5874036-hd_1920_1080_25fps.mp4",
+    "parking": "",
+    "easyAccess": "",
+    "gallery": [
+      "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "description": "",
+    "seatMapFlipRows": true,
+    "seatMapFlipSeats": false,
+    "seatMapScreenFlips": []
+  }
+]

@@ -1,0 +1,803 @@
+[
+  {
+    "id": "F000003188",
+    "filmCode": "F000003188",
+    "scheduledFilmId": "HO00002514",
+    "title": "18+Belkis (Turkish Urdu Dubbed)",
+    "genre": "Entertainment",
+    "cast": "",
+    "duration": "85 min",
+    "rating": "A",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002514",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002514",
+    "screens": {
+      "GOLD-2": {
+        "times": [
+          "1:00 PM",
+          "1:15 PM",
+          "5:00 PM",
+          "5:30 PM",
+          "6:00 PM",
+          "9:30 PM",
+          "10:00 PM",
+          "10:30 PM",
+          "11:15 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88389",
+            "showtime": "2026-11-25T23:15:00",
+            "displayTime": "11:15 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 35,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-25",
+            "calendarDate": "2026-11-25",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88400",
+            "showtime": "2026-11-26T13:15:00",
+            "displayTime": "1:15 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 47,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88402",
+            "showtime": "2026-11-26T18:00:00",
+            "displayTime": "6:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 45,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88430",
+            "showtime": "2026-11-27T22:30:00",
+            "displayTime": "10:30 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88440",
+            "showtime": "2026-11-28T17:30:00",
+            "displayTime": "5:30 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88442",
+            "showtime": "2026-11-28T22:00:00",
+            "displayTime": "10:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88565",
+            "showtime": "2026-11-30T13:00:00",
+            "displayTime": "1:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88575",
+            "showtime": "2026-11-30T17:00:00",
+            "displayTime": "5:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88567",
+            "showtime": "2026-11-30T21:30:00",
+            "displayTime": "9:30 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Left homeless after a dark tragedy, three orphaned sisters seek shelter with a mysterious witch named Belkıs, only to bring a malevolent force into her home that threatens them all.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003115",
+    "filmCode": "F000003115",
+    "scheduledFilmId": "HO00002449",
+    "title": "18+Clayface (English)",
+    "genre": "Entertainment",
+    "cast": "",
+    "duration": "108 min",
+    "rating": "A",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002449",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002449",
+    "screens": {
+      "PLATINUM": {
+        "times": [
+          "7:15 PM",
+          "11:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88394",
+            "showtime": "2026-11-25T23:00:00",
+            "displayTime": "11:00 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 29,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-25",
+            "calendarDate": "2026-11-25",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88540",
+            "showtime": "2026-11-27T19:15:00",
+            "displayTime": "7:15 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Rising Hollywood star Matt Hagen descends into a horrifying revenge-filled monster when scientific ambition strips him of his identity and humanity.",
+    "releaseDate": "2026-10-23",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003166",
+    "filmCode": "F000003166",
+    "scheduledFilmId": "HO00002495",
+    "title": "18+Other Mommy",
+    "genre": "Entertainment",
+    "cast": "",
+    "duration": "93 min",
+    "rating": "A",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002495",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002495",
+    "screens": {
+      "GOLD-1": {
+        "times": [
+          "11:30 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88384",
+            "showtime": "2026-11-25T23:30:00",
+            "displayTime": "11:30 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 48,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-25",
+            "calendarDate": "2026-11-25",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Bela, an 8-year-old girl living in a home with marital problems, confronts a sinister entity which comes out of her closet. The presence, whom she calls \"Other Mommy,\" becomes increasingly threatening to her and her family.",
+    "releaseDate": "2026-10-09",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003117",
+    "filmCode": "F000003117",
+    "scheduledFilmId": "HO00002450",
+    "title": "18+Resident Evil (English)",
+    "genre": "Action",
+    "cast": "",
+    "duration": "90 min",
+    "rating": "A",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002450",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002450",
+    "screens": {
+      "GOLD-1": {
+        "times": [
+          "12:15 AM",
+          "3:30 PM",
+          "11:15 PM",
+          "11:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88397",
+            "showtime": "2026-11-26T15:30:00",
+            "displayTime": "3:30 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88428",
+            "showtime": "2026-11-28T00:15:00",
+            "displayTime": "12:15 AM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-28",
+            "lateNight": true
+          },
+          {
+            "sessionId": "88453",
+            "showtime": "2026-11-28T23:45:00",
+            "displayTime": "11:45 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88564",
+            "showtime": "2026-11-30T23:15:00",
+            "displayTime": "11:15 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Follows a hapless courier tasked with delivering a package to a remote hospital. He soon finds himself caught in the middle of an outbreak and must fight through hordes of mutated creatures to survive.",
+    "releaseDate": "2026-09-18",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003192",
+    "filmCode": "F000003192",
+    "scheduledFilmId": "HO00002518",
+    "title": "Ghost Soldier",
+    "genre": "Action, Thriller",
+    "cast": "Jim Caviezel, Cameron Gayden, Olivia Thirlby, Shea Whigham, Beau Knapp",
+    "duration": "90 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002518",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002518",
+    "screens": {
+      "PLATINUM": {
+        "times": [
+          "6:15 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88407",
+            "showtime": "2026-11-26T18:15:00",
+            "displayTime": "6:15 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 34,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "A weapon systems engineer and former Green Beret protects his Wyoming neighbors against a ruthless corporation threatening their rural community.",
+    "releaseDate": "2026-11-13",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": false,
+    "allowTicketSales": true,
+    "voteAverage": 9,
+    "trailerUrl": "https://www.youtube.com/watch?v=UKaWzMf9Ybc"
+  },
+  {
+    "id": "F000003213",
+    "filmCode": "F000003213",
+    "scheduledFilmId": "HO00002539",
+    "title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+    "genre": "Action",
+    "cast": "",
+    "duration": "135 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002539",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002539",
+    "screens": {
+      "GOLD-1": {
+        "times": [
+          "12:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88396",
+            "showtime": "2026-11-26T12:45:00",
+            "displayTime": "12:45 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      },
+      "PLATINUM": {
+        "times": [
+          "12:45 PM",
+          "1:00 PM",
+          "8:15 PM",
+          "10:45 PM",
+          "11:30 PM",
+          "11:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88408",
+            "showtime": "2026-11-26T20:15:00",
+            "displayTime": "8:15 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88431",
+            "showtime": "2026-11-27T23:45:00",
+            "displayTime": "11:45 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88544",
+            "showtime": "2026-11-28T13:00:00",
+            "displayTime": "1:00 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88446",
+            "showtime": "2026-11-28T23:30:00",
+            "displayTime": "11:30 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88569",
+            "showtime": "2026-11-30T12:45:00",
+            "displayTime": "12:45 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88573",
+            "showtime": "2026-11-30T22:45:00",
+            "displayTime": "10:45 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Set in 1949, the Shikishima family confronts a fresh catastrophe two years after surviving their previous ordeal with the legendary monster.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000002892",
+    "filmCode": "F000002892",
+    "scheduledFilmId": "HO00002257",
+    "title": "Spider-Man: Brand New Day (2D Eng)",
+    "genre": "Action, Adventure",
+    "cast": "",
+    "duration": "150 min",
+    "rating": "U",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002257",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002257",
+    "screens": {
+      "PLATINUM": {
+        "times": [
+          "1:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88405",
+            "showtime": "2026-11-26T13:00:00",
+            "displayTime": "1:00 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "A forgotten Peter Parker lives alone as a full-time Spider-Man until mounting pressure triggers a dangerous change and a powerful new enemy emerges.",
+    "releaseDate": "2026-07-31",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": false,
+    "allowTicketSales": true,
+    "forceComingSoon": false,
+    "forceAdvanceBooking": false
+  },
+  {
+    "id": "F000003174",
+    "filmCode": "F000003174",
+    "scheduledFilmId": "HO00002502",
+    "title": "Street Fighter (English)",
+    "genre": "Action",
+    "cast": "",
+    "duration": "120 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002502",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002502",
+    "screens": {
+      "PLATINUM": {
+        "times": [
+          "3:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88714",
+            "showtime": "2026-11-26T15:45:00",
+            "displayTime": "3:45 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Street Fighters Ryu and Ken reunite when Chun-Li recruits them for the World Warrior Tournament. As they face a hidden conspiracy, they must confront each other and their past-or face destruction.",
+    "releaseDate": "2026-10-16",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": false,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003199",
+    "filmCode": "F000003199",
+    "scheduledFilmId": "HO00002525",
+    "title": "The Hunger Games: Sunrise on the Reaping",
+    "genre": "Science Fiction, Action, Adventure",
+    "cast": "Joseph Zada, Jesse Plemons, Ralph Fiennes, Glenn Close, Mckenna Grace",
+    "duration": "158 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002525",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002525",
+    "screens": {
+      "GOLD-1": {
+        "times": [
+          "5:45 PM",
+          "8:30 PM",
+          "9:15 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88398",
+            "showtime": "2026-11-26T17:45:00",
+            "displayTime": "5:45 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 46,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88427",
+            "showtime": "2026-11-27T21:15:00",
+            "displayTime": "9:15 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88438",
+            "showtime": "2026-11-28T20:30:00",
+            "displayTime": "8:30 PM",
+            "screenName": "GOLD-1",
+            "screenNumber": 2,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          }
+        ]
+      },
+      "GOLD-2": {
+        "times": [
+          "3:00 PM",
+          "8:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88401",
+            "showtime": "2026-11-26T15:00:00",
+            "displayTime": "3:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 49,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88403",
+            "showtime": "2026-11-26T20:00:00",
+            "displayTime": "8:00 PM",
+            "screenName": "GOLD-2",
+            "screenNumber": 3,
+            "seatsAvailable": 46,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      },
+      "PLATINUM": {
+        "times": [
+          "3:30 PM",
+          "4:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "88432",
+            "showtime": "2026-11-27T16:00:00",
+            "displayTime": "4:00 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "88570",
+            "showtime": "2026-11-30T15:30:00",
+            "displayTime": "3:30 PM",
+            "screenName": "PLATINUM",
+            "screenNumber": 4,
+            "seatsAvailable": 36,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-30",
+            "calendarDate": "2026-11-30",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Revisit the world of Panem 24 years before the events of The Hunger Games, starting on the morning of the reaping of the 50th Hunger Games, also known as the Second Quarter Quell.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000002",
+    "cinemaName": "CINEPAX OCEAN MALL",
+    "hasFutureSessions": true,
+    "allowTicketSales": true,
+    "voteAverage": 7.8,
+    "trailerUrl": "https://www.youtube.com/watch?v=Dr060OLTodE"
+  }
+]

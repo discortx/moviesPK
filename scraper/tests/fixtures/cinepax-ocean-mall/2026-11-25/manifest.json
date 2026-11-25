@@ -1,0 +1,32 @@
+{
+  "cinema_id": "cinepax-ocean-mall",
+  "captured_at": "2026-11-25T18:11:25Z",
+  "responses": [
+    {
+      "url": "https://web.cinepax.com/robots.txt",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "000-robots-txt.html"
+    },
+    {
+      "url": "https://web.cinepax.com/api/cinemas",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"1a87-a5YLjFcpOLqaxd9rJf4GhG0n6EY\""
+      },
+      "body": "001-api-cinemas.json"
+    },
+    {
+      "url": "https://web.cinepax.com/api/movies?cinemaId=0000000002",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"3bcf-D65Z/ZIgjhRyBr6SO+FggCsmQVo\""
+      },
+      "body": "002-api-movies-cinemaid-0000000002.json"
+    }
+  ]
+}
