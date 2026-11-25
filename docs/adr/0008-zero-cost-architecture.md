@@ -74,10 +74,10 @@ Evidence date: 2026-11-25 unless stated.
 |---|---|---|
 | ≥ 5 viable cinemas (Allowed, Go, coordinates) | **Met: 5** (target 10+) | `docs/cinema-investigation/` |
 | ≥ 5 reachable from a GitHub Actions runner (P0-09) | **Met: 5 of 5** | `docs/cinema-investigation/README.md` |
-| P0-05 finished, no blocker: rewrite caching `x-vercel-cache: HIT`; Atlas sign-up with no card | _pending owner evidence_ | `docs/free-tier-verification.md` |
-| Cloudflare: account, R2 only, Workers Free, `workers.dev` subdomain, private buckets, scoped tokens, budget alert (or monthly check) | _pending owner evidence_ | `docs/infrastructure.md` |
+| P0-05 finished, no blocker: rewrite caching `x-vercel-cache: HIT`; Atlas sign-up with no card | **Rewrite caching met** (HIT through `moviespk-web` → `moviespk-api`, 2026-11-25); Atlas no-card: **met**; items 2–7: **no blocker** (2 and 5 are accepted Risks) | `docs/free-tier-verification.md` §8 |
+| Cloudflare: account, R2 only, Workers Free, `workers.dev` subdomain, private buckets, scoped tokens, budget alert (or monthly check) | **Met** (owner-checked 2026-11-25; alert includes R2; dev token denied on prod) | `docs/infrastructure.md` |
 | Usage forecast under 25% of free allowances | **Met (forecast)**: Worker 9.2% of daily limit; R2 storage 1.0%, Class A 0.1%, Class B 0.7% | `plan.md` §7.4.2; `docs/capacity.md` |
-| Payment method only on Cloudflare (R2 only); none on GitHub, Atlas, Vercel, TMDB | _pending owner evidence_ | `docs/infrastructure.md` |
+| Payment method only on Cloudflare (R2 only); none on GitHub, Atlas, Vercel, TMDB | **Met** for Cloudflare, Atlas, Vercel, TMDB (2026-11-25); GitHub: _owner to confirm_ | `docs/infrastructure.md` |
 | Non-commercial status confirmed (OD5) | **Met** 2026-11-23 | `plan.md` §3.3 |
 | CI green on the skeleton | **Met** | required checks on `main` |
 | Push protection blocks a fake secret | **Met** (owner test, 2026-11-25) | `docs/infrastructure.md` |
