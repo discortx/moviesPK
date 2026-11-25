@@ -10,6 +10,12 @@ describe("GET /api/v1/health", () => {
     expect(res.body.data.status).toBe("ok");
   });
 
+  it("applies helmet security headers", async () => {
+    const res = await request(app).get("/api/v1/health");
+    expect(res.headers["x-content-type-options"]).toBe("nosniff");
+    expect(res.headers["x-powered-by"]).toBeUndefined();
+  });
+
   it("unknown route returns the error envelope", async () => {
     const res = await request(app).get("/api/v1/nope");
     expect(res.status).toBe(404);
