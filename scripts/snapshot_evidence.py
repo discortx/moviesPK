@@ -129,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
 
     status = "unreachable" if policy.status is None else str(policy.status)
     print(f"# robots.txt {robots_url(base_url)}: HTTP {status} ({policy.mode})")
+    if policy.mode == "allow_all" and policy.status is not None and policy.status < 300:
+        print("# robots.txt is an HTML page (soft 404): treated as missing, everything allowed")
     for path in args.paths:
         verdict = "Allowed" if policy.can_fetch(urljoin(base_url, path)) else "Disallowed"
         print(f"#   {verdict:<10} {path}")
