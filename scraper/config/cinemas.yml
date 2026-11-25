@@ -99,3 +99,29 @@
         allowed: true
       - path: /browsing/Movies/NowShowing
         allowed: true
+
+- id: cinestar-township-lahore
+  chain: cinestar
+  adapter: vista
+  branch: "0005"
+  fetch_mode: html
+  base_url: https://cinestar.pk # never cinestar.com.pk (now a gambling site)
+  name: CineStar Township
+  address: Township, Lahore
+  city: lahore
+  location: [74.31080216763247, 31.450402964635277]
+  min_delay_ms: 1500
+  max_concurrency: 1
+  enabled: false
+  seats_allowed: false
+  robots_policy: respect
+  evidence:
+    checked_at: "2026-11-25"
+    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) → missing
+    terms_url: https://cinestar.pk/browsing/General/TermsAndConditions
+    terms_sha256: 7c6220b70fbf612896a11ab5d316c223f4c1437b760d1053273e3342d11d8080
+    endpoints:
+      - path: /browsing/Cinemas
+        allowed: true
+      - path: /browsing/Cinemas/Details/0005
+        allowed: true

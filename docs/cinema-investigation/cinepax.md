@@ -12,7 +12,7 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 | Booking link | On-site booking; URL pattern not yet recorded (fill in P2-01) |
 | Branch coordinates | See below; taken from a map by hand, `[lng, lat]` |
 | Robots evidence | `/robots.txt` returns HTTP 404 → allow all (RFC 9309). `/api/cinemas` Allowed, `/api/movies` Allowed (2026-11-25) |
-| Terms | `https://web.cinepax.com/api/cms/pages/terms` (sha256 `62dc051d…46a2d56`, 2026-11-25). Ticket sales, patron conduct, Lahore jurisdiction. No clause on automated access, bots or copying found (audit 2026-11-23; owner re-read: **pending**). |
+| Terms | `https://web.cinepax.com/api/cms/pages/terms` (sha256 `62dc051d…46a2d56`, 2026-11-25). Ticket sales, patron conduct, Lahore jurisdiction. No clause on automated access, bots or copying found (audit 2026-11-23; owner re-read 2026-11-25: no such clause). |
 | Verdict | **Allowed** |
 | Technical verdict | **Go** (pending the P0-09 runner probe) |
 | Effort | S |
