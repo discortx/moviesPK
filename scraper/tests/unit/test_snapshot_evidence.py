@@ -109,6 +109,27 @@ def test_robots_5xx_reports_unreachable(capsys: pytest.CaptureFixture[str]) -> N
     assert "Disallowed /a" in out and "unreachable" in out
 
 
+@respx.mock
+def test_relative_terms_url_resolves_against_base(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(ev, "MIN_DELAY_S", 0)
+    respx.get("https://c.example/robots.txt").mock(return_value=httpx.Response(404))
+    terms = respx.get("https://c.example/legal/terms").mock(
+        return_value=httpx.Response(200, text=TERMS)
+    )
+    args = ["--cinema", "c", "--base-url", "https://c.example", "--terms-url", "/legal/terms"]
+    assert ev.main([*args, "--paths", "/", "--user-agent", UA]) == 0
+    assert terms.call_count == 1
+    assert "terms_url: https://c.example/legal/terms" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("cinema", ["cinepax_world_trade_center", "Cinepax", "a--b", "a-"])
+def test_rejects_non_slug_cinema_id(cinema: str) -> None:
+    args = ["--cinema", cinema, "--base-url", "https://c.example", "--paths", "/"]
+    assert ev.main([*args, "--user-agent", UA]) == 2
+
+
 def test_requires_user_agent(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("SCRAPER_USER_AGENT", raising=False)
     assert ev.main(["--cinema", "c", "--base-url", "https://c.example", "--paths", "/"]) == 2
