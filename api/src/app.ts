@@ -1,5 +1,12 @@
 import express, { type ErrorRequestHandler, type RequestHandler } from "express";
-import helmet from "helmet";
+import * as helmetModule from "helmet";
+
+// Vercel's builder type-checks this entry file with its own module settings, under which
+// helmet's default import is typed as a non-callable namespace (TS2349), even though our
+// NodeNext build accepts it. At runtime helmet is callable both as the module itself (CJS)
+// and as its `default` export (ESM), so resolve it without relying on default-import typing.
+const helmet = ((helmetModule as { default?: unknown }).default ??
+  helmetModule) as unknown as () => RequestHandler;
 
 export const API_VERSION = "0.1.0";
 
