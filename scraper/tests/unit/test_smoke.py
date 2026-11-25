@@ -1,7 +1,7 @@
 import pytest
 
 from moviespk_scraper import __version__
-from moviespk_scraper.__main__ import build_parser, main
+from moviespk_scraper.cli import build_parser, main
 
 
 def test_version() -> None:

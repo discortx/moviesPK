@@ -8,15 +8,15 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import Any, cast
+from typing import Any, TextIO, cast
 from urllib.parse import urlsplit
 
 import structlog
 from structlog.typing import FilteringBoundLogger
 
 
-def configure_logging(level: str = "INFO") -> None:
-    """JSON lines on stdout, one event per line, with an ISO UTC timestamp."""
+def configure_logging(level: str = "INFO", stream: TextIO | None = None) -> None:
+    """JSON lines (stdout by default), one event per line, with an ISO UTC timestamp."""
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
@@ -27,7 +27,7 @@ def configure_logging(level: str = "INFO") -> None:
         wrapper_class=structlog.make_filtering_bound_logger(
             logging.getLevelNamesMapping().get(level.upper(), logging.INFO)
         ),
-        logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
+        logger_factory=structlog.PrintLoggerFactory(file=stream or sys.stdout),
         cache_logger_on_first_use=False,
     )
 
