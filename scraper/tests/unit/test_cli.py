@@ -6,7 +6,7 @@ import copy
 import json
 import threading
 import time
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -294,7 +294,9 @@ class SlowAdapter(FakeAdapter):
             self.active -= 1
         if cinema.id == "c-2":
             raise RuntimeError("boom")
-        return []
+        return [  # one valid show, so the zero-result guard does not apply
+            RawShowtime(movie_title="Film", starts_at=datetime.now(UTC) + timedelta(hours=3))
+        ]
 
 
 def test_at_most_three_cinemas_in_parallel_and_failures_are_isolated(
