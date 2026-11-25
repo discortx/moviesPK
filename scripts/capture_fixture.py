@@ -25,13 +25,14 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qsl, urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit
 
 import httpx
 
 from moviespk_scraper.core.config import load_config
 from moviespk_scraper.core.http import ScraperHttpClient
 from moviespk_scraper.core.offline import MANIFEST
+from moviespk_scraper.core.redact import KEPT_HEADERS, clean_body, url_has_secret_params
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "scraper" / "tests" / "fixtures"
@@ -42,50 +43,10 @@ CAPTURE_PATHS: dict[str, list[str]] = {
     "vista": ["/browsing/Cinemas/Details/{branch}"],
 }
 
-KEPT_HEADERS = {"content-type", "etag", "last-modified"}
-# Keys whose string values are credentials. Deliberately narrow: ids such as `sessionId`
-# (the show id) are data the adapter needs and must survive.
-SECRET_KEY = re.compile(
-    r"(token|secret|password|passwd|csrf|xsrf|api_?key|authori[sz]ation|cookie)$|^auth$", re.I
-)
-HIDDEN_TOKEN = re.compile(
-    r'(<input[^>]*name="[^"]*(?:token|csrf|viewstate|eventvalidation)[^"]*"[^>]*value=")[^"]*(")',
-    re.I,
-)
-REDACTED = "REDACTED"
-
-
-def redact_json(value: Any) -> Any:
-    if isinstance(value, dict):
-        return {
-            k: (REDACTED if SECRET_KEY.search(str(k)) and isinstance(v, str) else redact_json(v))
-            for k, v in value.items()
-        }
-    if isinstance(value, list):
-        return [redact_json(v) for v in value]
-    return value
-
-
-def clean_body(content_type: str, body: bytes) -> tuple[bytes, str]:
-    """Return the cleaned body and the file extension to store it under."""
-    text = body.decode("utf-8", errors="replace")
-    if "json" in content_type:
-        try:
-            data = json.loads(text)
-        except json.JSONDecodeError:
-            return body, ".txt"
-        return (
-            json.dumps(redact_json(data), indent=2, ensure_ascii=False) + "\n"
-        ).encode(), ".json"
-    if "html" in content_type:
-        return HIDDEN_TOKEN.sub(rf"\g<1>{REDACTED}\g<2>", text).encode(), ".html"
-    return body, ".txt"
-
 
 def check_url_has_no_secrets(url: str) -> None:
-    for key, _ in parse_qsl(urlsplit(url).query, keep_blank_values=True):
-        if SECRET_KEY.search(key):
-            raise SystemExit(f"error: refusing to record a URL with a {key!r} query parameter")
+    if url_has_secret_params(url):
+        raise SystemExit("error: refusing to record a URL with a token-like query parameter")
 
 
 class RecordingTransport(httpx.BaseTransport):

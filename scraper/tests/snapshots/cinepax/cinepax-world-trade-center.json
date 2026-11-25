@@ -1,0 +1,202 @@
+{
+  "movies": [
+    {
+      "title": "18+Belkis (Turkish Urdu Dubbed)",
+      "local_key": "F000003188",
+      "original_title": null,
+      "runtime_min": 85,
+      "genres": [
+        "Entertainment"
+      ],
+      "languages": [],
+      "synopsis": "Left homeless after a dark tragedy, three orphaned sisters seek shelter with a mysterious witch named Belkıs, only to bring a malevolent force into her home that threatens them all.",
+      "release_date": "2026-11-20",
+      "rating": "A"
+    },
+    {
+      "title": "Carry On Jatta 4",
+      "local_key": "F000003065",
+      "original_title": null,
+      "runtime_min": 143,
+      "genres": [
+        "Comedy"
+      ],
+      "languages": [],
+      "synopsis": "The Dhillon family’s peaceful life spirals into chaos after the death of its patriarch and a second tragedy involving their beloved Chacha. To protect Chacha from heartbreak, the family pretends his son is still alive, leading to an ongoing web of lies and absurd situations. Meanwhile, Jass falls in love, but his girlfriend’s father demands a perfect family, forcing the Dhillons to stage an even bigger illusion. As confusion peaks, the late Dhillon Sahib’s presence returns as a guiding force, pushing the family toward truth. Blending comedy and emotion, the story celebrates love, family bonds, and the importance of honesty.",
+      "release_date": "2026-06-26",
+      "rating": "U"
+    },
+    {
+      "title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "local_key": "F000003213",
+      "original_title": null,
+      "runtime_min": 135,
+      "genres": [
+        "Action"
+      ],
+      "languages": [],
+      "synopsis": "Set in 1949, the Shikishima family confronts a fresh catastrophe two years after surviving their previous ordeal with the legendary monster.",
+      "release_date": "2026-11-20",
+      "rating": "M"
+    },
+    {
+      "title": "The Hunger Games: Sunrise on the Reaping",
+      "local_key": "F000003199",
+      "original_title": null,
+      "runtime_min": 158,
+      "genres": [
+        "Science Fiction, Action, Adventure"
+      ],
+      "languages": [],
+      "synopsis": "Revisit the world of Panem 24 years before the events of The Hunger Games, starting on the morning of the reaping of the 50th Hunger Games, also known as the Second Quarter Quell.",
+      "release_date": "2026-11-20",
+      "rating": "M"
+    }
+  ],
+  "showtimes": [
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-26T13:15:00",
+      "movie_local_key": "F000003188",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66322",
+      "seats_available": 50,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T13:45:00",
+      "movie_local_key": "F000003199",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66319",
+      "seats_available": 194,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+      "starts_at": "2026-11-26T15:15:00",
+      "movie_local_key": "F000003213",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66324",
+      "seats_available": 50,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T16:45:00",
+      "movie_local_key": "F000003199",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66320",
+      "seats_available": 194,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Carry On Jatta 4",
+      "starts_at": "2026-11-26T18:00:00",
+      "movie_local_key": "F000003065",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66337",
+      "seats_available": 50,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-26T19:45:00",
+      "movie_local_key": "F000003199",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66321",
+      "seats_available": 194,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-26T20:45:00",
+      "movie_local_key": "F000003188",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66325",
+      "seats_available": 50,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-27T15:00:00",
+      "movie_local_key": "F000003199",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66347",
+      "seats_available": 194,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Carry On Jatta 4",
+      "starts_at": "2026-11-27T16:40:00",
+      "movie_local_key": "F000003065",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66353",
+      "seats_available": 50,
+      "seats_total": null
+    },
+    {
+      "movie_title": "The Hunger Games: Sunrise on the Reaping",
+      "starts_at": "2026-11-27T18:00:00",
+      "movie_local_key": "F000003199",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66348",
+      "seats_available": 194,
+      "seats_total": null
+    },
+    {
+      "movie_title": "18+Belkis (Turkish Urdu Dubbed)",
+      "starts_at": "2026-11-27T21:00:00",
+      "movie_local_key": "F000003188",
+      "hall": "SCREEN 1- SILVER",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66349",
+      "seats_available": 190,
+      "seats_total": null
+    },
+    {
+      "movie_title": "Carry On Jatta 4",
+      "starts_at": "2026-11-28T16:30:00",
+      "movie_local_key": "F000003065",
+      "hall": "SCREEN 2 - PLATINUM",
+      "format_text": "2D",
+      "language_text": null,
+      "booking_url": null,
+      "external_id": "66365",
+      "seats_available": 50,
+      "seats_total": null
+    }
+  ]
+}
