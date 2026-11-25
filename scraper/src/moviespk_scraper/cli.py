@@ -30,6 +30,7 @@ from .pipeline.match import Alias, AliasTable, Matcher
 from .pipeline.normalize import NormalizedShowtime
 from .pipeline.sync_cinemas import sync_cinemas
 from .runner import CinemaResult, RunReport, Services, run_job
+from .services.alerts import Alerter, GitHubAlerter, PrintAlerter
 from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
@@ -171,7 +172,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     aliases = AliasTable(
         manual=[Alias.from_config(a) for a in config.aliases], stored=stored_aliases
     )
-    services = Services(matcher=Matcher(tmdb, aliases), db=db)
+    alerter: Alerter | None
+    if args.dry_run:
+        alerter = PrintAlerter()
+    else:
+        alerter = GitHubAlerter.from_env()
+        if alerter is None:
+            print("note: alerts not posted (GITHUB_TOKEN or GITHUB_REPOSITORY not set)")
+    services = Services(matcher=Matcher(tmdb, aliases), db=db, alerter=alerter)
     try:
         with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
             report = run_job(
@@ -189,6 +197,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             tmdb.close()
         if db_client is not None:
             db_client.close()
+        if isinstance(alerter, GitHubAlerter):
+            alerter.close()
     if tmdb is None:
         reason = "offline run" if args.offline is not None else "TMDB_API_KEY not set"
         print(f"note: TMDB matching skipped ({reason}); only aliases were applied")

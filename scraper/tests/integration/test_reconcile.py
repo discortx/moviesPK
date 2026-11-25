@@ -42,7 +42,7 @@ def db(mongo_uri: str, db_name: str) -> Iterator[DB]:
 def run(db: DB, tmp_path: Path) -> Callable[..., CinemaResult]:
     counter = iter(range(1000))
 
-    def _run(mutate: Mutate | None = None) -> CinemaResult:
+    def _run(mutate: Mutate | None = None, alerter: Any = None) -> CinemaResult:
         fixture = tmp_path / f"run{next(counter)}"
         shutil.copytree(SOURCE, fixture)
         if mutate is not None:
@@ -61,7 +61,7 @@ def run(db: DB, tmp_path: Path) -> Callable[..., CinemaResult]:
                 load_config().cinema(CINEMA),
                 now=now,
                 clock=time.monotonic,
-                services=Services(matcher=Matcher(None), db=db),
+                services=Services(matcher=Matcher(None), db=db, alerter=alerter),
             )
 
     return _run
@@ -212,3 +212,53 @@ def test_other_cinemas_are_untouched(db: DB, run: Callable[..., CinemaResult]) -
     run()
     run()
     assert db.showtimes.find_one({"_id": other["_id"]}) == other
+
+
+# --- P1-12: run health and alerts through the real job ------------------------------------
+
+
+class RecordingAlerter:
+    def __init__(self) -> None:
+        self.raised: list[Any] = []
+        self.resolved: list[str] = []
+
+    def raise_alert(self, alert: Any, now: datetime) -> None:
+        self.raised.append(alert)
+
+    def resolve(self, cinema_id: str, now: datetime) -> None:
+        self.resolved.append(cinema_id)
+
+
+def test_runs_are_recorded_and_alerts_follow_the_status(
+    db: DB, run: Callable[..., CinemaResult]
+) -> None:
+    from moviespk_scraper.pipeline.sync_cinemas import sync_cinemas
+
+    sync_cinemas(db, load_config().cinemas, datetime.now(UTC))
+    alerts = RecordingAlerter()
+
+    assert run(alerter=alerts).status == "ok"
+    ok_run = db.scrape_runs.find_one({"status": "ok"})
+    assert ok_run is not None and ok_run["counts"]["showtimes"] == 19
+    health = db.cinemas.find_one({"_id": CINEMA})
+    assert health is not None and health["health"]["status"] == "ok"
+    assert health["lastScrapedAt"] == health["health"]["lastSuccessAt"]
+    assert alerts.resolved == [CINEMA] and alerts.raised == []
+
+    assert run(lambda data: [], alerter=alerts).status == "failed"
+    failed_run = db.scrape_runs.find_one({"status": "failed"})
+    assert failed_run is not None and failed_run["errors"][0]["type"] == "ZeroResult"
+    assert len(alerts.raised) == 1
+    raised = alerts.raised[0]
+    assert (raised.title, raised.state) == (f"[alert] {CINEMA}: failed", "failed:ZeroResult")
+    assert raised.last_success is not None
+    health = db.cinemas.find_one({"_id": CINEMA})
+    assert health is not None and health["health"]["status"] == "failed"
+    assert health["health"]["lastSuccessAt"] == ok_run["finishedAt"]
+
+
+def test_median_guard_uses_recorded_runs(db: DB, run: Callable[..., CinemaResult]) -> None:
+    for _ in range(3):  # warm-up: three ok runs of 19 shows
+        assert run().status == "ok"
+    result = run(lambda data: data[:1])
+    assert result.status == "failed" and result.error_type == "MedianGuard"
