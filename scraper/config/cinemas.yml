@@ -15,6 +15,7 @@
   branch: "0000000014"
   fetch_mode: json
   base_url: https://web.cinepax.com
+  booking_url_template: https://web.cinepax.com/pages/booking.html?filmCode={filmId}&cinemaId={branch}
   name: Cinepax Packages Mall
   address: Packages Mall, Walton Road, Lahore
   city: lahore
@@ -41,6 +42,7 @@
   branch: "0000000011"
   fetch_mode: json
   base_url: https://web.cinepax.com
+  booking_url_template: https://web.cinepax.com/pages/booking.html?filmCode={filmId}&cinemaId={branch}
   name: Cinepax World Trade Center
   address: World Trade Center (Giga Mall), GT Road, DHA Phase II, Islamabad
   city: islamabad
@@ -58,6 +60,7 @@
   branch: "0000000002"
   fetch_mode: json
   base_url: https://web.cinepax.com
+  booking_url_template: https://web.cinepax.com/pages/booking.html?filmCode={filmId}&cinemaId={branch}
   name: Cinepax Ocean Mall
   address: Ocean Mall, Clifton Block 9, Karachi # city confirmed from map coordinates
   city: karachi

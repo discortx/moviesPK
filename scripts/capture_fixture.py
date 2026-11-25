@@ -89,7 +89,7 @@ def write_fixture(
         "captured_at": now.isoformat(timespec="seconds").replace("+00:00", "Z"),
         "responses": entries,
     }
-    (out / MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (out / MANIFEST).write_bytes((json.dumps(manifest, indent=2) + "\n").encode())
     return entries
 
 

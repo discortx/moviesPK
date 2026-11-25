@@ -100,7 +100,7 @@ def test_fixture_output_equals_snapshot(make_ctx: Run, cinema_id: str) -> None:
     path = SNAPSHOTS / f"{cinema_id}.json"
     if os.environ.get("UPDATE_SNAPSHOTS") == "1":
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(actual, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        path.write_bytes((json.dumps(actual, indent=2, ensure_ascii=False) + "\n").encode())
     assert actual == json.loads(path.read_text(encoding="utf-8"))
 
 

@@ -17,11 +17,12 @@ from pathlib import Path
 from typing import TextIO
 
 from . import __version__
-from .adapters.base import RawShowtime
+from .core.clock import PKT
 from .core.config import CONFIG_DIR, ConfigError, load_config
 from .core.http import ScraperHttpClient
 from .core.logging import configure_logging
 from .core.offline import FixtureTransport
+from .pipeline.normalize import NormalizedShowtime
 from .runner import CinemaResult, RunReport, run_job
 
 JOBS = ("full", "seats", "canary", "export")
@@ -84,18 +85,16 @@ def print_report(report: RunReport, out: TextIO) -> None:
         if r.error:
             out.write(f"  error: {r.error}\n")
         for s in _samples(r):
+            local = s.starts_at.astimezone(PKT).strftime("%Y-%m-%d %H:%M")
             hall = f" · {s.hall}" if s.hall else ""
-            fmt = f" · {s.format_text}" if s.format_text else ""
-            out.write(
-                f"  {s.starts_at.isoformat(timespec='minutes')}  {s.movie_title}{hall}{fmt}\n"
-            )
+            out.write(f"  {local} PKT  {s.movie_title}{hall} · {s.format} · {s.language}\n")
     failed = [r.cinema_id for r in report.results if not r.ok]
     out.write(f"\n{len(report.results) - len(failed)} ok, {len(failed)} not ok")
     out.write(f" ({', '.join(failed)})\n" if failed else "\n")
 
 
-def _samples(result: CinemaResult) -> list[RawShowtime]:
-    return sorted(result.showtimes, key=lambda s: s.starts_at)[:SAMPLE_ROWS]
+def _samples(result: CinemaResult) -> list[NormalizedShowtime]:
+    return sorted(result.normalized_showtimes, key=lambda s: s.starts_at)[:SAMPLE_ROWS]
 
 
 def main(argv: Sequence[str] | None = None) -> int:

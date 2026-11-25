@@ -6,8 +6,8 @@
 * a cinema's error becomes its run status through :func:`run_status_for`; one cinema's
   failure never stops the others.
 
-Pipeline steps 2-8 (normalize, validate, match, upsert, images, reconcile, health,
-alerts) are added by P1-07 … P1-13; until then the ``full`` job fetches and parses only.
+Pipeline steps 3-8 (validate, match, upsert, images, reconcile, health, alerts) are added
+by P1-08 … P1-13; until then the ``full`` job fetches, parses and normalizes.
 """
 
 from __future__ import annotations
@@ -28,6 +28,12 @@ from .core.errors import run_status_for
 from .core.http import ScraperHttpClient
 from .core.logging import get_logger
 from .models.vocab import Job, RunStatus
+from .pipeline.normalize import (
+    NormalizedMovie,
+    NormalizedShowtime,
+    normalize_movie,
+    normalize_showtime,
+)
 
 MAX_PARALLEL_CINEMAS = 3
 SHOWTIME_DAYS = 7
@@ -39,6 +45,8 @@ class CinemaResult:
     status: RunStatus
     movies: list[RawMovie] = field(default_factory=list)
     showtimes: list[RawShowtime] = field(default_factory=list)
+    normalized_movies: list[NormalizedMovie] = field(default_factory=list)
+    normalized_showtimes: list[NormalizedShowtime] = field(default_factory=list)
     error: str | None = None
     duration_s: float = 0.0
 
@@ -64,7 +72,14 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig) -> CinemaResult:
     adapter = registry.get_adapter(cinema.adapter)
     movies = adapter.list_movies(ctx, cinema)
     showtimes = adapter.list_showtimes(ctx, cinema, days=SHOWTIME_DAYS)
-    return CinemaResult(cinema.id, "ok", movies=movies, showtimes=showtimes)
+    return CinemaResult(
+        cinema.id,
+        "ok",
+        movies=movies,
+        showtimes=showtimes,
+        normalized_movies=[normalize_movie(m, ctx.log) for m in movies],
+        normalized_showtimes=[normalize_showtime(s, ctx.log) for s in showtimes],
+    )
 
 
 JOB_STEPS: dict[Job, Callable[[RunContext, CinemaConfig], CinemaResult]] = {"full": _run_full}
