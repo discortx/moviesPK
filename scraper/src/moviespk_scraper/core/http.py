@@ -29,6 +29,7 @@ from urllib.parse import urljoin, urlsplit
 import httpx
 from structlog.typing import FilteringBoundLogger
 
+from .circuit_breaker import CinemaBudget, CircuitBreaker
 from .errors import (
     RateLimitedError,
     RetryableStatusError,
@@ -76,6 +77,8 @@ class ScraperHttpClient:
         self._rng = rng or random.Random()  # noqa: S311 (jitter, not security)
         self._log = logger or get_logger()
         self._throttle = HostThrottle(clock=clock, sleep=sleep, rng=self._rng)
+        #: Per-host circuit breaker for this run (plan §10.2).
+        self.breaker = CircuitBreaker()
         self._client = httpx.Client(
             headers={"User-Agent": user_agent},
             timeout=httpx.Timeout(READ_TIMEOUT_S, connect=CONNECT_TIMEOUT_S),
@@ -170,13 +173,30 @@ class ScraperHttpClient:
         robots_policy: RobotsPolicyName = "respect",
         permission_ref: str | None = None,
         headers: Mapping[str, str] | None = None,
+        budget: CinemaBudget | None = None,
     ) -> httpx.Response:
         """GET ``url`` under every §10.2 rule. Returns the final response (any status
-        other than the retried ones); raises the typed errors of ``core/errors.py``."""
+        other than the retried ones); raises the typed errors of ``core/errors.py``.
+
+        ``budget`` is the cinema's 10-minute budget: checked before every attempt, so a
+        cinema that runs out raises :class:`BudgetExceededError` instead of sending more.
+        An open circuit for the host raises :class:`CircuitOpenError` with no I/O."""
         current = url
         for _ in range(MAX_REDIRECTS + 1):
+            host = _host(current)
+            self.breaker.before_request(host)
+            if budget is not None:
+                budget.check()
             delay_ms = self._check_robots(current, min_delay_ms, robots_policy, permission_ref)
-            resp = self._get_with_retries(current, delay_ms, headers)
+            try:
+                resp = self._get_with_retries(current, delay_ms, headers, budget)
+            except (RetryableStatusError, RateLimitedError) as exc:
+                self.breaker.record_failure(host, exc.status)
+                raise
+            except httpx.HTTPError:
+                self.breaker.record_failure(host, None)
+                raise
+            self.breaker.record_status(host, resp.status_code)
             location = resp.headers.get("location")
             if resp.is_redirect and location:
                 current = urljoin(current, location)
@@ -185,10 +205,16 @@ class ScraperHttpClient:
         raise TooManyRedirectsError(f"more than {MAX_REDIRECTS} redirects", url_path=url_path(url))
 
     def _get_with_retries(
-        self, url: str, delay_ms: int, headers: Mapping[str, str] | None
+        self,
+        url: str,
+        delay_ms: int,
+        headers: Mapping[str, str] | None,
+        budget: CinemaBudget | None,
     ) -> httpx.Response:
         for attempt in retrying(sleep=self._sleep, rng=self._rng):
             with attempt:
+                if budget is not None:
+                    budget.check()
                 return self._send(url, delay_ms, headers, attempt.retry_state.attempt_number)
         raise AssertionError("unreachable: tenacity reraises the last error")  # pragma: no cover
 

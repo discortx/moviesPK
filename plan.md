@@ -1228,7 +1228,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: against respx mocks: 503×2 then 200 succeeds after backoff; 429 with `Retry-After: 3` waits at least 3 s; requests to one host are spaced at least `min_delay_ms`; a disallowed path raises `RobotsDisallowedError` with zero requests to that path; robots.txt is fetched once per host per run; robots 404 → allowed; robots 503 → blocked.
   - Tests: scraper unit.
 
-- [ ] **P1-02 — Circuit breaker and typed errors** · Must · 0.5 d · deps: P1-01
+- [x] **P1-02 — Circuit breaker and typed errors** · Must · 0.5 d · deps: P1-01
   - Details: `core/circuit_breaker.py`; errors `SchemaDriftError`, `BlockedError`, `RobotsDisallowedError`, `ParseError`, `BudgetExceededError` in `core/errors.py`; per-cinema 10-minute budget.
   - Accept: after 5 failures the next call raises without network I/O; a 403/429 pattern maps to `blocked`.
   - Tests: scraper unit.
