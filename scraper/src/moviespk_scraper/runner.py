@@ -6,8 +6,8 @@
 * a cinema's error becomes its run status through :func:`run_status_for`; one cinema's
   failure never stops the others.
 
-Pipeline steps 4-8 (match, upsert, images, reconcile, health, alerts) are added by
-P1-09 … P1-13; until then the ``full`` job fetches, parses, normalizes and validates.
+Pipeline steps 5-8 (upsert, images, reconcile, health, alerts) are added by P1-10 …
+P1-13; until then the ``full`` job fetches, parses, normalizes, validates and matches.
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ from .core.errors import run_status_for
 from .core.http import ScraperHttpClient
 from .core.logging import get_logger
 from .models.vocab import Job, RunStatus
+from .pipeline.match import Matcher, MatchResult
 from .pipeline.normalize import (
     NormalizedMovie,
     NormalizedShowtime,
@@ -49,6 +50,7 @@ class CinemaResult:
     normalized_movies: list[NormalizedMovie] = field(default_factory=list)
     normalized_showtimes: list[NormalizedShowtime] = field(default_factory=list)
     invalid: int = 0
+    matches: dict[str, MatchResult] = field(default_factory=dict)  # by title key
     error: str | None = None
     duration_s: float = 0.0
 
@@ -70,7 +72,40 @@ class RunReport:
         return 0 if all(r.ok for r in self.results) else 1
 
 
-def _run_full(ctx: RunContext, cinema: CinemaConfig) -> CinemaResult:
+@dataclass(frozen=True)
+class Services:
+    """Run-wide services shared by every cinema (one TMDB client and matcher per run)."""
+
+    matcher: Matcher = field(default_factory=lambda: Matcher(None))
+
+
+def _match_all(
+    services: Services,
+    cinema: CinemaConfig,
+    movies: list[NormalizedMovie],
+    showtimes: list[NormalizedShowtime],
+) -> dict[str, MatchResult]:
+    """Match every listed movie, plus any showtime title without a movie entry."""
+    by_key = {m.title_key: m for m in movies}
+    for show in showtimes:
+        if show.title_key not in by_key:
+            by_key[show.title_key] = NormalizedMovie(
+                title=show.movie_title,
+                title_key=show.title_key,
+                local_key=show.movie_local_key,
+                original_title=None,
+                runtime_min=None,
+                genres=(),
+                languages=(),
+                synopsis=None,
+                release_date=None,
+                year=None,
+                certification=None,
+            )
+    return {key: services.matcher.match(m, cinema.id) for key, m in by_key.items()}
+
+
+def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> CinemaResult:
     adapter = registry.get_adapter(cinema.adapter)
     movies = adapter.list_movies(ctx, cinema)
     showtimes = adapter.list_showtimes(ctx, cinema, days=SHOWTIME_DAYS)
@@ -96,10 +131,14 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig) -> CinemaResult:
             f"({checked.invalid_rate:.0%} > {checked.max_invalid_rate:.0%}): "
             + ", ".join(f"{k} x{v}" for k, v in checked.reasons.most_common(3))
         )
+        return result
+    result.matches = _match_all(services, cinema, checked.movies, checked.showtimes)
     return result
 
 
-JOB_STEPS: dict[Job, Callable[[RunContext, CinemaConfig], CinemaResult]] = {"full": _run_full}
+JOB_STEPS: dict[Job, Callable[[RunContext, CinemaConfig, Services], CinemaResult]] = {
+    "full": _run_full
+}
 
 
 def run_cinema(
@@ -111,13 +150,14 @@ def run_cinema(
     clock: Callable[[], float],
     log: FilteringBoundLogger | None = None,
     debug_dir: Path | None = None,
+    services: Services | None = None,
 ) -> CinemaResult:
     log = (log or get_logger()).bind(job=job, cinemaId=cinema.id)
     budget = CinemaBudget(cinema.id, clock=clock)
     ctx = RunContext(http=http, job=job, now=now, log=log, budget=budget, debug_dir=debug_dir)
     log.info("cinema.start", phase="start")
     try:
-        result = JOB_STEPS[job](ctx, cinema)
+        result = JOB_STEPS[job](ctx, cinema, services or Services())
     except Exception as exc:
         status = run_status_for(exc)
         log.warning("cinema.end", phase="end", status=status, error=type(exc).__name__)
@@ -144,13 +184,21 @@ def run_job(
     now: datetime | None = None,
     log: FilteringBoundLogger | None = None,
     debug_dir: Path | None = None,
+    services: Services | None = None,
 ) -> RunReport:
     started = now or datetime.now(UTC)
     with ThreadPoolExecutor(max_workers=MAX_PARALLEL_CINEMAS) as pool:
         results = list(
             pool.map(
                 lambda c: run_cinema(
-                    http, job, c, now=started, clock=clock, log=log, debug_dir=debug_dir
+                    http,
+                    job,
+                    c,
+                    now=started,
+                    clock=clock,
+                    log=log,
+                    debug_dir=debug_dir,
+                    services=services,
                 ),
                 cinemas,
             )
