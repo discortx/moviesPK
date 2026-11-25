@@ -14,7 +14,7 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 | Robots evidence | `/robots.txt` returns HTTP 404 → allow all (RFC 9309). `/api/cinemas` Allowed, `/api/movies` Allowed (2026-11-25) |
 | Terms | `https://web.cinepax.com/api/cms/pages/terms` (sha256 `62dc051d…46a2d56`, 2026-11-25). Ticket sales, patron conduct, Lahore jurisdiction. No clause on automated access, bots or copying found (audit 2026-11-23; owner re-read 2026-11-25: no such clause). |
 | Verdict | **Allowed** |
-| Technical verdict | **Go** (pending the P0-09 runner probe) |
+| Technical verdict | **Go** (runner probe passed 2026-11-25) |
 | Effort | S |
 
 ## Branches
@@ -32,4 +32,10 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 
 ## Runner reachability (P0-09)
 
-Not run yet.
+2026-11-25T13:19Z, GitHub-hosted `ubuntu-latest`, real User-Agent, one GET per venue after robots.txt:
+
+| Venue | robots.txt | Main GET | Bytes | Challenge page | Result |
+|---|---|---|---|---|---|
+| `cinepax-packages-mall` (`/api/movies?cinemaId=0000000014`) | 404 | 200 | 10561 | no | reachable |
+| `cinepax-world-trade-center` (`…=0000000011`) | 404 | 200 | 6961 | no | reachable |
+| `cinepax-ocean-mall` (`…=0000000002`) | 404 | 200 | 15312 | no | reachable |

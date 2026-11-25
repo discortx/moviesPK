@@ -16,7 +16,7 @@ Source: [cinema viability audit](../cinema-viability-audit.md) (2026-11-23), re-
 | Robots evidence | `/robots.txt` redirects (→ `/browsing/robots.txt` → `/Browsing/General/Error`) to an HTML error page served as HTTP 200. That is a soft 404, so treated as missing → allow all. `/browsing/Cinemas`, `/browsing/Cinemas/Details/8888`, `/browsing/Movies/NowShowing` Allowed (2026-11-25). |
 | Terms | `https://universalcinemas.com/browsing/General/TermsAndConditions` (sha256 `f802691c…8b8b206`, 2026-11-25). Ticketing terms only; nothing on automated access found (audit 2026-11-23; owner re-read 2026-11-25: no such clause). |
 | Verdict | **Allowed** |
-| Technical verdict | **Go** (pending the P0-09 runner probe) |
+| Technical verdict | **Go** (runner probe passed 2026-11-25) |
 | Effort | M (HTML parsing; same adapter serves CineStar) |
 
 ### Adapter notes
@@ -40,9 +40,14 @@ Use `cinestar.pk` only; the old `cinestar.com.pk` domain is a gambling site.
 | Robots evidence | `/robots.txt` redirects to an HTML error page served as HTTP 200 → soft 404 → allow all. `/browsing/Cinemas`, `/browsing/Cinemas/Details/0005` Allowed (2026-11-25). |
 | Terms | `https://cinestar.pk/browsing/General/TermsAndConditions` (sha256 `7c6220b7…2d11d8080`, 2026-11-25). Ticketing terms; nothing on automated access found (audit 2026-11-23; owner re-read 2026-11-25: no such clause). |
 | Verdict | **Allowed** |
-| Technical verdict | **Go** (pending the P0-09 runner probe) |
+| Technical verdict | **Go** (runner probe passed 2026-11-25) |
 | Effort | S (reuses the Universal adapter) |
 
 ## Runner reachability (P0-09)
 
-Not run yet.
+2026-11-25T13:19Z, GitHub-hosted `ubuntu-latest`, real User-Agent, one GET per venue after robots.txt. (robots.txt 200 is the HTML error page after redirects, i.e. the soft 404.)
+
+| Venue | robots.txt | Main GET | Bytes | Challenge page | Result |
+|---|---|---|---|---|---|
+| `universal-emporium-mall-lahore` (`/browsing/Cinemas/Details/8888`) | 200 (soft 404) | 200 | 174783 | no | reachable |
+| `cinestar-township-lahore` (`/browsing/Cinemas/Details/0005`) | 200 (soft 404) | 200 | 64699 | no | reachable |
