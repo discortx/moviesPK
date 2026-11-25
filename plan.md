@@ -1268,7 +1268,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: with mocked TMDB: score ≥90 → matched with a poster path handed to the image step; 75 → provisional, alias pending; no results → unmatched; alias hit → zero TMDB calls; TMDB 503 → provisional with no crash; one search per unique title per run; request spacing ≥ 200 ms.
   - Tests: scraper unit.
 
-- [ ] **P1-10 — Repositories, cinema sync and upsert** · Must · 1.5 d · deps: P1-08, P1-09, P0-06
+- [x] **P1-10 — Repositories, cinema sync and upsert** · Must · 1.5 d · deps: P1-08, P1-09, P0-06
   - Details: `db/client.py` (pymongo, `maxPoolSize=5`, `serverSelectionTimeoutMS=5000`, fail fast); `db/repositories.py`; `pipeline/sync_cinemas.py` (YAML → `cinemas` upsert; a disabled cinema gets `enabled: false` but is not deleted); `pipeline/upsert.py` (§8.1 IDs via `pipeline/ids.py`, including the null-hall rule; denormalized fields; `expireAt`, `lastSeenAt`, `missCount: 0`, `lastShowingAt`, `bulk_write(ordered=False)`).
   - Accept: running the fixture pipeline twice against the service container leaves identical collection contents (hash of sorted documents without `updatedAt`); a movie re-created with the same `tmdbId` keeps the same showtime IDs; a showtime scraped once without a hall and once with `hall: "  "` is stored once (same ID, `hall` omitted).
   - Tests: scraper integration.

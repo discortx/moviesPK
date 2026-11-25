@@ -228,9 +228,32 @@ def test_unimplemented_jobs_exit_2(job: str) -> None:
     assert main(["run", "--job", job, "--dry-run"]) == 2
 
 
-def test_writes_are_not_available_yet(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main(["run", "--job", "full"]) == 2
-    assert "--dry-run" in capsys.readouterr().err
+def test_a_writing_run_needs_database_settings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.delenv("MONGODB_URI_SCRAPER", raising=False)
+    monkeypatch.delenv("MONGODB_DB", raising=False)
+    monkeypatch.setenv("SCRAPER_USER_AGENT", "MoviesPKBot/1.0 (+test)")
+    cfg = config_dir(tmp_path, {**CINEMA, "enabled": True})
+    assert main(["run", "--job", "full", "--cinema", "fake-mall", "--config-dir", str(cfg)]) == 2
+    assert "MONGODB_URI_SCRAPER" in capsys.readouterr().err
+
+
+def test_offline_runs_never_write(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    code = main(
+        [
+            "run",
+            "--job",
+            "full",
+            "--cinema",
+            "fake-mall",
+            "--offline",
+            str(fixtures(tmp_path)),
+            "--config-dir",
+            str(config_dir(tmp_path, {**CINEMA, "enabled": True})),
+        ]
+    )
+    assert code == 2 and "always --dry-run" in capsys.readouterr().err
 
 
 def test_online_run_needs_user_agent(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
