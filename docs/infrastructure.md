@@ -18,8 +18,8 @@ Project contact email (Q6): _pending_.
 
 ## GitHub repository settings (P0-01, P0-03)
 
-- [ ] Secret scanning and **push protection** enabled; a fake token pushed to a scratch
-      branch is blocked (evidence link: _pending_).
+- [x] Secret scanning and **push protection** enabled; a fake token pushed to a scratch
+      branch is blocked (owner test 2026-11-25).
 - [ ] Default `GITHUB_TOKEN` permission: **read-only**.
 - [ ] `main` protected: PR required; required checks `scraper-test`, `api-test`, `web-test`, `gitleaks`
       (plus `scraper-changes`, `api-changes`, `web-changes`).

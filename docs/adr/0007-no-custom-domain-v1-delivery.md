@@ -1,6 +1,6 @@
 # ADR-0007: Run v1 without a custom domain (API edge cache and image delivery)
 
-- **Status:** **Proposed, awaiting owner approval** (Part A is an owner decision and is final; Parts B and C are options that need approval)
+- **Status:** **Superseded** by ADR-0009 (images: private R2 + Worker with Workers Caching) and ADR-0008 (API on Vercel; G0), owner approval 2026-11-25. Part A (no custom domain) lives on as OD2.
 - **Date:** 2026-11-22
 - **Would supersede (in part):** architecture ADR-09 (Cloudflare in front of the API), ADR-12 (Cloudflare CDN short TTLs), ADR-13 (R2 on a custom domain behind Cloudflare CDN). `architecture.md` is not edited; see `plan.md` section 15.
 - **Numbering note:** repo ADR series (`docs/adr/NNNN-*`), separate from the architecture's ADR-NN.
