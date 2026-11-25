@@ -37,7 +37,7 @@ dev = [
 ]
 
 [project.scripts]
-moviespk-scraper = "moviespk_scraper.__main__:main"
+moviespk-scraper = "moviespk_scraper.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

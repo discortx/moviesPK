@@ -1238,7 +1238,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: `robots_policy: ignore` fails with a message citing ADR-0001; `permission_granted` without `permission_ref` fails; coordinates outside the bounding box fail; `seats_allowed: true` without a seat evidence row fails; an unknown adapter fails at load; a `cities.yml` slug that is a reserved web path (§8.3) fails; a cinema whose `city` is not in `cities.yml` fails; an optional `phone` is accepted and absent is valid.
   - Tests: scraper unit.
 
-- [ ] **P1-04 — CLI** · Must · 1.0 d · deps: P1-03
+- [x] **P1-04 — CLI** · Must · 1.0 d · deps: P1-03
   - Details: `python -m moviespk_scraper run --job {full|seats|canary|export} [--cinema ID] [--dry-run] [--offline FIXTURE_DIR] [--rebuild-images]` (argparse). `--dry-run` runs everything except DB writes, R2 writes and issue posting, and prints counts and 5 sample rows. Exit codes: 0 = all ok, 1 = any failed/blocked/drift, 2 = config error. Concurrency: at most 3 cinemas in parallel (threads), sequential within one.
   - Accept: `run --job full --cinema <id> --dry-run --offline tests/fixtures/<id>/<date>` exits 0.
   - Tests: scraper unit.
