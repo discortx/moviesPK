@@ -1253,7 +1253,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: fixture output equals the snapshot; a drift fixture (key removed) raises `SchemaDriftError`; if the site lists after-midnight shows under the previous evening, a fixture case maps such a show to the next PKT calendar date (§10.3 step 2).
   - Tests: adapter fixture.
 
-- [ ] **P1-07 — Normalizer** · Must · 1.0 d · deps: P0-06
+- [x] **P1-07 — Normalizer** · Must · 1.0 d · deps: P0-06
   - Details: `pipeline/normalize.py` per §10.3 step 2.
   - Accept: table tests: "Dune (IMAX) [Urdu]" → title "Dune", format IMAX, language Urdu; 23:30 PKT on 2026-12-01 → `2026-12-01T18:30Z`; 00:15 PKT on 2026-12-02 → `2026-12-01T19:15Z` (PKT date 2026-12-02); NFKC and Urdu titles kept; hall `" Screen  2 "` → `"Screen 2"`, and a missing, `null`, empty or whitespace-only hall → `""` for the ID.
   - Tests: scraper unit.

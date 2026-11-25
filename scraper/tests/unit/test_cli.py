@@ -151,7 +151,7 @@ def test_offline_dry_run_exits_0(tmp_path: Path, capsys: pytest.CaptureFixture[s
     out = capsys.readouterr().out
     assert "full dry run" in out
     assert "[ok] fake-mall: 0 movies, 3 showtimes" in out
-    assert "2026-11-26T15:30  Movie A · Screen 1" in out
+    assert "2026-11-26 15:30 PKT  Movie A · Screen 1 · 2D · other" in out
     assert "1 ok, 0 not ok" in out
 
 
