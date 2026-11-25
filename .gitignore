@@ -27,6 +27,7 @@ htmlcov/
 
 # Scraper debug output (uploaded as Actions artifacts, never committed)
 debug/
+build/
 
 # OS / editor
 .DS_Store

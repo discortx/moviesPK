@@ -73,7 +73,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path("debug"),
         help="where raw payloads are kept when parsing fails (uploaded as an artifact)",
     )
-    run.add_argument("--config-dir", type=Path, default=CONFIG_DIR, help=argparse.SUPPRESS)
+    run.add_argument(
+        "--config-dir",
+        type=Path,
+        default=CONFIG_DIR,
+        help="directory with cinemas.yml, cities.yml and aliases.yml (default: scraper/config)",
+    )
     return parser
 
 
