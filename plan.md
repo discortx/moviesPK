@@ -1223,7 +1223,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
 
 ### Phase 1 — One cinema end to end (26.0 d)
 
-- [ ] **P1-01 — HTTP client: robots, throttle, retries, timeouts** · Must · 1.5 d · deps: P0-07
+- [x] **P1-01 — HTTP client: robots, throttle, retries, timeouts** · Must · 1.5 d · deps: P0-07
   - Details: `core/http.py`, `core/throttle.py`, `core/retry.py`, `core/logging.py` implementing §10.2 exactly (robots via `core/robots.py`). structlog JSON fields: `job`, `cinemaId`, `phase`, `url_path`, `status`, `durationMs`.
   - Accept: against respx mocks: 503×2 then 200 succeeds after backoff; 429 with `Retry-After: 3` waits at least 3 s; requests to one host are spaced at least `min_delay_ms`; a disallowed path raises `RobotsDisallowedError` with zero requests to that path; robots.txt is fetched once per host per run; robots 404 → allowed; robots 503 → blocked.
   - Tests: scraper unit.
