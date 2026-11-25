@@ -1,0 +1,101 @@
+# Cinema list (plan §8.3, P0-08). Draft: every venue stays `enabled: false` until its
+# P0-09 runner probe passes and its adapter exists (P2-01).
+#
+# - location is [lng, lat], taken from a map by hand (no geocoding).
+# - evidence comes from scripts/snapshot_evidence.py; re-run it whenever the canary reports
+#   a robots/terms change, and paste the new snippet here.
+# - Never `robots_policy: ignore`. `permission_granted` needs `permission_ref`.
+# - Investigation notes: docs/cinema-investigation/<chain>.md
+
+# --- Adapter A: Cinepax public JSON (docs/cinema-investigation/cinepax.md) ---
+
+- id: cinepax-packages-mall
+  chain: cinepax
+  adapter: cinepax
+  branch: "0000000014"
+  fetch_mode: json
+  base_url: https://web.cinepax.com
+  name: Cinepax Packages Mall
+  address: Packages Mall, Walton Road, Lahore
+  city: lahore
+  location: [74.35692149646812, 31.47168923714777]
+  min_delay_ms: 1500
+  max_concurrency: 1
+  enabled: false
+  seats_allowed: false # seatsAvailable is in the session JSON; decide under §10.6
+  robots_policy: respect
+  evidence: &cinepax_evidence
+    checked_at: "2026-11-25"
+    robots_sha256: null # no robots.txt (HTTP 404) → everything allowed
+    terms_url: https://web.cinepax.com/api/cms/pages/terms
+    terms_sha256: 62dc051de906e2d48dd27ce4df9a5f7e9a554a6b2b8ba4153b6bf407546a2d56
+    endpoints:
+      - path: /api/cinemas
+        allowed: true
+      - path: /api/movies
+        allowed: true
+
+- id: cinepax-world-trade-center
+  chain: cinepax
+  adapter: cinepax
+  branch: "0000000011"
+  fetch_mode: json
+  base_url: https://web.cinepax.com
+  name: Cinepax World Trade Center
+  address: World Trade Center (Giga Mall), GT Road, DHA Phase II, Islamabad
+  city: islamabad
+  location: [73.15827985420117, 33.5215501394146]
+  min_delay_ms: 1500
+  max_concurrency: 1
+  enabled: false
+  seats_allowed: false
+  robots_policy: respect
+  evidence: *cinepax_evidence
+
+- id: cinepax-ocean-mall
+  chain: cinepax
+  adapter: cinepax
+  branch: "0000000002"
+  fetch_mode: json
+  base_url: https://web.cinepax.com
+  name: Cinepax Ocean Mall
+  address: Ocean Mall, Clifton Block 9, Karachi # city confirmed from map coordinates
+  city: karachi
+  location: [67.03598697114558, 24.82401989059472]
+  min_delay_ms: 1500
+  max_concurrency: 1
+  enabled: false
+  seats_allowed: false
+  robots_policy: respect
+  evidence: *cinepax_evidence
+
+# --- Adapter B: Vista HTML (docs/cinema-investigation/vista.md) ---
+
+- id: universal-emporium-mall-lahore
+  chain: universal
+  adapter: vista
+  branch: "8888"
+  fetch_mode: html
+  base_url: https://universalcinemas.com
+  name: Universal Cinemas Emporium Mall
+  address: Nishat Emporium Mall, Abdul Haque Road, Lahore
+  city: lahore
+  location: [74.26677349646782, 31.467151031607372]
+  booking_url_template: https://universalcinemas.com/Ticketing/visSelectTickets.aspx?cinemacode={branch}&txtSessionId={sessionId}
+  min_delay_ms: 1500
+  max_concurrency: 1
+  enabled: false
+  seats_allowed: false
+  robots_policy: respect
+  evidence:
+    checked_at: "2026-11-25"
+    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) → missing
+    terms_url: https://universalcinemas.com/browsing/General/TermsAndConditions
+    terms_sha256: f802691c83b43824a4a0289e5c2c63372e3abf40f7651fb2a54ad3e3e8b8b206
+    endpoints:
+      - path: /browsing/Cinemas
+        allowed: true
+      - path: /browsing/Cinemas/Details/8888
+        allowed: true
+      - path: /browsing/Movies/NowShowing
+        allowed: true
