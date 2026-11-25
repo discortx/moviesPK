@@ -586,7 +586,7 @@ Further fields: `cinemaId` · `movieId` · `startsAt` (UTC) · `endsAt?` · `hal
 
 ### 8.3 Repository configuration files (source of truth for human input)
 
-- `scraper/config/cinemas.yml`: `id`, `chain`, `adapter`, `branch?`, `fetch_mode` (`json|html|browser`), `base_url`, `name`, `address`, `city`, `location: [lng, lat]`, `phone?` (only when the cinema publishes a reliable number), `booking_url_template?`, `min_delay_ms` (default 1500), `max_concurrency: 1`, `enabled`, `seats_allowed` (true only if seat data is cheap and its endpoint is robots-Allowed), `robots_policy` (`respect` | `permission_granted`), `permission_ref?` (required with `permission_granted`), `evidence {checked_at, robots_sha256, terms_url, terms_sha256, endpoints: [{path, allowed}]}`. Validation rejects `robots_policy: ignore`, a missing location, coordinates outside the bounding box, and `seats_allowed: true` without an evidence endpoint row for the seat path.
+- `scraper/config/cinemas.yml`: `id`, `chain`, `adapter`, `branch?`, `fetch_mode` (`json|html|browser`), `base_url`, `name`, `address`, `city`, `location: [lng, lat]`, `phone?` (only when the cinema publishes a reliable number), `booking_url_template?`, `min_delay_ms` (default 1500), `max_concurrency: 1`, `enabled`, `seats_allowed` (true only if seat data is cheap and its endpoint is robots-Allowed), `seat_path?` (the path seat data is fetched from; required with `seats_allowed: true`, and it must have an Allowed `evidence.endpoints` row), `robots_policy` (`respect` | `permission_granted`), `permission_ref?` (required with `permission_granted`), `evidence {checked_at, robots_sha256, terms_url, terms_sha256, endpoints: [{path, allowed}]}`. Validation rejects `robots_policy: ignore`, a missing location, coordinates outside the bounding box, and `seats_allowed: true` without an evidence endpoint row for the seat path.
 - `scraper/config/cities.yml`: `slug`, `name`, `center: [lng, lat]`, `default_radius_km`. **The single source of truth for cities**, used by the scraper (config validation) and, through the generated `shared/constants/cities.json`, by the API and web (§9.2). Validation rejects a slug that collides with a reserved top-level web path: `about`, `privacy`, `status`, `search`, `near-me`, `movies`, `cinemas`, `api` (§9.3). Every `cinemas.yml` `city` must be a slug in this file.
 - `scraper/config/aliases.yml`: `- alias: "<normalized title>"`, `tmdb_id: 123` or `local_key: "..."`, `cinema_id?`, `note`.
 
@@ -1233,7 +1233,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: after 5 failures the next call raises without network I/O; a 403/429 pattern maps to `blocked`.
   - Tests: scraper unit.
 
-- [ ] **P1-03 — Config loading and adapter registry** · Must · 1.0 d · deps: P0-06
+- [x] **P1-03 — Config loading and adapter registry** · Must · 1.0 d · deps: P0-06
   - Details: `core/config.py` loads and validates `cinemas.yml`, `cities.yml`, `aliases.yml` with the §8.3 rules; `adapters/base.py` (the §10.1 protocol); `adapters/registry.py`.
   - Accept: `robots_policy: ignore` fails with a message citing ADR-0001; `permission_granted` without `permission_ref` fails; coordinates outside the bounding box fail; `seats_allowed: true` without a seat evidence row fails; an unknown adapter fails at load; a `cities.yml` slug that is a reserved web path (§8.3) fails; a cinema whose `city` is not in `cities.yml` fails; an optional `phone` is accepted and absent is valid.
   - Tests: scraper unit.

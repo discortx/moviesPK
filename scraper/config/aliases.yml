@@ -1,0 +1,7 @@
+# Manual movie-title corrections (plan §8.3, §10.4). Loaded every run; YAML wins.
+#
+# - alias: "<normalized title>"   # lowercase, single spaces
+#   tmdb_id: 123                   # or local_key: "...", exactly one of the two
+#   cinema_id: cinepax-packages-mall   # optional: only for this cinema
+#   note: why this correction exists
+[]
