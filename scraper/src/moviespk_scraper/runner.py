@@ -40,6 +40,8 @@ from .pipeline.normalize import (
 from .pipeline.reconcile import MEDIAN_RUNS, guard_reason, reconcile
 from .pipeline.upsert import upsert_cinema
 from .pipeline.validate import validate
+from .services.alerts import Alert, Alerter, run_url
+from .services.health import RunError, RunRecord, github_run_id, last_success, record_run
 
 MAX_PARALLEL_CINEMAS = 3
 SHOWTIME_DAYS = 7
@@ -58,6 +60,7 @@ class CinemaResult:
     upserted: int = 0
     cancelled: int = 0
     error: str | None = None
+    error_type: str | None = None
     duration_s: float = 0.0
 
     @property
@@ -85,6 +88,8 @@ class Services:
     matcher: Matcher = field(default_factory=lambda: Matcher(None))
     #: The database to write to; ``None`` for a dry run (nothing is written).
     db: DB | None = None
+    #: Where alerts go (GitHub Issues, or printed on a dry run); ``None`` = no alerts.
+    alerter: Alerter | None = None
 
 
 def _match_all(
@@ -134,6 +139,7 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
     )
     if checked.failed:
         result.status = "failed"
+        result.error_type = "InvalidRate"
         result.error = (
             f"{checked.invalid} of {checked.total} showtimes invalid "
             f"({checked.invalid_rate:.0%} > {checked.max_invalid_rate:.0%}): "
@@ -148,6 +154,7 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
     reason = guard_reason(len(checked.showtimes), history)
     if reason is not None:  # zero-result / median guard: nothing is written (§8.4)
         result.status = "failed"
+        result.error_type = "ZeroResult" if "zero result" in reason else "MedianGuard"
         result.error = reason
         return result
     result.matches = _match_all(services, cinema, checked.movies, checked.showtimes)
@@ -197,12 +204,16 @@ def run_cinema(
     budget = CinemaBudget(cinema.id, clock=clock)
     ctx = RunContext(http=http, job=job, now=now, log=log, budget=budget, debug_dir=debug_dir)
     log.info("cinema.start", phase="start")
+    services = services or Services()
+    started_at = datetime.now(UTC)
     try:
-        result = JOB_STEPS[job](ctx, cinema, services or Services())
+        result = JOB_STEPS[job](ctx, cinema, services)
     except Exception as exc:
         status = run_status_for(exc)
         log.warning("cinema.end", phase="end", status=status, error=type(exc).__name__)
-        result = CinemaResult(cinema.id, status, error=f"{type(exc).__name__}: {exc}")
+        result = CinemaResult(
+            cinema.id, status, error=f"{type(exc).__name__}: {exc}", error_type=type(exc).__name__
+        )
     else:
         log.info(
             "cinema.end",
@@ -212,7 +223,60 @@ def run_cinema(
             showtimes=len(result.showtimes),
         )
     result.duration_s = budget.elapsed_s
+    _report_health(services, job, cinema, result, started_at, now, log)
     return result
+
+
+def _report_health(
+    services: Services,
+    job: Job,
+    cinema: CinemaConfig,
+    result: CinemaResult,
+    started_at: datetime,
+    now: datetime,
+    log: FilteringBoundLogger,
+) -> None:
+    """``scrape_runs`` + ``cinemas.health`` (writing runs only), then alerts (§18.1)."""
+    previous_success = None
+    if services.db is not None:
+        previous_success = last_success(services.db, cinema.id)
+        record_run(
+            services.db,
+            RunRecord(
+                job=job,
+                cinema_id=cinema.id,
+                started_at=started_at,
+                finished_at=datetime.now(UTC),
+                status=result.status,
+                counts={
+                    "movies": len(result.normalized_movies),
+                    "showtimes": len(result.normalized_showtimes),
+                    "upserted": result.upserted,
+                    "invalid": result.invalid,
+                    "cancelled": result.cancelled,
+                },
+                errors=[RunError(result.error_type or "Error", result.error)]
+                if result.error
+                else [],
+                github_run_id=github_run_id(),
+            ),
+        )
+    if services.alerter is None:
+        return
+    if result.ok:
+        services.alerter.resolve(cinema.id, now)
+    else:
+        services.alerter.raise_alert(
+            Alert(
+                cinema_id=cinema.id,
+                type=result.status,
+                summary=result.error or result.status,
+                state=f"{result.status}:{result.error_type or 'Error'}",
+                run_url=run_url(),
+                last_success=previous_success,
+            ),
+            now,
+        )
 
 
 def run_job(

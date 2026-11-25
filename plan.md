@@ -1278,7 +1278,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: 1 miss keeps `active`; 2 misses → `cancelled`; a `failed` or zero-result run changes no showtime; past shows are left to the TTL.
   - Tests: scraper integration.
 
-- [ ] **P1-12 — Run health and GitHub Issues alerts** · Must · 1.5 d · deps: P1-10
+- [x] **P1-12 — Run health and GitHub Issues alerts** · Must · 1.5 d · deps: P1-10
   - Details:
     - `services/health.py`: `scrape_runs` documents and `cinemas.health`.
     - `services/alerts.py`, using the GitHub REST API with `GITHUB_TOKEN` and `GITHUB_REPOSITORY`. Issue title: `[alert] <cinemaId>: <type>`, labels `alert`, `alert:<type>`. If an open issue with the same title exists, comment only when the state changes or 24 h have passed; otherwise create one.
