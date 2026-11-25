@@ -151,6 +151,8 @@ class CinepaxAdapter:
                                 branch=cinema.branch,
                                 sessionId=session["sessionId"],
                                 filmId=film["id"],
+                                movieTitle=film["title"],
+                                cinemaName=_optional_str(film, "cinemaName"),
                             ),
                             seats_available=seats if isinstance(seats, int) else None,
                         )

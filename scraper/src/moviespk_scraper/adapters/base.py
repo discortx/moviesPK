@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Protocol, runtime_checkable
+from urllib.parse import quote_plus
 
 import httpx
 from structlog.typing import FilteringBoundLogger
@@ -29,12 +30,14 @@ FetchMode = Literal["json", "html", "browser"]
 
 #: Plan §10.3 step 1: at most 2 MB of debug payload per cinema.
 DEBUG_MAX_BYTES = 2 * 1024 * 1024
-BOOKING_PLACEHOLDERS = frozenset({"branch", "sessionId", "filmId"})
+BOOKING_PLACEHOLDERS = frozenset({"branch", "sessionId", "filmId", "movieTitle", "cinemaName"})
 
 
 def build_booking_url(template: str | None, **values: str | None) -> str | None:
-    """Fill ``cinema.booking_url_template`` (placeholders ``{branch}``, ``{sessionId}``,
-    ``{filmId}``). Returns ``None`` without a template or when a used value is missing."""
+    """Fill ``cinema.booking_url_template``. Placeholders: ``{branch}``, ``{sessionId}``,
+    ``{filmId}``, ``{movieTitle}``, ``{cinemaName}`` (titles and names as the cinema lists
+    them). Every value is URL-encoded. Returns ``None`` without a template or when a used
+    value is missing."""
     if not template:
         return None
     used = {name for _, name, _, _ in string.Formatter().parse(template) if name}
@@ -43,7 +46,7 @@ def build_booking_url(template: str | None, **values: str | None) -> str | None:
         raise ValueError(f"unknown booking_url_template placeholders: {sorted(unknown)}")
     if any(not values.get(name) for name in used):
         return None
-    return template.format(**{name: values[name] for name in used})
+    return template.format(**{name: quote_plus(values[name] or "") for name in used})
 
 
 @dataclass(frozen=True)

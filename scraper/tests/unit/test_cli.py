@@ -50,6 +50,8 @@ CINEMA: dict[str, Any] = {
         "endpoints": [{"path": "/api/shows", "allowed": True}],
     },
 }
+#: Offline runs use the capture time as "now" (2026-11-26 10:00 PKT).
+CAPTURED_AT = "2026-11-26T05:00:00Z"
 SHOWS = [
     {"title": "Movie A", "start": "2026-11-26T15:30:00", "hall": "Screen 1"},
     {"title": "Movie B", "start": "2026-11-26T18:00:00", "hall": "Screen 2"},
@@ -121,7 +123,8 @@ def fixtures(tmp_path: Path, shows: Any = SHOWS, robots: str | None = None) -> P
         responses.append(
             {"url": f"{BASE}/robots.txt", "status": 200, "headers": {}, "body": "000-robots.txt"}
         )
-    (d / "manifest.json").write_text(json.dumps({"responses": responses}), encoding="utf-8")
+    manifest = {"captured_at": CAPTURED_AT, "responses": responses}
+    (d / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     return d
 
 
@@ -150,7 +153,7 @@ def test_offline_dry_run_exits_0(tmp_path: Path, capsys: pytest.CaptureFixture[s
     assert run(tmp_path, fixtures(tmp_path)) == 0
     out = capsys.readouterr().out
     assert "full dry run" in out
-    assert "[ok] fake-mall: 0 movies, 3 showtimes" in out
+    assert "[ok] fake-mall: 0 movies, 3 valid showtimes, 0 invalid" in out
     assert "2026-11-26 15:30 PKT  Movie A · Screen 1 · 2D · other" in out
     assert "1 ok, 0 not ok" in out
 
@@ -161,7 +164,25 @@ def test_samples_are_capped_at_five(tmp_path: Path, capsys: pytest.CaptureFixtur
     ]
     assert run(tmp_path, fixtures(tmp_path, shows=shows)) == 0
     out = capsys.readouterr().out
-    assert "8 showtimes" in out and "M4" in out and "M5" not in out
+    assert "8 valid showtimes" in out and "M4" in out and "M5" not in out
+
+
+def test_21_percent_invalid_fixture_fails_the_cinema(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Plan P1-08: 21 of 100 shows already started long before the capture → failed."""
+    shows = [
+        {
+            "title": f"M{i}",
+            "start": "2026-11-25T09:00:00" if i < 21 else "2026-11-26T20:00:00",
+            "hall": str(i),
+        }
+        for i in range(100)
+    ]
+    assert run(tmp_path, fixtures(tmp_path, shows=shows)) == 1
+    out = capsys.readouterr().out
+    assert "[failed] fake-mall: 0 movies, 79 valid showtimes, 21 invalid" in out
+    assert "21 of 100 showtimes invalid (21% > 20%)" in out
 
 
 def test_drift_exits_1(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

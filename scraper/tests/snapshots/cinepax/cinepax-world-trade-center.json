@@ -61,7 +61,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66322",
       "seats_available": 50,
       "seats_total": null
@@ -73,7 +73,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66319",
       "seats_available": 194,
       "seats_total": null
@@ -85,7 +85,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003213&movie=Godzilla+Minus+Zero+%28Japanes+With+Eng+Subtitles%29&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66324",
       "seats_available": 50,
       "seats_total": null
@@ -97,7 +97,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66320",
       "seats_available": 194,
       "seats_total": null
@@ -109,7 +109,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&movie=Carry+On+Jatta+4&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66337",
       "seats_available": 50,
       "seats_total": null
@@ -121,7 +121,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66321",
       "seats_available": 194,
       "seats_total": null
@@ -133,7 +133,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66325",
       "seats_available": 50,
       "seats_total": null
@@ -145,7 +145,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66347",
       "seats_available": 194,
       "seats_total": null
@@ -157,7 +157,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&movie=Carry+On+Jatta+4&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66353",
       "seats_available": 50,
       "seats_total": null
@@ -169,7 +169,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003199&movie=The+Hunger+Games%3A+Sunrise+on+the+Reaping&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66348",
       "seats_available": 194,
       "seats_total": null
@@ -181,7 +181,7 @@
       "hall": "SCREEN 1- SILVER",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003188&movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66349",
       "seats_available": 190,
       "seats_total": null
@@ -193,7 +193,7 @@
       "hall": "SCREEN 2 - PLATINUM",
       "format_text": "2D",
       "language_text": null,
-      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&cinemaId=0000000011",
+      "booking_url": "https://web.cinepax.com/pages/booking.html?filmCode=F000003065&movie=Carry+On+Jatta+4&cinemaId=0000000011&cinema=CINEPAX+WORLD+TRADE+CENTER",
       "external_id": "66365",
       "seats_available": 50,
       "seats_total": null

@@ -1258,7 +1258,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: table tests: "Dune (IMAX) [Urdu]" → title "Dune", format IMAX, language Urdu; 23:30 PKT on 2026-12-01 → `2026-12-01T18:30Z`; 00:15 PKT on 2026-12-02 → `2026-12-01T19:15Z` (PKT date 2026-12-02); NFKC and Urdu titles kept; hall `" Screen  2 "` → `"Screen 2"`, and a missing, `null`, empty or whitespace-only hall → `""` for the ID.
   - Tests: scraper unit.
 
-- [ ] **P1-08 — Validator and sanitizer** · Must · 0.5 d · deps: P1-07
+- [x] **P1-08 — Validator and sanitizer** · Must · 0.5 d · deps: P1-07
   - Details: `pipeline/validate.py` per §10.3 step 3 (20% threshold configurable).
   - Accept: invalid rows counted; a 21% invalid fixture fails the cinema; HTML in a synopsis is stripped; lengths are capped.
   - Tests: scraper unit.

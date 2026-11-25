@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -41,11 +42,25 @@ class FixtureResponse:
     body: bytes
 
 
-def load_fixtures(directory: Path) -> dict[str, FixtureResponse]:
+def _manifest(directory: Path) -> Any:
     manifest_path = directory / MANIFEST
     if not manifest_path.is_file():
         raise FileNotFoundError(f"no {MANIFEST} in fixture directory {directory}")
-    manifest: Any = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def captured_at(directory: Path) -> datetime | None:
+    """When the fixture was captured (aware), if the manifest says. Offline runs use it as
+    the run's "now", so time windows match the moment the pages were fetched."""
+    value = _manifest(directory).get("captured_at")
+    if not isinstance(value, str):
+        return None
+    moment = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return moment if moment.tzinfo is not None else None
+
+
+def load_fixtures(directory: Path) -> dict[str, FixtureResponse]:
+    manifest: Any = _manifest(directory)
     responses: dict[str, FixtureResponse] = {}
     for entry in manifest.get("responses", []):
         body_path = (directory / entry["body"]).resolve()

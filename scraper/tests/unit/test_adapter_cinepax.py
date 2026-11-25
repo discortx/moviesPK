@@ -230,6 +230,18 @@ def test_booking_url_from_template(make_ctx: Run) -> None:
     assert show.booking_url == f"https://web.cinepax.com/booking/0000000014/{show.external_id}"
 
 
+def test_booking_url_values_are_url_encoded() -> None:
+    url = build_booking_url(
+        "https://x/b?movie={movieTitle}&cinema={cinemaName}",
+        movieTitle="18+Belkis (Turkish Urdu Dubbed)",
+        cinemaName="CINEPAX PACKAGES MALL",
+    )
+    assert (
+        url
+        == "https://x/b?movie=18%2BBelkis+%28Turkish+Urdu+Dubbed%29&cinema=CINEPAX+PACKAGES+MALL"
+    )
+
+
 def test_build_booking_url_rules() -> None:
     assert build_booking_url(None, branch="1") is None
     assert build_booking_url("https://x/{sessionId}", sessionId=None) is None

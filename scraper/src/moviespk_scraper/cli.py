@@ -21,7 +21,7 @@ from .core.clock import PKT
 from .core.config import CONFIG_DIR, ConfigError, load_config
 from .core.http import ScraperHttpClient
 from .core.logging import configure_logging
-from .core.offline import FixtureTransport
+from .core.offline import FixtureTransport, captured_at
 from .pipeline.normalize import NormalizedShowtime
 from .runner import CinemaResult, RunReport, run_job
 
@@ -80,7 +80,8 @@ def print_report(report: RunReport, out: TextIO) -> None:
     for r in report.results:
         out.write(
             f"\n[{r.status}] {r.cinema_id}: {len(r.movies)} movies, "
-            f"{len(r.showtimes)} showtimes ({r.duration_s:.1f} s)\n"
+            f"{len(r.normalized_showtimes)} valid showtimes, {r.invalid} invalid "
+            f"({r.duration_s:.1f} s)\n"
         )
         if r.error:
             out.write(f"  error: {r.error}\n")
@@ -126,11 +127,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             return EXIT_OK
 
     transport = None
+    now = None
     user_agent = os.environ.get("SCRAPER_USER_AGENT", "").strip()
     sleep = time.sleep
     if args.offline is not None:
         try:
             transport = FixtureTransport(args.offline)
+            now = captured_at(args.offline)
         except (OSError, ValueError, KeyError) as exc:
             return _error(f"cannot load fixtures from {args.offline}: {exc}")
         user_agent = user_agent or OFFLINE_USER_AGENT
@@ -147,6 +150,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             dry_run=args.dry_run,
             clock=time.monotonic,
             debug_dir=args.debug_dir,
+            now=now,
         )
     print_report(report, sys.stdout)
     return report.exit_code
