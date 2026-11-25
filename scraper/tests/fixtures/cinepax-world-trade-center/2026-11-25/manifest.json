@@ -1,0 +1,32 @@
+{
+  "cinema_id": "cinepax-world-trade-center",
+  "captured_at": "2026-11-25T18:11:19Z",
+  "responses": [
+    {
+      "url": "https://web.cinepax.com/robots.txt",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "000-robots-txt.html"
+    },
+    {
+      "url": "https://web.cinepax.com/api/cinemas",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"1a87-a5YLjFcpOLqaxd9rJf4GhG0n6EY\""
+      },
+      "body": "001-api-cinemas.json"
+    },
+    {
+      "url": "https://web.cinepax.com/api/movies?cinemaId=0000000011",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "etag": "W/\"1b30-z+DvaDwY+6ux4a9RP8zHP7SLfkc\""
+      },
+      "body": "002-api-movies-cinemaid-0000000011.json"
+    }
+  ]
+}

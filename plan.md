@@ -1243,7 +1243,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: `run --job full --cinema <id> --dry-run --offline tests/fixtures/<id>/<date>` exits 0.
   - Tests: scraper unit.
 
-- [ ] **P1-05 — Fixture capture tool and first fixtures** · Must · 0.5 d · deps: P1-01, P0-08
+- [x] **P1-05 — Fixture capture tool and first fixtures** · Must · 0.5 d · deps: P1-01, P0-08
   - Details: `scripts/capture_fixture.py --cinema <id>` fetches through the real client (robots enforced), keeps only the needed responses, strips cookies and tokens, and writes `manifest.json` (URL path → file).
   - Accept: first-cinema fixtures include at least 2 movies and several showtimes (a midnight-crossing show if one exists).
   - Tests: fixture refresh (process).

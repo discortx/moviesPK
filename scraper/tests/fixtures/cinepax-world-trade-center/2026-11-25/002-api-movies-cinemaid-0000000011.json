@@ -1,0 +1,316 @@
+[
+  {
+    "id": "F000003188",
+    "filmCode": "F000003188",
+    "scheduledFilmId": "HO00002514",
+    "title": "18+Belkis (Turkish Urdu Dubbed)",
+    "genre": "Entertainment",
+    "cast": "",
+    "duration": "85 min",
+    "rating": "A",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002514",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002514",
+    "screens": {
+      "SCREEN 2 - PLATINUM": {
+        "times": [
+          "1:15 PM",
+          "8:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "66322",
+            "showtime": "2026-11-26T13:15:00",
+            "displayTime": "1:15 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66325",
+            "showtime": "2026-11-26T20:45:00",
+            "displayTime": "8:45 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      },
+      "SCREEN 1- SILVER": {
+        "times": [
+          "9:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "66349",
+            "showtime": "2026-11-27T21:00:00",
+            "displayTime": "9:00 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 190,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Left homeless after a dark tragedy, three orphaned sisters seek shelter with a mysterious witch named Belkıs, only to bring a malevolent force into her home that threatens them all.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000011",
+    "cinemaName": "CINEPAX WORLD TRADE CENTER",
+    "hasFutureSessions": true,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003065",
+    "filmCode": "F000003065",
+    "scheduledFilmId": "HO00002402",
+    "title": "Carry On Jatta 4",
+    "genre": "Comedy",
+    "cast": "Gippy Grewal, Binnu Dhillon, Jaswinder Bhalla, Karamjit Anmol, Sargun Mehta",
+    "duration": "143 min",
+    "rating": "U",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002402",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002402",
+    "screens": {
+      "SCREEN 2 - PLATINUM": {
+        "times": [
+          "4:30 PM",
+          "4:40 PM",
+          "6:00 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "66337",
+            "showtime": "2026-11-26T18:00:00",
+            "displayTime": "6:00 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66353",
+            "showtime": "2026-11-27T16:40:00",
+            "displayTime": "4:40 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66365",
+            "showtime": "2026-11-28T16:30:00",
+            "displayTime": "4:30 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-28",
+            "calendarDate": "2026-11-28",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "The Dhillon family’s peaceful life spirals into chaos after the death of its patriarch and a second tragedy involving their beloved Chacha. To protect Chacha from heartbreak, the family pretends his son is still alive, leading to an ongoing web of lies and absurd situations. Meanwhile, Jass falls in love, but his girlfriend’s father demands a perfect family, forcing the Dhillons to stage an even bigger illusion. As confusion peaks, the late Dhillon Sahib’s presence returns as a guiding force, pushing the family toward truth. Blending comedy and emotion, the story celebrates love, family bonds, and the importance of honesty.",
+    "releaseDate": "2026-06-26",
+    "cinemaId": "0000000011",
+    "cinemaName": "CINEPAX WORLD TRADE CENTER",
+    "hasFutureSessions": true,
+    "allowTicketSales": true,
+    "voteAverage": 7,
+    "trailerUrl": "https://www.youtube.com/watch?v=fsDBAr42UUg"
+  },
+  {
+    "id": "F000003213",
+    "filmCode": "F000003213",
+    "scheduledFilmId": "HO00002539",
+    "title": "Godzilla Minus Zero (Japanes With Eng Subtitles)",
+    "genre": "Action",
+    "cast": "",
+    "duration": "135 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002539",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002539",
+    "screens": {
+      "SCREEN 2 - PLATINUM": {
+        "times": [
+          "3:15 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "66324",
+            "showtime": "2026-11-26T15:15:00",
+            "displayTime": "3:15 PM",
+            "screenName": "SCREEN 2 - PLATINUM",
+            "screenNumber": 2,
+            "seatsAvailable": 50,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Set in 1949, the Shikishima family confronts a fresh catastrophe two years after surviving their previous ordeal with the legendary monster.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000011",
+    "cinemaName": "CINEPAX WORLD TRADE CENTER",
+    "hasFutureSessions": false,
+    "allowTicketSales": true
+  },
+  {
+    "id": "F000003199",
+    "filmCode": "F000003199",
+    "scheduledFilmId": "HO00002525",
+    "title": "The Hunger Games: Sunrise on the Reaping",
+    "genre": "Science Fiction, Action, Adventure",
+    "cast": "Joseph Zada, Jesse Plemons, Ralph Fiennes, Glenn Close, Mckenna Grace",
+    "duration": "158 min",
+    "rating": "M",
+    "poster": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002525",
+    "backdrop": "https://cinepax.com/CDN/media/entity/get/FilmPosterGraphic/HO00002525",
+    "screens": {
+      "SCREEN 1- SILVER": {
+        "times": [
+          "1:45 PM",
+          "3:00 PM",
+          "4:45 PM",
+          "6:00 PM",
+          "7:45 PM"
+        ],
+        "type": "2D",
+        "features": [
+          "2D"
+        ],
+        "sessions": [
+          {
+            "sessionId": "66319",
+            "showtime": "2026-11-26T13:45:00",
+            "displayTime": "1:45 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 194,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66320",
+            "showtime": "2026-11-26T16:45:00",
+            "displayTime": "4:45 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 194,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66321",
+            "showtime": "2026-11-26T19:45:00",
+            "displayTime": "7:45 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 194,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-26",
+            "calendarDate": "2026-11-26",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66347",
+            "showtime": "2026-11-27T15:00:00",
+            "displayTime": "3:00 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 194,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          },
+          {
+            "sessionId": "66348",
+            "showtime": "2026-11-27T18:00:00",
+            "displayTime": "6:00 PM",
+            "screenName": "SCREEN 1- SILVER",
+            "screenNumber": 1,
+            "seatsAvailable": 194,
+            "attributes": [
+              "2D"
+            ],
+            "businessDate": "2026-11-27",
+            "calendarDate": "2026-11-27",
+            "lateNight": false
+          }
+        ]
+      }
+    },
+    "description": "Revisit the world of Panem 24 years before the events of The Hunger Games, starting on the morning of the reaping of the 50th Hunger Games, also known as the Second Quarter Quell.",
+    "releaseDate": "2026-11-20",
+    "cinemaId": "0000000011",
+    "cinemaName": "CINEPAX WORLD TRADE CENTER",
+    "hasFutureSessions": true,
+    "allowTicketSales": true,
+    "voteAverage": 7.8,
+    "trailerUrl": "https://www.youtube.com/watch?v=Dr060OLTodE"
+  }
+]
