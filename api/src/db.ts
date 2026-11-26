@@ -37,6 +37,12 @@ export async function getDb(): Promise<Db> {
   return (await getClient()).db(name);
 }
 
+/**
+ * The routes reach the database only through this object, so tests can spy on it
+ * (plan P1-15: "/cities makes no DB call", "unknown parameter → 400 with no DB call").
+ */
+export const dbAccess = { getDb: (): Promise<Db> => getDb() };
+
 /** `true` when the database answers a ping within `timeoutMs`. Never throws. */
 export async function pingDb(timeoutMs = PING_TIMEOUT_MS): Promise<boolean> {
   let timer: NodeJS.Timeout | undefined;
