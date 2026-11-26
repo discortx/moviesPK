@@ -48,3 +48,11 @@ Use a throwaway branch and **dispatch the workflow on that branch** (Run workflo
 workflow from"). Never open a pull request for it: GitHub offers "Compare & pull request"
 after the push, and merging it breaks the scheduled runs on `main` (happened once, PR #33,
 reverted). Delete the branch afterwards.
+
+## End-to-end demo (P1-17)
+
+| Date (UTC) | Check | Result |
+|---|---|---|
+| 2026-11-26 16:08 | A real first-cinema showtime through the production API | **OK**: `https://moviespk-api.vercel.app/api/v1/movies/belkis-2026/showtimes?city=lahore&date=2026-11-27` → Cinepax Packages Mall, 27 Nov 23:00 PKT, Screen 4, booking link (dev data). |
+| 2026-11-26 17:03 | README quickstart run end to end on Windows | **OK**: `npm run mongo:dev` → indexes → real scrape of Packages Mall (1 ok) → local API (`db: ok`, 4 movies tomorrow) → local web lists the cities and its `/api` rewrite reaches the local API. |
+| _pending (P1-21/P1-23)_ | That movie's poster loads from the Worker URL in a browser | |

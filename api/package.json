@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "mongo:dev": "node scripts/dev-mongo.mjs",
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
