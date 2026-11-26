@@ -1,0 +1,28 @@
+{
+  "name": "moviespk-images-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MoviesPK poster delivery: Cloudflare Worker on workers.dev reading a private R2 bucket",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --env dev",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "check:deploy": "wrangler deploy --env=\"\" --dry-run --outdir dist && wrangler deploy --env dev --dry-run --outdir dist"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.8.0",
+    "@cloudflare/workers-types": "^5.20261110.1",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.74.0",
+    "vitest": "^5.1.0",
+    "wrangler": "4.160.1"
+  }
+}
