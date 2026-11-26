@@ -8,7 +8,31 @@ measurement. Each entry records: **date**, **environment** (dev / preview / prod
 
 _Target: cache-miss p95 under 1,500 ms including a cold function start._
 
-No measurements yet.
+### 2026-11-26 15:21 UTC: prod (`https://moviespk-api.vercel.app`), function region `bom1`, Atlas Mumbai
+
+- **Method:** no requests for 21 minutes after the last one, then `GET /api/v1/health`
+  (`no-store`, so never cached; it opens the MongoDB connection and pings) from a home
+  connection in Pakistan, then 5 more requests 1 s apart. `curl -w` timings.
+- **Raw numbers (ms):**
+
+  | Request | Total | TCP connect | TLS done | First byte |
+  |---|---|---|---|---|
+  | cold | **1,803** | 162 | 289 | 1,789 |
+  | warm 1 | 282 | 57 | 177 | 281 |
+  | warm 2 | 339 | 55 | 215 | 339 |
+  | warm 3 | 275 | 54 | 173 | 275 |
+  | warm 4 | 334 | 52 | 216 | 333 |
+  | warm 5 | 302 | 73 | 195 | 301 |
+
+- **Reading:** about 290 ms of the cold request is the client's own DNS/TCP/TLS setup;
+  the server side (function start + new TLS-authenticated Atlas connection + ping) is
+  about 1,500 ms. Warm requests are 275-339 ms end to end.
+- **Verdict: Risk.** One cold sample is just over the 1,500 ms target. Mitigating factors:
+  the data endpoints (P1-15) are edge-cached for 5-60 min, so a visitor rarely meets a
+  cold function on a cache miss; `/health` is the worst case (never cached, always pings).
+  Re-measure with more samples on a data endpoint in P1-16 (edge HIT vs MISS) and P4-03.
+  If misses stay over target, options in order: keep TTLs/SWR long (already planned),
+  trim cold-start imports, then revisit the target with the owner (no paid option, OD4).
 
 ## 2. Edge HIT vs MISS latency through the rewrite (P1-16)
 
