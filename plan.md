@@ -1289,7 +1289,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: a forced failure creates exactly 1 issue; a repeat within 24 h adds no comment; recovery closes it.
   - Tests: scraper unit (mocked GitHub API).
 
-- [ ] **P1-13 — `scrape-full` workflow** · Must · 1.0 d · deps: P1-04, P1-12, P0-04
+- [x] **P1-13 — `scrape-full` workflow** · Must · 1.0 d · deps: P1-04, P1-12, P0-04
   - Details: `.github/workflows/scrape-full.yml` per §10.5: `setup-python` with cache, `pip install ./scraper`, run `--job full`, upload `debug/` on failure. `permissions: contents: read, issues: write`. First runs use `environment: dev` with the dev DB and dev bucket, then switch to `production`. Playwright install only in a separate job for `fetch_mode: browser` adapters (added in P2 if needed).
   - Accept: a manual dispatch writes to dev; a scheduled run fires on its own (allow for cron delay); a forced adapter failure gives a non-zero exit, an issue and GitHub's failure email.
   - Tests: live observation recorded in `docs/runbook.md`.
