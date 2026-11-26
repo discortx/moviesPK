@@ -1304,7 +1304,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: seeded data returns the documented shapes (contract test); `/cinemas` items carry `location: {lat, lng}` and no `type`/`coordinates` field; `/cities` makes no DB call (spy); 23:30 and 00:15 PKT shows land on the correct PKT date (a show at `2026-12-02 00:15 PKT` is in `date=2026-12-02` and not in `date=2026-12-01`); `date` beyond today+7 → 400; an unknown parameter → 400 with no DB call (spy); the deployed `moviespk-api` build can read `shared/` (resolves the §9.2 [U]).
   - Tests: API, Contract.
 
-- [ ] **P1-16 — Web shell, rewrite and edge-cache verification** · Must · 1.0 d (re-estimated, unchanged) · deps: P1-15, P0-05
+- [x] **P1-16 — Web shell, rewrite and edge-cache verification** · Must · 1.0 d (re-estimated, unchanged) · deps: P1-15, P0-05
   - Details: `web/next.config.js` rewrite `/api/:path*` → `${API_ORIGIN}/api/:path*`, with `API_ORIGIN` = the API project's **production** domain in every environment (§17.1); a placeholder page listing cities from the API; deploy to `moviespk-web`. The API sends `Vercel-CDN-Cache-Control` + `Cache-Control: public, max-age=60` + `x-vercel-enable-rewrite-caching: 1` (§9.2).
   - Accept: the second identical request to `https://<web>.vercel.app/api/v1/cities` shows `x-vercel-cache: HIT`; a web **preview** deployment also reaches the API (no Deployment Protection page); a miss vs hit latency table is in `docs/performance.md`; if caching through the rewrite fails, apply the P0-05 fallback (the browser calls the API project origin directly with CORS) and record it.
   - Tests: non-functional (curl evidence).
