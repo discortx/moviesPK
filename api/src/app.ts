@@ -3,8 +3,10 @@ import * as helmetModule from "helmet";
 import { requestLogger } from "./lib/log.js";
 import { cors } from "./middleware/cors.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { cinemasRouter } from "./routes/cinemas.js";
 import { citiesRouter } from "./routes/cities.js";
 import { API_VERSION, healthRouter } from "./routes/health.js";
+import { moviesRouter } from "./routes/movies.js";
 
 // Vercel's builder type-checks this entry file with its own module settings, under which
 // helmet's default import is typed as a non-callable namespace (TS2349), even though our
@@ -24,6 +26,8 @@ app.use(cors());
 
 app.use(healthRouter);
 app.use(citiesRouter);
+app.use(cinemasRouter);
+app.use(moviesRouter);
 
 app.use(notFound);
 app.use(errorHandler);
