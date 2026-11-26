@@ -1294,7 +1294,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: a manual dispatch writes to dev; a scheduled run fires on its own (allow for cron delay); a forced adapter failure gives a non-zero exit, an issue and GitHub's failure email.
   - Tests: live observation recorded in `docs/runbook.md`.
 
-- [ ] **P1-14 — API skeleton on Vercel** · Must · 1.5 d (re-estimated, unchanged) · deps: P0-06, P0-04
+- [x] **P1-14 — API skeleton on Vercel** · Must · 1.5 d (re-estimated, unchanged) · deps: P0-06, P0-04
   - Details: `api/src/app.ts` (default export), `src/db.ts` (cached client, §9.2: `maxPoolSize: 5`, `minPoolSize: 0`, `maxIdleTimeMS: 60000`, `serverSelectionTimeoutMS: 5000`), `src/middleware/{validate,cacheHeaders,errorHandler,notFound}.ts`, `src/lib/{dates,errors}.ts` (PKT helpers), pino logger with a path-only serializer, helmet and CORS. Deploy to `moviespk-api`.
   - Accept: `/api/v1/health` returns 200 with `db: "ok"` on the deployed URL; an unknown route gives the standard 404; log lines contain no query string (test); the client options include `maxIdleTimeMS: 60000` (unit test); a cold-start timing is recorded in `docs/performance.md`.
   - Tests: API.
