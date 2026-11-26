@@ -6,9 +6,18 @@ useDefault = true
 [[rules]]
 id = "mongodb-uri-with-credentials"
 description = "MongoDB connection string with embedded credentials"
-regex = '''mongodb(\+srv)?://[^\s:/@]+:[^\s@/]+@[^\s/]+'''
+# Group 1 is the password, so `--redact` hides the password itself in CI logs. (The
+# `+srv` group must stay non-capturing: gitleaks treats the first capture group as the
+# secret.)
+regex = '''mongodb(?:\+srv)?://[^\s:/@]+:([^\s@/]+)@[^\s/]+'''
+secretGroup = 1
 tags = ["mongodb", "uri"]
 
 [allowlist]
-description = "Documentation placeholders"
+description = "Documentation and test placeholders"
 paths = ['''\.env\.example$''', '''docs/archive/''']
+# The fake URI in api/test/skeleton.test.ts (it checks that error details never leak).
+# Matched against the whole finding, and only this exact placeholder: any other
+# user:password in a MongoDB URI still fails.
+regexTarget = "match"
+regexes = ['''mongodb(?:\+srv)?://user:pass@host\b''']
