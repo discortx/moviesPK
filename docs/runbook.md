@@ -7,7 +7,7 @@ here.
 
 ### `scrape-full` (plan §10.5, P1-13)
 
-- **Schedule:** `7 2,14 * * *` UTC (07:07 and 19:07 PKT). GitHub may start scheduled runs
+- **Schedule:** `7 */3 * * *` UTC (every 3 hours at :07; was twice a day until 2026-11-26). GitHub may start scheduled runs
   late or, rarely, skip them when Actions is busy.
 - **Manual run:** Actions → scrape-full → Run workflow. Inputs: `cinema` (one cinema id,
   optional) and `dry_run` (fetch and check only; nothing written, no issues posted).
@@ -25,7 +25,12 @@ here.
 
 1. Two clean dev runs recorded below (one manual, one scheduled).
 2. Settings → Secrets and variables → Actions → Variables → `SCRAPE_ENVIRONMENT` = `production`.
-3. Dispatch one manual run; check `/api/v1/...` on the site afterwards.
+3. Dispatch one manual run.
+4. Vercel → `moviespk-api` → Environment Variables → `MONGODB_DB` = `moviespk` (it is
+   `moviespk_dev` while the scraper writes to dev), then **Redeploy**. The API reads
+   whichever database this names: with the wrong one, every list is empty (seen on
+   2026-11-26). A redeploy also discards edge-cached responses of the old deployment.
+5. Check `/api/v1/cinemas` and `/api/v1/movies?city=lahore` on the site.
 
 ## Live observations (P1-13 acceptance)
 
@@ -33,6 +38,7 @@ here.
 |---|---|---|---|
 | _pending_ | Manual dispatch writes to dev (`scrape_runs` ok, showtimes in `moviespk_dev`) | | |
 | 2026-11-26 10:43 | A scheduled run fired on its own (note the delay after 02:07 / 14:07 UTC) | scrape-full #6 (event `schedule`, `main` 2d2aac4), 46 s | **OK, late**: green; created 10:43:52 UTC, i.e. the 02:07 slot delivered **8 h 36 min late** (after the workflow was disabled and re-enabled at about 08:20). The 14:07 slot had not fired by 14:44 UTC. GitHub's scheduler is unreliable here; the canary staleness alert (full over 18 h, P2) is the safety net. |
+| 2026-11-26 14:07 | Scheduled slot | — | **Not run**: no run by 16:08 UTC (second slot in a row not run on time). |
 | 2026-11-26 08:25 | Forced adapter failure: red run, one `[alert]` issue, GitHub failure email | scrape-full #3 (branch `test/forced-failure`: Packages Mall pointed at the non-existent branch `0000000099`) | **OK**: `[failed] … zero result: no valid showtimes`, exit code 1 (red), issue #34 `[alert] cinepax-packages-mall: failed` created, GitHub failure email received. |
 | 2026-11-26 08:33 | Recovery: next ok run closes the issue | scrape-full #5 (`main` 2d2aac4), 45 s | **OK**: green; issue #34 closed (completed) with "Recovered: `cinepax-packages-mall` ran `ok` at 2026-11-26T08:33:12Z". (Run #4 also failed because the test branch had been merged into `main` by mistake, PR #33; reverted before #5.) |
 

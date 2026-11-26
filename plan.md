@@ -772,7 +772,7 @@ Adapters only parse. Fetching goes through `ctx.http`, which owns robots checks,
 
 | Workflow | Cron | Scope | `timeout-minutes` | Concurrency group |
 |---|---|---|---|---|
-| `scrape-full.yml` | `7 2,14 * * *` (07:07 and 19:07 PKT; off the hour to reduce cron congestion) | all enabled cinemas, 7 days ahead, image step 5a | 60 | `scrape` (shared with seats, so they never overlap) |
+| `scrape-full.yml` | `7 */3 * * *` (every 3 h at :07, off the hour to reduce cron congestion; **owner decision 2026-11-26**, was `7 2,14 * * *`: GitHub skipped or delayed both twice-daily slots on the first day, see `docs/runbook.md`) | all enabled cinemas, 7 days ahead, image step 5a | 60 | `scrape` (shared with seats, so they never overlap) |
 | `scrape-seats.yml` | `37 */3 * * *` | cinemas with `seatsEnabled`, shows in the next 48 h | 30 | `scrape` |
 | `scrape-canary.yml` | `23 4 * * *` | robots/terms re-check, structural probe, staleness, storage (Atlas and R2), digest, **TMDB 6-month purge (daily) and orphan-image cleanup (day 1 of each month)** (§11.3.5) | 20 | `canary` |
 | `healthcheck.yml` | `17 * * * *` | GET site `/` and `/api/v1/health` (bypassing the cache with a `no-store` request), and **one current poster URL from the Worker** | 5 | `health` |
@@ -1299,7 +1299,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: `/api/v1/health` returns 200 with `db: "ok"` on the deployed URL; an unknown route gives the standard 404; log lines contain no query string (test); the client options include `maxIdleTimeMS: 60000` (unit test); a cold-start timing is recorded in `docs/performance.md`.
   - Tests: API.
 
-- [ ] **P1-15 — First endpoints** · Must · 2.0 d · deps: P1-14
+- [x] **P1-15 — First endpoints** · Must · 2.0 d · deps: P1-14
   - Details: `/cities` (from the bundled `shared/constants/cities.json`, no DB read), `/cinemas`, `/movies?city&date`, `/movies/:slug/showtimes?city&date` per §9.1, with cache headers; `lib/geo.ts` (GeoJSON → `{lat, lng}`); the PKT day window of §9.1.
   - Accept: seeded data returns the documented shapes (contract test); `/cinemas` items carry `location: {lat, lng}` and no `type`/`coordinates` field; `/cities` makes no DB call (spy); 23:30 and 00:15 PKT shows land on the correct PKT date (a show at `2026-12-02 00:15 PKT` is in `date=2026-12-02` and not in `date=2026-12-01`); `date` beyond today+7 → 400; an unknown parameter → 400 with no DB call (spy); the deployed `moviespk-api` build can read `shared/` (resolves the §9.2 [U]).
   - Tests: API, Contract.
