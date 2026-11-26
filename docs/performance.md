@@ -60,6 +60,11 @@ _Target: edge-cache hit p95 under 300 ms; miss p95 under 1,500 ms._
 - **Verdict:** MISS **Pass** (p95 523 < 1,500). HIT **Pass** for browser-like traffic
   (p95 114 < 300); the per-request-handshake p95 (305) is at the target and is dominated
   by the client's connection setup, not by the edge. Re-measure under load in P4-03.
+- **Preview check (owner, 2026-11-26 16:43 UTC):** the `moviespk-web` preview of this PR
+  (`moviespk-web-git-feat-p1-16-web-shell-….vercel.app`, Vercel Authentication on for
+  previews) rendered the city list, and its `/api/v1/cities` returned the JSON list, not a
+  Deployment Protection page: the rewrite to the API's production domain works from
+  previews too.
 
 ## 3. Worker cache and header test (P1-21)
 
