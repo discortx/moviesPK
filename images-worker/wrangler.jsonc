@@ -1,0 +1,27 @@
+// Worker `moviespk-img` (plan §11.3.2, §11.3.3, P1-18).
+// - Workers Free on the account's workers.dev subdomain: no zone, no routes, no custom domain.
+// - Exactly one binding per environment: IMAGES → a PRIVATE R2 bucket. No vars, no
+//   secrets, no KV/D1. The Worker never needs credentials: the binding is the access.
+// - Workers Caching with cross_version_cache: object names are immutable, so cached
+//   responses stay valid across deploys (needs Wrangler >= 4.107.0).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "moviespk-img",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  // No usage telemetry to Cloudflare from Wrangler runs of this project.
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  "cache": { "enabled": true, "cross_version_cache": true },
+  "r2_buckets": [{ "binding": "IMAGES", "bucket_name": "moviespk-prod" }],
+  "env": {
+    // `wrangler deploy --env dev` → Worker `moviespk-img-dev` reading the dev bucket.
+    "dev": {
+      "workers_dev": true,
+      "preview_urls": false,
+      "cache": { "enabled": true, "cross_version_cache": true },
+      "r2_buckets": [{ "binding": "IMAGES", "bucket_name": "moviespk-dev" }],
+    },
+  },
+}

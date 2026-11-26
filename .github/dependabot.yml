@@ -36,7 +36,13 @@ updates:
     directory: /scripts
     schedule:
       interval: weekly
-  # images-worker/ is added in P1-18.
+  - package-ecosystem: npm
+    directory: /images-worker
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

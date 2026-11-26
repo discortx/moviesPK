@@ -340,7 +340,7 @@ flowchart LR
 - **Scraper:** `httpx[http2]`, `tenacity`, `selectolax`, `beautifulsoup4`, `pydantic>=2`, `rapidfuzz`, `pymongo`, `PyYAML`, `structlog`, **`Pillow`** (resize, WebP), **`boto3`** (S3-compatible client for R2). Optional extra `[browser]`: `playwright`. Dev: `ruff`, `mypy`, `pytest`, `pytest-cov`, `respx` (httpx mocking), `mongomock`, `pip-audit`, `jsonschema` (contract fixtures against `shared/schemas`, §13); `botocore.stub.Stubber` for S3 unit tests (ships with boto3). Robots parsing: an in-house RFC 9309 matcher in `core/robots.py` (stdlib `urllib.robotparser` is not used: Python 3.12 applies the first matching rule instead of the most specific one, so its results depend on the interpreter version).
 - **API:** `express`, `zod`, `mongodb`, `helmet`, `pino`, `pino-http`. Dev: `typescript`, `eslint`, `vitest` or `jest`, `supertest`, `mongodb-memory-server`.
 - **Web:** `next`, `react`, `react-dom`, `tailwindcss`, `@tanstack/react-query`. Dev: `@playwright/test`, `@lhci/cli`, `vitest` or `jest`, `@testing-library/react`.
-- **Images Worker (`images-worker/`):** dev-only: `wrangler` **≥ 4.107.0** (needed for `cross_version_cache`; `cache.enabled` alone needs ≥ 4.69.0 [V C-3, C-4]), `typescript`, `@cloudflare/workers-types`, `vitest`, `@cloudflare/vitest-pool-workers`, `eslint`. No runtime dependencies.
+- **Images Worker (`images-worker/`):** dev-only: `wrangler` **≥ 4.107.0** (needed for `cross_version_cache`; `cache.enabled` alone needs ≥ 4.69.0 [V C-3, C-4]), `typescript`, `@cloudflare/workers-types`, `vitest`, `@cloudflare/vitest-pool-workers`, `eslint`. No runtime dependencies. **(P1-18, 2026-11-26:** `@cloudflare/vitest-pool-workers` is deprecated and renamed `@cloudflare/vitest-plugin`; the Worker uses `@cloudflare/vitest-plugin` 1.8.0, which bundles the same pinned `wrangler` 4.160.1.)
 - **Tooling:** `pre-commit`, `gitleaks`, Dependabot.
 - **Local dev:** MongoDB Community via Docker or a native install. Docker Desktop is free for personal and educational use [U: confirm the licence fits the owner]; otherwise use a native MongoDB install or Podman.
 
@@ -1314,7 +1314,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: a real first-cinema showtime is visible via the production `/api/v1/movies/...` URL, and its poster key loads from the Worker URL in a browser.
   - Tests: manual.
 
-- [ ] **P1-18 — images-worker scaffold (v2.1)** · Must · 0.5 d · deps: P0-02, P0-12
+- [x] **P1-18 — images-worker scaffold (v2.1)** · Must · 0.5 d · deps: P0-02, P0-12
   - Details: `images-worker/` with `package.json` (dev deps per §6.2; `wrangler` pinned ≥ 4.107.0), `tsconfig.json`, `wrangler.jsonc` (`name: moviespk-img`, `main: src/index.ts`, a recent `compatibility_date`, `workers_dev: true`, `preview_urls: false`, `cache: {enabled: true, cross_version_cache: true}`, `r2_buckets: [{binding: "IMAGES", bucket_name: "moviespk-prod"}]`, `env.dev.r2_buckets: [{binding: "IMAGES", bucket_name: "moviespk-dev"}]`, no `routes`, no `vars`), `vitest.config.ts` (Workers pool), ESLint, `README.md`. Add npm for `images-worker/` to Dependabot.
   - Accept: `npm ci && npm run lint && npm run typecheck && npm test` pass on a hello-world handler; `npx wrangler deploy --dry-run` and `--env dev --dry-run` both succeed; the config contains exactly one bucket binding per environment and no zone settings.
   - Tests: Images Worker unit (smoke).
