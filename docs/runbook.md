@@ -8,9 +8,7 @@ here.
 ### `scrape-full` (plan §10.5, P1-13)
 
 - **Schedule:** `7 2,14 * * *` UTC (07:07 and 19:07 PKT). GitHub may start scheduled runs
-  late or skip a slot when Actions is busy (seen on 2026-11-26: the first slot after the
-  workflow was added never ran). If a slot is missing, disable and re-enable the workflow
-  (Actions → scrape-full → ··· ), or dispatch a run by hand.
+  late or, rarely, skip them when Actions is busy.
 - **Manual run:** Actions → scrape-full → Run workflow. Inputs: `cinema` (one cinema id,
   optional) and `dry_run` (fetch and check only; nothing written, no issues posted).
 - **Environment:** repository variable `SCRAPE_ENVIRONMENT` = `dev` (default) or
@@ -33,8 +31,7 @@ here.
 
 | Date (UTC) | Check | Run | Result |
 |---|---|---|---|
-| 2026-11-25 19:52 | Manual dispatch writes to dev (`scrape_runs` ok, showtimes in `moviespk_dev`) | scrape-full #1 (`main` 63f3afc), 28 s | **OK**: `moviespk_dev` has cinemas 5, movies 8, showtimes 19, scrape_runs 1, movie_aliases 7 (TMDB matched 7 of 8 titles). Spot check: Belkis, Screen 4, `startsAt` 2026-11-26T08:00Z (13:00 PKT), `endsAt` +85 min, `expireAt` +7 d, booking URL present. |
-| 2026-11-26 02:07 | Scheduled slot (first after the workflow was added at 19:37 UTC) | — | **Skipped by GitHub**: no run created (checked 08:15 UTC via the REST API; workflow `active`). Scheduled events are best-effort and may be dropped under load. Workflow disabled and re-enabled to re-register the schedule. |
+| _pending_ | Manual dispatch writes to dev (`scrape_runs` ok, showtimes in `moviespk_dev`) | | |
 | _pending_ | A scheduled run fired on its own (note the delay after 02:07 / 14:07 UTC) | | |
 | _pending_ | Forced adapter failure: red run, one `[alert]` issue, GitHub failure email | | |
 | _pending_ | Recovery: next ok run closes the issue | | |
