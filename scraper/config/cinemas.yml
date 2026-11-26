@@ -1,4 +1,4 @@
-# Cinema list (plan §8.3, P0-08). A venue is enabled once its runner probe passed (P0-09)
+﻿# Cinema list (plan Â§8.3, P0-08). A venue is enabled once its runner probe passed (P0-09)
 # and its adapter exists (P1-06 / P2-01).
 #
 # - location is [lng, lat], taken from a map by hand (no geocoding).
@@ -12,7 +12,7 @@
 - id: cinepax-packages-mall
   chain: cinepax
   adapter: cinepax
-  branch: "0000000014"
+  branch: "0000000099"
   fetch_mode: json
   base_url: https://web.cinepax.com
   booking_url_template: https://web.cinepax.com/pages/booking.html?filmCode={filmId}&movie={movieTitle}&cinemaId={branch}&cinema={cinemaName}
@@ -23,11 +23,11 @@
   min_delay_ms: 1500
   max_concurrency: 1
   enabled: true # first cinema (P1-13); dev database until SCRAPE_ENVIRONMENT=production
-  seats_allowed: false # seatsAvailable is in the session JSON; decide under §10.6
+  seats_allowed: false # seatsAvailable is in the session JSON; decide under Â§10.6
   robots_policy: respect
   evidence: &cinepax_evidence
     checked_at: "2026-11-25"
-    robots_sha256: null # no robots.txt (HTTP 404) → everything allowed
+    robots_sha256: null # no robots.txt (HTTP 404) â†’ everything allowed
     terms_url: https://web.cinepax.com/api/cms/pages/terms
     terms_sha256: 62dc051de906e2d48dd27ce4df9a5f7e9a554a6b2b8ba4153b6bf407546a2d56
     endpoints:
@@ -92,7 +92,7 @@
   robots_policy: respect
   evidence:
     checked_at: "2026-11-25"
-    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) → missing
+    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) â†’ missing
     terms_url: https://universalcinemas.com/browsing/General/TermsAndConditions
     terms_sha256: f802691c83b43824a4a0289e5c2c63372e3abf40f7651fb2a54ad3e3e8b8b206
     endpoints:
@@ -120,7 +120,7 @@
   robots_policy: respect
   evidence:
     checked_at: "2026-11-25"
-    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) → missing
+    robots_sha256: null # /robots.txt redirects to an HTML error page (soft 404) â†’ missing
     terms_url: https://cinestar.pk/browsing/General/TermsAndConditions
     terms_sha256: 7c6220b70fbf612896a11ab5d316c223f4c1437b760d1053273e3342d11d8080
     endpoints:
