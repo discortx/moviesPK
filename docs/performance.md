@@ -38,7 +38,28 @@ _Target: cache-miss p95 under 1,500 ms including a cold function start._
 
 _Target: edge-cache hit p95 under 300 ms; miss p95 under 1,500 ms._
 
-No measurements yet.
+### 2026-11-26 16:45 UTC: prod, `https://moviespk-web.vercel.app/api/v1/movies` (rewrite → `moviespk-api`, `bom1`), dev data
+
+- **Method:** 16 distinct URLs never requested before (8 cities × dates 2026-11-30 and
+  2026-12-01, `GET /api/v1/movies?city=…&date=…`), each fetched once (MISS), then the same
+  16 again (HIT). Client: a home connection in Pakistan, `curl -w`. Passes 1 and 2 used a
+  new process (new TCP + TLS connection) per request; pass 3 fetched the 16 HIT URLs over
+  one reused connection, as a browser does.
+- **Raw numbers (ms, total time):**
+
+  | Pass | `x-vercel-cache` | n | min | median | p95 | max |
+  |---|---|---|---|---|---|---|
+  | 1: first request, new connection each | 16 × MISS | 16 | 273 | 305 | **523** | 529 |
+  | 2: repeat, new connection each | 16 × HIT | 16 | 229 | 271 | 305 | 511 |
+  | 3: repeat, one reused connection (first request excluded: 327 incl. handshake) | HIT | 15 | — | **88** | **114** | 170 |
+
+- **Reading:** caching through the cross-project rewrite works (every repeat was a HIT).
+  About 200 ms of every pass-2 request is the client's own TCP/TLS handshake; with
+  connection reuse a HIT is about 90 ms. The misses were served by warm functions (the
+  API had just been used), so they do not cover a cold start (§1).
+- **Verdict:** MISS **Pass** (p95 523 < 1,500). HIT **Pass** for browser-like traffic
+  (p95 114 < 300); the per-request-handshake p95 (305) is at the target and is dominated
+  by the client's connection setup, not by the edge. Re-measure under load in P4-03.
 
 ## 3. Worker cache and header test (P1-21)
 
