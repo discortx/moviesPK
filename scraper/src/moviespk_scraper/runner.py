@@ -185,6 +185,7 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
             movies=counts.movies,
             showtimes=counts.showtimes,
             aliases=counts.aliases,
+            relinked=counts.relinked,
             missed=rec.missed,
             cancelled=rec.cancelled,
         )
