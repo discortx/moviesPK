@@ -133,6 +133,45 @@ Drill log (repeat quarterly and in P4-05):
 |---|---|---|---|---|
 | 2026-11-28 15:00 | dev export of 14:57 (artifact) | local MongoDB 7, `moviespk_restore_test` | 28 / 24 / 5 (= manifest) | OK. Validated, restored, indexes created; `--target-db moviespk` without `--force` refused. One live `full` run into it (no TMDB key): 5 cinemas `ok`, 155 showtimes, still 28 movies (no duplicates; 54 of 60 listings matched through the restored aliases alone), no orphan showtimes. Local API on it: `/health` ok, 5 cinemas, Lahore 14 / Karachi 5 / Islamabad 2 films today; `sanjog-2026` same slug and poster as before. |
 
+## Blocked site (P2-07, plan §2.3, R3)
+
+A `[alert] <cinema>: blocked` issue means robots.txt refuses a path we need, robots.txt is
+unreachable, or the site answers 403/429 repeatedly. **Never** a proxy, VPS, IP rotation or
+browser spoofing, and a robots refusal is never routed around (D17).
+
+1. Read the alert: a robots refusal → re-run `scripts/snapshot_evidence.py`; if the path is
+   now Disallowed, go straight to step 4.
+2. Polite changes, one PR: a larger `min_delay_ms` in `cinemas.yml`; another endpoint that
+   robots allows (with new evidence); fewer requests per run.
+3. Watch the next runs. After 3 blocked runs in a row the alert gains a comment ending in
+   "Blocked 3 runs in a row" (state `...:drop`).
+4. Still blocked after 3 runs: drop it. `enabled: false` in `cinemas.yml` with a comment
+   giving the reason and date; record it in the cinema's investigation document and in
+   `docs/cinema-investigation/README.md` (Scope column: Dropped); merge. Its showtimes
+   stop being refreshed and are cancelled or expire within 7 days; to remove them at once,
+   purge (below).
+
+## Purge one cinema's data (P2-07a, plan §12.5, §17.3, §18.4)
+
+```
+python scripts/purge_cinema.py --cinema <id> (--showtimes | --all) [--dry-run] [--yes]
+```
+
+From the repository root, the scraper's virtual environment active, `MONGODB_URI_SCRAPER`
+and `MONGODB_DB` in the shell only (never printed).
+
+- `--showtimes`: only the cinema's showtimes. Rollback of bad data (§17.3):
+  `git revert`, then `python scripts/purge_cinema.py --cinema <id> --showtimes`, then
+  dispatch `scrape-full` with `cinema: <id>`.
+- `--all`: also the cinema document, its `scrape_runs` and its cinema-specific `auto` and
+  `pending` aliases. Removal request (§18.4): first merge `enabled: false`, then
+  `python scripts/purge_cinema.py --cinema <id> --all`. Refused while `cinemas.yml` still
+  says `enabled: true`.
+- Never touched: `movies`, `manual` aliases, R2 objects, other cinemas.
+- Every run prints the counts it would delete; `--dry-run` stops there. Otherwise re-type
+  the cinema id (or pass `--yes`); anything else aborts with nothing deleted. Exit codes:
+  0 done, 1 aborted, 2 invalid or refused. Record the run in the related issue.
+
 ## Maintenance log (monthly human commit, P2-06)
 
 | Month | By | What |

@@ -46,6 +46,8 @@ from .services.images import ImageStep
 
 MAX_PARALLEL_CINEMAS = 3
 SHOWTIME_DAYS = 7
+#: Blocked this many full runs in a row → the alert says to drop the cinema (P2-07).
+BLOCKED_DROP_AFTER = 3
 
 
 @dataclass
@@ -265,6 +267,7 @@ def _report_health(
 ) -> None:
     """``scrape_runs`` + ``cinemas.health`` (writing runs only), then alerts (§18.1)."""
     previous_success = None
+    blocked_runs = 0
     if services.db is not None:
         previous_success = last_success(services.db, cinema.id)
         record_run(
@@ -290,17 +293,29 @@ def _report_health(
                 github_run_id=github_run_id(),
             ),
         )
+        if result.status == "blocked":
+            blocked_runs = repo.status_streak(services.db, cinema.id, job, "blocked")
     if services.alerter is None:
         return
     if result.ok:
         services.alerter.resolve(cinema.id, now)
     else:
+        summary = result.error or result.status
+        state = f"{result.status}:{result.error_type or 'Error'}"
+        if blocked_runs >= BLOCKED_DROP_AFTER:
+            # Plan P2-07: polite changes first; still blocked after 3 runs → drop the cinema.
+            summary += (
+                f" Blocked {blocked_runs} runs in a row: follow the runbook section "
+                "'Blocked site' (slower delay, another allowed endpoint, fewer requests; "
+                "otherwise enabled: false and record why). Never a proxy, VPS or IP rotation."
+            )
+            state += ":drop"
         services.alerter.raise_alert(
             Alert(
                 cinema_id=cinema.id,
                 type=result.status,
-                summary=result.error or result.status,
-                state=f"{result.status}:{result.error_type or 'Error'}",
+                summary=summary,
+                state=state,
                 run_url=run_url(),
                 last_success=previous_success,
             ),
