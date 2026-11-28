@@ -1367,10 +1367,10 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   | Row | Cinema / chain (branches) | Source | Effort | Robots verdict | Seats allowed | Est. d | Status |
   |---|---|---|---|---|---|---|---|
   | A01 | Cinepax Packages Mall (`0000000014`), first cinema (P1-06) | json (adapter A) | S | Allowed (robots 404) | candidate (`seatsAvailable`, §10.6) | 0 | done in P1 |
-  | A02 | Cinepax World Trade Center (`0000000011`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | enabled 2026-11-28 (dry run: WTC 8, Ocean 33 valid showtimes, 0 invalid) |
-  | A03 | Cinepax Ocean Mall (`0000000002`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | enabled 2026-11-28 (dry run: WTC 8, Ocean 33 valid showtimes, 0 invalid) |
-  | A04 | Universal Cinemas Emporium Mall (`8888`), new Vista adapter B | html (B) | M | Allowed (robots soft 404) | no | 2.0 | not started |
-  | A05 | CineStar Township (`0005`), branch of B (other operator) | html (B) | S | Allowed (robots soft 404) | no | 0.5 | not started |
+  | A02 | Cinepax World Trade Center (`0000000011`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | **done** 2026-11-28 (dry run clean; dev run #14: Karachi 7 films today / 9 on 30 Nov, Islamabad 3 today) |
+  | A03 | Cinepax Ocean Mall (`0000000002`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | **done** 2026-11-28 (dry run clean; dev run #14: Karachi 7 films today / 9 on 30 Nov, Islamabad 3 today) |
+  | A04 | Universal Cinemas Emporium Mall (`8888`), new Vista adapter B | html (B) | M | Allowed (robots soft 404) | no | 2.0 | **done** 2026-11-28 (adapter `vista`; live dry run clean: 23 films, 97 shows) |
+  | A05 | CineStar Township (`0005`), branch of B (other operator) | html (B) | S | Allowed (robots soft 404) | no | 0.5 | **done** 2026-11-28 (live dry run clean: 9 films, 20 shows) |
   | | **Σ (from P0-08, 2026-11-25)** | | | | | **3.5** | |
 
   Replace the placeholder with the real sum at G0 and update §16. A branch of an existing chain is usually 0.5 d.

@@ -1,6 +1,6 @@
 # Cinema investigation (P0-08)
 
-One document per adapter group. The desk audit is in [cinema-viability-audit.md](../cinema-viability-audit.md); these documents record the evidence for the venues being enabled. Config: [`scraper/config/cinemas.yml`](../../scraper/config/cinemas.yml) (all `enabled: false` until their adapter exists, P2-01).
+One document per adapter group. The desk audit is in [cinema-viability-audit.md](../cinema-viability-audit.md); these documents record the evidence for the venues being enabled. Config: [`scraper/config/cinemas.yml`](../../scraper/config/cinemas.yml) (each venue enabled once its adapter passed a clean live dry run, P2-01).
 
 ## Status
 
@@ -14,6 +14,6 @@ One document per adapter group. The desk audit is in [cinema-viability-audit.md]
 
 **First adapter:** A (Cinepax JSON): three venues, three cities, simplest source.
 
-**Enabled (scraped hourly):** Cinepax Packages Mall (P1-13), Cinepax World Trade Center and Cinepax Ocean Mall (P2-01, 2026-11-28). Universal and CineStar wait for the Vista adapter (P2-01 rows A04/A05).
+**Enabled (scraped hourly):** Cinepax Packages Mall (P1-13); Cinepax World Trade Center, Cinepax Ocean Mall, Universal Cinemas Emporium Mall and CineStar Township (P2-01, 2026-11-28). All five are enabled.
 
 **Reachable count: 5 of 5** (P0-09, 2026-11-25). Minimum of 5 met → G0 cinema criterion satisfied.

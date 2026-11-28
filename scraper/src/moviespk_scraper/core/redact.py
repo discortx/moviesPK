@@ -9,7 +9,7 @@ import re
 from typing import Any
 from urllib.parse import parse_qsl, urlsplit
 
-KEPT_HEADERS = frozenset({"content-type", "etag", "last-modified"})
+KEPT_HEADERS = frozenset({"content-type", "etag", "last-modified", "location"})
 #: Keys whose string values are credentials.
 SECRET_KEY = re.compile(
     r"(token|secret|password|passwd|csrf|xsrf|api_?key|authori[sz]ation|cookie)$|^auth$", re.I

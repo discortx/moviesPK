@@ -20,7 +20,7 @@ from typing import Any
 import pytest
 
 from moviespk_scraper.adapters.base import RunContext
-from moviespk_scraper.adapters.cinepax import CinepaxAdapter
+from moviespk_scraper.adapters.registry import get_adapter
 from moviespk_scraper.core.circuit_breaker import CinemaBudget
 from moviespk_scraper.core.config import CinemaConfig, load_config
 from moviespk_scraper.core.http import ScraperHttpClient
@@ -43,7 +43,8 @@ pytestmark = pytest.mark.integration
 
 ROOT = Path(__file__).resolve().parents[3]
 FIXTURES = ROOT / "scraper" / "tests" / "fixtures"
-CAPTURE = "2026-11-25"
+#: Capture date per chain: Cinepax 2026-11-25, Vista (Universal, CineStar) 2026-11-28.
+CAPTURES = {"cinepax": "2026-11-25", "vista": "2026-11-28"}
 #: One film matched through a manual alias, so tmdbId-based ids are exercised.
 ALIASES = AliasTable(manual=[Alias("resident evil", "manual", tmdb_id=1196970)])
 
@@ -72,14 +73,14 @@ def db(mongo_uri: str, db_name: str) -> Iterator[DB]:
 
 def rows(cinema_id: str) -> tuple[Rows, datetime]:
     cinema = load_config().cinema(cinema_id)
-    fixture = FIXTURES / cinema_id / CAPTURE
+    fixture = FIXTURES / cinema_id / CAPTURES[cinema.adapter]
     now = captured_at(fixture)
     assert now is not None
     with ScraperHttpClient("t", transport=FixtureTransport(fixture), sleep=lambda _s: None) as http:
         ctx = RunContext(
             http=http, job="full", now=now, log=get_logger(), budget=CinemaBudget(cinema_id)
         )
-        adapter = CinepaxAdapter()
+        adapter = get_adapter(cinema.adapter)
         movies = adapter.list_movies(ctx, cinema)
         shows = adapter.list_showtimes(ctx, cinema)
     checked = validate(
@@ -110,6 +111,7 @@ def snapshot(db: DB) -> str:
 
 
 CINEPAX = ["cinepax-packages-mall", "cinepax-world-trade-center", "cinepax-ocean-mall"]
+VISTA = ["universal-emporium-mall-lahore", "cinestar-township-lahore"]
 
 
 # --- acceptance -------------------------------------------------------------------------
@@ -122,6 +124,25 @@ def test_running_the_fixture_pipeline_twice_is_identical(db: DB) -> None:
     assert snapshot(db) == first
     assert db.showtimes.count_documents({}) == 19 + 12 + 33
     assert db.cinemas.count_documents({}) == 5
+
+
+def test_vista_fixture_pipeline_is_idempotent(db: DB) -> None:
+    """First run of the Vista chain (P2-01): Universal and CineStar."""
+    run_pipeline(db, VISTA)
+    first = snapshot(db)
+    run_pipeline(db, VISTA)
+    assert snapshot(db) == first
+    assert db.showtimes.count_documents({"cinemaId": VISTA[0]}) == 97
+    assert db.showtimes.count_documents({"cinemaId": VISTA[1]}) == 20
+    late = db.showtimes.find_one(
+        {
+            "cinemaId": VISTA[0],
+            "movie.title": "Sanjog",
+            "startsAt": datetime(2026, 11, 28, 19, 0, tzinfo=UTC),
+        }
+    )
+    assert late is not None  # 2026-11-29 00:00 PKT, listed under the 28 Nov heading
+    assert late["bookingUrl"].startswith("https://universalcinemas.com/Ticketing/")
 
 
 def test_recreated_movie_with_same_tmdb_id_keeps_showtime_ids(db: DB) -> None:

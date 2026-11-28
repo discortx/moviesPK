@@ -1,0 +1,40 @@
+{
+  "cinema_id": "cinestar-township-lahore",
+  "captured_at": "2026-11-28T13:08:35Z",
+  "responses": [
+    {
+      "url": "https://cinestar.pk/robots.txt",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "location": "https://cinestar.pk/browsing/robots.txt"
+      },
+      "body": "000-robots-txt.html"
+    },
+    {
+      "url": "https://cinestar.pk/browsing/robots.txt",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "location": "https://cinestar.pk/Browsing/General/Error"
+      },
+      "body": "001-browsing-robots-txt.html"
+    },
+    {
+      "url": "https://cinestar.pk/Browsing/General/Error",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "002-browsing-general-error.html"
+    },
+    {
+      "url": "https://cinestar.pk/browsing/Cinemas/Details/0005",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      },
+      "body": "003-browsing-cinemas-details-0005.html"
+    }
+  ]
+}

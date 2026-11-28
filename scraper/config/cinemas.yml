@@ -87,7 +87,7 @@
   booking_url_template: https://universalcinemas.com/Ticketing/visSelectTickets.aspx?cinemacode={branch}&txtSessionId={sessionId}
   min_delay_ms: 1500
   max_concurrency: 1
-  enabled: false
+  enabled: true # P2-01 (2026-11-28): clean live dry run
   seats_allowed: false
   robots_policy: respect
   evidence:
@@ -113,9 +113,10 @@
   address: Township, Lahore
   city: lahore
   location: [74.31080216763247, 31.450402964635277]
+  booking_url_template: https://cinestar.pk/Ticketing/visSelectTickets.aspx?cinemacode={branch}&txtSessionId={sessionId}
   min_delay_ms: 1500
   max_concurrency: 1
-  enabled: false
+  enabled: true # P2-01 (2026-11-28): clean live dry run
   seats_allowed: false
   robots_policy: respect
   evidence:
