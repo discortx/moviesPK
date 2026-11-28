@@ -7,6 +7,7 @@ The usage log for plan §7.4.3 item 6, §18.2 (monthly check) and P4-03. One row
 | Date | Period | Resource | Limit | Forecast | Actual | % of limit | Source | Observations | Follow-up (owner) |
 |---|---|---|---|---|---|---|---|---|---|
 | 2026-11-25 | month | R2 storage | 10 GB-month | ≈ 0.1 GB | | 1.0% (forecast) | plan §7.4.2 | 300 movies × 200 KB + 50% orphans + dev | |
+| 2026-11-28 | first run | R2 storage per movie (dev) | 1 MB per object cap | 200 KB (plan a7) | 149.6 KB (w185 10.0, w342 26.0, w780 113.6; max object 199 KB) | n/a | scrape-full #11 (`moviespk-dev`), measured through `moviespk-img-dev` | 10 matched movies, 30 objects, all `200 image/webp` | keep a7 (inside ±50%) |
 | 2026-11-25 | month | R2 Class A (writes) | 1,000,000 | ≤ 1,000 | | 0.1% (forecast) | plan §7.4.2 | Only the scraper token can write | |
 | 2026-11-25 | month | R2 Class B (reads) | 10,000,000 | ≈ 70,000 (worst 901,000; hard bound 3.1M) | | 0.7% (forecast) | plan §7.4.2 | Bounded by the Workers Free daily limit | |
 | 2026-11-25 | peak day | Worker requests | 100,000/day | 9,167 average; 27,500 peak | | 9.2% avg / 27.5% peak (forecast) | plan §7.4.2 | Over the limit → placeholders, no bill | |
