@@ -10,20 +10,26 @@ fail=0
 check() { # check <label> <expected status> <expected header or -> <curl args...>
   local label=$1 want=$2 header=$3
   shift 3
-  local out status
-  # Workers.dev may need a few seconds after a first deploy; retry briefly.
-  for attempt in 1 2 3 4 5 6; do
+  local out status header_ok
+  # Right after the FIRST deploy of a workers.dev hostname, Cloudflare answers with its own
+  # 404 (without our headers) until the Worker is attached. So retry until both the status
+  # and the header match, for up to about 2 minutes (seen on 2026-11-28).
+  for _ in $(seq 1 12); do
     out=$(curl -s -o /dev/null -D - --max-time 15 "$@" || true)
     status=$(printf '%s' "$out" | awk 'toupper($1) ~ /^HTTP/ {code=$2} END {print code}')
-    [ "$status" = "$want" ] && break
-    sleep 5
+    header_ok=yes
+    if [ "$header" != "-" ] && ! printf '%s' "$out" | tr -d '\r' | grep -qi "^$header"; then
+      header_ok=no
+    fi
+    if [ "$status" = "$want" ] && [ "$header_ok" = yes ]; then break; fi
+    sleep 10
   done
   if [ "$status" != "$want" ]; then
     echo "FAIL $label: got ${status:-no answer}, want $want"
     fail=1
     return
   fi
-  if [ "$header" != "-" ] && ! printf '%s' "$out" | tr -d '\r' | grep -qi "^$header"; then
+  if [ "$header_ok" != yes ]; then
     echo "FAIL $label: missing header '$header'"
     fail=1
     return
