@@ -40,6 +40,13 @@ updates:
     directory: /images-worker
     schedule:
       interval: weekly
+    groups:
+      # @cloudflare/vitest-plugin depends on one exact wrangler version (and its workerd),
+      # so they must move together; vitest and coverage-istanbul share a version too.
+      cloudflare:
+        patterns: ["wrangler", "@cloudflare/vitest-plugin", "@cloudflare/workers-types"]
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
     ignore:
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
