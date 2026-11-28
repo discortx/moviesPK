@@ -49,7 +49,7 @@
   location: [73.15827985420117, 33.5215501394146]
   min_delay_ms: 1500
   max_concurrency: 1
-  enabled: false
+  enabled: true # P2-01 (2026-11-28): clean live dry run
   seats_allowed: false
   robots_policy: respect
   evidence: *cinepax_evidence
@@ -67,7 +67,7 @@
   location: [67.03598697114558, 24.82401989059472]
   min_delay_ms: 1500
   max_concurrency: 1
-  enabled: false
+  enabled: true # P2-01 (2026-11-28): clean live dry run
   seats_allowed: false
   robots_policy: respect
   evidence: *cinepax_evidence
