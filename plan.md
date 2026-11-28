@@ -1418,7 +1418,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Tests: manual dispatch.
   - Done 2026-11-28: keepalive run #1 enabled all four scheduled workflows (HTTP 204, `active`) and opened issue #73; evidence in `docs/free-tier-verification.md` §8.1.
 
-- [ ] **P2-07 — Blocked-site handling (no paid fallback) and `purge_cinema.py`** · Must · **1.0 d (re-estimated from 0.5 d: +0.5 d for the purge script)** · deps: P2-01, P1-10
+- [x] **P2-07 — Blocked-site handling (no paid fallback) and `purge_cinema.py`** · Must · **1.0 d (re-estimated from 0.5 d: +0.5 d for the purge script)** · deps: P2-01, P1-10
   - Details: for any `blocked` cinema, try a slower delay, a different allowed endpoint and fewer requests. If still blocked after 3 runs, set `enabled: false`, record it in its investigation doc, and remove it from scope. **Never a proxy, VPS or IP rotation.** A robots refusal is never routed around.
   - **Subtask P2-07a — `scripts/purge_cinema.py` (0.5 d).** Used by §12.5, §17.3, §18.4 and the P4-05 drill.
     - Usage: `python scripts/purge_cinema.py --cinema <id> (--showtimes | --all) [--dry-run] [--yes]`. Reads `MONGODB_URI_SCRAPER` and `MONGODB_DB` from the environment and never prints the URI.
@@ -1431,6 +1431,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
     - **Logging:** one structured log line per run with `cinemaId`, mode, dry-run flag, per-collection deleted counts and the target DB name. Procedures record the run in the related GitHub issue (§18.4).
   - Accept: every cinema is Enabled or Dropped with a recorded reason; `purge_cinema.py` passes the tests below; §17.3 and §18.4 use the same invocation as the script.
   - Tests: a live run per affected cinema; scraper integration for the purge script (service container): `--dry-run` deletes nothing; `--showtimes` removes only that cinema's showtimes and leaves other cinemas untouched; `--all` removes the cinema document, its `scrape_runs` and its non-manual cinema-specific aliases while `movies` stay; an unknown or malformed ID exits 2 with no writes; a wrong confirmation aborts with no writes; `--all` is refused while the YAML entry is enabled.
+  - Done 2026-11-28: `scripts/purge_cinema.py` with 11 integration tests (`tests/integration/test_purge_cinema.py`); a blocked alert says to drop the cinema after 3 blocked runs in a row (`runner.py`, `tests/integration/test_blocked_streak.py`); runbook "Blocked site" and "Purge one cinema's data". All five venues Enabled, none blocked, so no live run was needed (`docs/cinema-investigation/README.md`).
 
 - [ ] **P2-08 — Health-check workflow and `/status` data** · Must · 0.5 d (re-estimated, unchanged) · deps: P1-16, P1-12, P1-21
   - Details: `healthcheck.yml` (hourly) GETs the site home page and `/api/v1/health`. It also GETs **one current poster** (the first `poster.key` from `/api/v1/movies?city=<default>&date=<today>`, built with the production image base) and expects 200 `image/webp`.

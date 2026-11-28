@@ -134,6 +134,22 @@ def recent_ok_showtime_counts(db: DB, cinema_id: str, limit: int) -> list[int]:
     return [int(d["counts"]["showtimes"]) for d in cursor if "counts" in d]
 
 
+def status_streak(db: DB, cinema_id: str, job: str, status: str, limit: int = 20) -> int:
+    """How many of the cinema's latest ``job`` runs in a row have ``status``."""
+    cursor = (
+        db[SCRAPE_RUNS]
+        .find({"cinemaId": cinema_id, "job": job}, {"status": 1})
+        .sort("startedAt", -1)
+        .limit(limit)
+    )
+    streak = 0
+    for doc in cursor:
+        if doc.get("status") != status:
+            break
+        streak += 1
+    return streak
+
+
 def last_success_at(db: DB, cinema_id: str, job: str) -> datetime | None:
     """``finishedAt`` of the cinema's latest ``ok``/``partial`` run of ``job`` (30-day TTL)."""
     doc = db[SCRAPE_RUNS].find_one(
