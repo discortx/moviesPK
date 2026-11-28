@@ -177,6 +177,8 @@ export const ScrapeRun = z.strictObject({
     )
     .max(20),
   githubRunId: z.string().regex(/^\d+$/).optional(),
+  /** canary only: Atlas data + index bytes (P2-03). */
+  storageBytes: NonNegInt.optional(),
 });
 
 export const Meta = z.strictObject({

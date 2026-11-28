@@ -4,7 +4,7 @@ deterministic id; nothing here deletes documents."""
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from pymongo import UpdateOne
@@ -132,3 +132,35 @@ def recent_ok_showtime_counts(db: DB, cinema_id: str, limit: int) -> list[int]:
         .limit(limit)
     )
     return [int(d["counts"]["showtimes"]) for d in cursor if "counts" in d]
+
+
+def last_success_at(db: DB, cinema_id: str, job: str) -> datetime | None:
+    """``finishedAt`` of the cinema's latest ``ok``/``partial`` run of ``job`` (30-day TTL)."""
+    doc = db[SCRAPE_RUNS].find_one(
+        {"cinemaId": cinema_id, "job": job, "status": {"$in": ["ok", "partial"]}},
+        {"finishedAt": 1},
+        sort=[("finishedAt", -1)],
+    )
+    value = (doc or {}).get("finishedAt")
+    if isinstance(value, datetime) and value.tzinfo is None:
+        value = value.replace(tzinfo=UTC)  # pymongo returns naive UTC by default
+    return value if isinstance(value, datetime) else None
+
+
+def storage_bytes(db: DB) -> int:
+    """Data + indexes of the database (what the Atlas free-tier 512 MB limit counts)."""
+    stats = db.command("dbStats")
+    return int(stats.get("dataSize", 0)) + int(stats.get("indexSize", 0))
+
+
+def new_unresolved_movies(db: DB, since: datetime) -> list[Document]:
+    """Provisional and unmatched movies created since ``since``, by title."""
+    cursor = (
+        db[MOVIES]
+        .find(
+            {"matchStatus": {"$in": ["provisional", "unmatched"]}, "createdAt": {"$gte": since}},
+            {"title": 1, "slug": 1, "matchStatus": 1},
+        )
+        .sort("title", 1)
+    )
+    return list(cursor)

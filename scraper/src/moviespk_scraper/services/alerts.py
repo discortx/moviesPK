@@ -5,7 +5,11 @@
 * Deduplication: every post ends with a hidden marker
   ``<!-- moviespk-alert state=<state> at=<ISO time> -->``. An open issue gets a new comment
   only when the state changed or the last post is 24 h old.
-* Recovery: the next ``ok`` run closes the cinema's run-alert issues with a comment.
+* Recovery: the next ``ok`` run closes the cinema's run-alert issues with a comment; the
+  canary closes its own alert types when their condition clears.
+* Alerts with ``repeat_after=None`` (robots, terms: the owner must review) never get a
+  repeat comment for the same state, however old the last post.
+* Digests (``[digest] ...``, label ``digest``): one issue per title, closed after 7 days.
 * The body holds the cinema, type, summary, run link and last success time — never
   headers, cookies or secrets (summaries pass through ``health.clean_message``).
 * Posting failures are logged and never fail the job. :class:`PrintAlerter` is the
@@ -44,6 +48,8 @@ class Alert:
     state: str  # what "the same problem" means, e.g. "failed:SchemaDriftError"
     run_url: str | None = None
     last_success: datetime | None = None
+    #: Re-post the same state after this long; ``None`` = never (needs a human review).
+    repeat_after: timedelta | None = REPEAT_AFTER
 
     @property
     def title(self) -> str:
@@ -87,7 +93,13 @@ def last_marker(texts: list[str]) -> tuple[str, datetime] | None:
 class Alerter(Protocol):
     def raise_alert(self, alert: Alert, now: datetime) -> None: ...
 
-    def resolve(self, cinema_id: str, now: datetime) -> None: ...
+    def resolve(
+        self, cinema_id: str, now: datetime, types: tuple[str, ...] = RUN_ALERT_TYPES
+    ) -> None: ...
+
+    def post_digest(self, title: str, body: str) -> None: ...
+
+    def close_digests(self, created_before: datetime) -> None: ...
 
 
 class PrintAlerter:
@@ -99,7 +111,15 @@ class PrintAlerter:
     def raise_alert(self, alert: Alert, now: datetime) -> None:
         self.out.write(f"[dry-run alert] {alert.title}: {clean_message(alert.summary)}\n")
 
-    def resolve(self, cinema_id: str, now: datetime) -> None:
+    def resolve(
+        self, cinema_id: str, now: datetime, types: tuple[str, ...] = RUN_ALERT_TYPES
+    ) -> None:
+        return None
+
+    def post_digest(self, title: str, body: str) -> None:
+        self.out.write(f"[dry-run digest] {title}\n{body}\n")
+
+    def close_digests(self, created_before: datetime) -> None:
         return None
 
 
@@ -144,29 +164,42 @@ class GitHubAlerter:
         resp.raise_for_status()
         return resp.json() if resp.content else None
 
+    def _list_open(self, label: str) -> dict[str, dict[str, Any]]:
+        issues: dict[str, dict[str, Any]] = {}
+        for page in range(1, 11):
+            batch = self._request(
+                "GET",
+                "/issues",
+                params={"state": "open", "labels": label, "per_page": 100, "page": page},
+            )
+            for issue in batch:
+                if "pull_request" not in issue:
+                    issues[issue["title"]] = issue
+            if len(batch) < 100:
+                break
+        return issues
+
     def _open_issues(self) -> dict[str, dict[str, Any]]:
         """Open ``alert`` issues by title, fetched once per run."""
         if self._open is None:
-            issues: dict[str, dict[str, Any]] = {}
-            for page in range(1, 11):
-                batch = self._request(
-                    "GET",
-                    "/issues",
-                    params={"state": "open", "labels": "alert", "per_page": 100, "page": page},
-                )
-                for issue in batch:
-                    if "pull_request" not in issue:
-                        issues[issue["title"]] = issue
-                if len(batch) < 100:
-                    break
-            self._open = issues
+            self._open = self._list_open("alert")
         return self._open
 
-    def _recent_posts(self, issue: dict[str, Any], now: datetime) -> list[str]:
-        since = _iso(now - REPEAT_AFTER * 2)
-        comments = self._request(
-            "GET", f"/issues/{issue['number']}/comments", params={"since": since, "per_page": 100}
+    def _close(self, issue: dict[str, Any], comment: str) -> None:
+        self._request("POST", f"/issues/{issue['number']}/comments", json={"body": comment})
+        self._request(
+            "PATCH",
+            f"/issues/{issue['number']}",
+            json={"state": "closed", "state_reason": "completed"},
         )
+
+    def _recent_posts(
+        self, issue: dict[str, Any], now: datetime, window: timedelta | None = REPEAT_AFTER
+    ) -> list[str]:
+        params: dict[str, Any] = {"per_page": 100}
+        if window is not None:
+            params["since"] = _iso(now - window * 2)
+        comments = self._request("GET", f"/issues/{issue['number']}/comments", params=params)
         return [issue.get("body") or ""] + [c.get("body") or "" for c in comments]
 
     # --- alert API --------------------------------------------------------------------
@@ -195,34 +228,61 @@ class GitHubAlerter:
             issues[alert.title] = created
             self._log.info("alert.created", title=alert.title, issue=created.get("number"))
             return
-        last = last_marker(self._recent_posts(issue, now))
-        if last is not None and last[0] == alert.state and now - last[1] < REPEAT_AFTER:
+        last = last_marker(self._recent_posts(issue, now, alert.repeat_after))
+        if (
+            last is not None
+            and last[0] == alert.state
+            and (alert.repeat_after is None or now - last[1] < alert.repeat_after)
+        ):
             self._log.info("alert.unchanged", title=alert.title, issue=issue["number"])
             return
         self._request("POST", f"/issues/{issue['number']}/comments", json={"body": body})
         self._log.info("alert.commented", title=alert.title, issue=issue["number"])
 
-    def resolve(self, cinema_id: str, now: datetime) -> None:
+    def resolve(
+        self, cinema_id: str, now: datetime, types: tuple[str, ...] = RUN_ALERT_TYPES
+    ) -> None:
+        """Close the open ``[alert] <cinema_id>: <type>`` issues for ``types``."""
         try:
             with self._lock:
                 issues = self._open_issues()
-                for alert_type in RUN_ALERT_TYPES:
+                for alert_type in types:
                     title = f"[alert] {cinema_id}: {alert_type}"
                     issue = issues.pop(title, None)
                     if issue is None:
                         continue
-                    self._request(
-                        "POST",
-                        f"/issues/{issue['number']}/comments",
-                        json={
-                            "body": f"Recovered: `{cinema_id}` ran `ok` at {_iso(now)}. Closing."
-                        },
-                    )
-                    self._request(
-                        "PATCH",
-                        f"/issues/{issue['number']}",
-                        json={"state": "closed", "state_reason": "completed"},
+                    self._close(
+                        issue,
+                        f"Recovered: `{cinema_id}` `{alert_type}` cleared at {_iso(now)}. Closing.",
                     )
                     self._log.info("alert.closed", title=title, issue=issue["number"])
         except (httpx.HTTPError, KeyError, ValueError, TypeError) as exc:
             self._log.warning("alert.resolve_failed", cinemaId=cinema_id, error=type(exc).__name__)
+
+    # --- digests ----------------------------------------------------------------------
+
+    def post_digest(self, title: str, body: str) -> None:
+        """Create the digest issue unless one with this title is already open."""
+        try:
+            with self._lock:
+                if title in self._list_open("digest"):
+                    self._log.info("digest.exists", title=title)
+                    return
+                created = self._request(
+                    "POST", "/issues", json={"title": title, "body": body, "labels": ["digest"]}
+                )
+                self._log.info("digest.created", title=title, issue=created.get("number"))
+        except (httpx.HTTPError, KeyError, ValueError, TypeError) as exc:
+            self._log.warning("digest.post_failed", title=title, error=type(exc).__name__)
+
+    def close_digests(self, created_before: datetime) -> None:
+        """Close open digest issues created before ``created_before`` (7-day lifetime)."""
+        try:
+            with self._lock:
+                for title, issue in self._list_open("digest").items():
+                    created = datetime.fromisoformat(issue["created_at"].replace("Z", "+00:00"))
+                    if created < created_before:
+                        self._close(issue, "Closed automatically after 7 days.")
+                        self._log.info("digest.closed", title=title, issue=issue["number"])
+        except (httpx.HTTPError, KeyError, ValueError, TypeError) as exc:
+            self._log.warning("digest.close_failed", error=type(exc).__name__)

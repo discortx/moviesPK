@@ -48,6 +48,11 @@
         }
       }
     },
-    "githubRunId": { "type": "string", "pattern": "^[0-9]+$" }
+    "githubRunId": { "type": "string", "pattern": "^[0-9]+$" },
+    "storageBytes": {
+      "description": "canary only: Atlas data + index bytes (P2-03)",
+      "type": "integer",
+      "minimum": 0
+    }
   }
 }

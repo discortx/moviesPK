@@ -28,24 +28,17 @@ from urllib.parse import urljoin, urlsplit
 
 import httpx
 import yaml
-from selectolax.lexbor import LexborHTMLParser
 
-from moviespk_scraper.core.robots import RobotsPolicy, normalized_text_sha256, robots_url
+from moviespk_scraper.core.evidence import html_text, terms_sha256
+from moviespk_scraper.core.robots import RobotsPolicy, robots_url
+
+__all__ = ["build_evidence", "fetch_robots", "html_text", "main"]
 
 ROOT = Path(__file__).resolve().parents[1]
 CINEMAS_YML = ROOT / "scraper" / "config" / "cinemas.yml"
 MIN_DELAY_S = 1.5
 SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
 TIMEOUT = httpx.Timeout(30.0, connect=10.0)
-
-
-def html_text(html: str) -> str:
-    """Visible text of an HTML page (scripts and styles removed)."""
-    tree = LexborHTMLParser(html)
-    for node in tree.css("script, style, noscript, template"):
-        node.decompose()
-    root = tree.body or tree.root
-    return root.text(separator="\n") if root is not None else ""
 
 
 def build_evidence(
@@ -123,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
                 time.sleep(MIN_DELAY_S)
                 resp = client.get(args.terms_url)
                 resp.raise_for_status()
-                terms_sha = normalized_text_sha256(html_text(resp.text))
+                terms_sha = terms_sha256(resp.text)
             else:
                 print("warning: terms page is disallowed by robots.txt; not fetched")
 
