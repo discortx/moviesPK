@@ -161,7 +161,9 @@ def test_documents_have_the_planned_shape(db: DB) -> None:
         "type": "Point",
         "coordinates": [67.03598697114558, 24.82401989059472],
     }
-    assert cinema["enabled"] is False and cinema["health"] == {"status": "unknown"}
+    # YAML wins: the stored flag follows cinemas.yml, whatever it currently says.
+    assert cinema["enabled"] is load_config().cinema("cinepax-ocean-mall").enabled
+    assert cinema["health"] == {"status": "unknown"}
     assert "phone" not in cinema
 
     show = db.showtimes.find_one({"cinemaId": "cinepax-ocean-mall", "hall": "GOLD-1"})
