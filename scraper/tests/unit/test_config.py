@@ -167,10 +167,17 @@ def test_phone_is_optional(tmp_path: Path) -> None:
 # --- further rules ------------------------------------------------------------------------
 
 
-def test_enabled_needs_an_implemented_adapter(tmp_path: Path) -> None:
-    assert not registry.spec("vista").implemented
-    vista = cinema(adapter="vista", fetch_mode="html", enabled=True)
-    assert "not implemented yet" in problems(tmp_path, cinemas=[vista])
+@pytest.fixture
+def planned_adapter(monkeypatch: pytest.MonkeyPatch) -> str:
+    """A declared adapter without a factory (every real adapter is implemented now)."""
+    monkeypatch.setitem(registry._ADAPTERS, "planned", registry.AdapterSpec("planned", "html"))
+    return "planned"
+
+
+def test_enabled_needs_an_implemented_adapter(tmp_path: Path, planned_adapter: str) -> None:
+    assert not registry.spec(planned_adapter).implemented
+    planned = cinema(adapter=planned_adapter, fetch_mode="html", enabled=True)
+    assert "not implemented yet" in problems(tmp_path, cinemas=[planned])
 
 
 def test_enabled_cinema_cannot_have_disallowed_evidence(tmp_path: Path) -> None:
@@ -236,11 +243,11 @@ def test_alias_rules(tmp_path: Path, alias: dict[str, Any], expected: str) -> No
 # --- registry -------------------------------------------------------------------------------
 
 
-def test_registry_rejects_unknown_and_unimplemented() -> None:
+def test_registry_rejects_unknown_and_unimplemented(planned_adapter: str) -> None:
     with pytest.raises(registry.UnknownAdapterError):
         registry.get_adapter("nope")
     with pytest.raises(registry.AdapterNotImplementedError):
-        registry.get_adapter("vista")
+        registry.get_adapter(planned_adapter)
 
 
 def test_register_checks_fetch_mode() -> None:

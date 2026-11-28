@@ -51,7 +51,7 @@ _ADAPTERS: dict[str, AdapterSpec] = {
     # Group A: Cinepax public JSON (docs/cinema-investigation/cinepax.md). P1-06.
     "cinepax": AdapterSpec("cinepax", "json", _lazy(".cinepax", "CinepaxAdapter")),
     # Group B: Vista HTML: Universal, CineStar (docs/cinema-investigation/vista.md). P2-01.
-    "vista": AdapterSpec("vista", "html"),
+    "vista": AdapterSpec("vista", "html", _lazy(".vista", "VistaAdapter")),
 }
 
 
