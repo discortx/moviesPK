@@ -1,0 +1,89 @@
+name: deploy-images-worker
+
+# Deploys the poster Worker (plan §12.1, §17.2, P1-20): dev automatically on every merge
+# that touches images-worker/, production only after the owner approves the
+# `images-approval` environment (required reviewer, branch `main` only, no secrets).
+# Credentials (environment `production`): CF_WORKERS_DEPLOY_TOKEN (Workers Scripts Write,
+# this account only, no zones, no R2) and the variable R2_ACCOUNT_ID. They are exported to
+# Wrangler only inside the deploy steps. Never runs on pull_request.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "images-worker/**"
+      - ".github/workflows/deploy-images-worker.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: images-deploy
+  cancel-in-progress: false
+
+env:
+  DEV_URL: https://moviespk-img-dev.moviespk.workers.dev
+  PROD_URL: https://moviespk-img.moviespk.workers.dev
+
+jobs:
+  deploy-dev:
+    if: github.repository == 'discortx/moviesPK'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    defaults:
+      run:
+        working-directory: images-worker
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: images-worker/package-lock.json
+      - run: npm ci
+      - name: Deploy moviespk-img-dev
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_WORKERS_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+        run: npx wrangler deploy --env dev
+      - name: Smoke test dev
+        working-directory: .
+        run: bash .github/scripts/smoke-images-worker.sh "$DEV_URL"
+
+  approve:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: images-approval
+    steps:
+      - run: echo "Production deploy approved by the owner."
+
+  deploy-prod:
+    needs: approve
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    defaults:
+      run:
+        working-directory: images-worker
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: images-worker/package-lock.json
+      - run: npm ci
+      - name: Deploy moviespk-img (production)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_WORKERS_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+        run: npx wrangler deploy --env=""
+      - name: Smoke test production
+        working-directory: .
+        run: bash .github/scripts/smoke-images-worker.sh "$PROD_URL"

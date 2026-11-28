@@ -772,7 +772,7 @@ Adapters only parse. Fetching goes through `ctx.http`, which owns robots checks,
 
 | Workflow | Cron | Scope | `timeout-minutes` | Concurrency group |
 |---|---|---|---|---|
-| `scrape-full.yml` | `7 */3 * * *` (every 3 h at :07, off the hour to reduce cron congestion; **owner decision 2026-11-26**, was `7 2,14 * * *`: GitHub skipped or delayed both twice-daily slots on the first day, see `docs/runbook.md`) | all enabled cinemas, 7 days ahead, image step 5a | 60 | `scrape` (shared with seats, so they never overlap) |
+| `scrape-full.yml` | `7 * * * *` (hourly at :07, off the hour to reduce cron congestion; **owner decisions 2026-11-26 and 2026-11-28**: was `7 2,14 * * *`, then `7 */3 * * *`; GitHub delivered only a fraction of scheduled slots for this repo, see `docs/runbook.md`) | all enabled cinemas, 7 days ahead, image step 5a | 60 | `scrape` (shared with seats, so they never overlap) |
 | `scrape-seats.yml` | `37 */3 * * *` | cinemas with `seatsEnabled`, shows in the next 48 h | 30 | `scrape` |
 | `scrape-canary.yml` | `23 4 * * *` | robots/terms re-check, structural probe, staleness, storage (Atlas and R2), digest, **TMDB 6-month purge (daily) and orphan-image cleanup (day 1 of each month)** (§11.3.5) | 20 | `canary` |
 | `healthcheck.yml` | `17 * * * *` | GET site `/` and `/api/v1/health` (bypassing the cache with a `no-store` request), and **one current poster URL from the Worker** | 5 | `health` |

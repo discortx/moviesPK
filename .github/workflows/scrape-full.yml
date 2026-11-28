@@ -7,10 +7,11 @@ name: scrape-full
 # fires; alerts go to GitHub Issues. Never runs on pull_request (it uses secrets).
 on:
   schedule:
-    # Every 3 h at :07 (owner decision 2026-11-26): GitHub skipped or badly delayed both
-    # twice-daily slots on day one, so more slots keep data fresh when one is missed.
-    # One request per cinema per run; scrape-seats (later) uses :37.
-    - cron: "7 */3 * * *"
+    # Hourly at :07 (owner decision 2026-11-28). GitHub delivers scheduled runs best-effort
+    # and dropped most slots for this repo (twice daily: 2 of 2 missed or 8 h late; every
+    # 3 h: about 4 of 13 delivered), so more slots keep data fresh. One request per cinema
+    # per run, so still very light on cinema sites. scrape-seats (later) uses :37.
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       cinema:

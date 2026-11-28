@@ -7,7 +7,7 @@ here.
 
 ### `scrape-full` (plan §10.5, P1-13)
 
-- **Schedule:** `7 */3 * * *` UTC (every 3 hours at :07; was twice a day until 2026-11-26). GitHub may start scheduled runs
+- **Schedule:** `7 * * * *` UTC (hourly at :07; twice a day until 2026-11-26, every 3 hours until 2026-11-28). Between 2026-11-26 16:20 and 2026-11-28 10:38 UTC GitHub delivered only 4 of about 13 three-hourly slots (all 4 runs succeeded). GitHub may start scheduled runs
   late or, rarely, skip them when Actions is busy.
 - **Manual run:** Actions → scrape-full → Run workflow. Inputs: `cinema` (one cinema id,
   optional) and `dry_run` (fetch and check only; nothing written, no issues posted).

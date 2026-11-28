@@ -21,8 +21,8 @@ Project contact email (Q6): `kalime5891@gmail.com` (owner-approved for publicati
 - [x] Secret scanning and **push protection** enabled; a fake token pushed to a scratch
       branch is blocked (owner test 2026-11-25).
 - [x] Default `GITHUB_TOKEN` permission: **read-only** (owner-checked 2026-11-25).
-- [x] `main` protected: PR required; required checks `scraper-test`, `api-test`, `web-test`, `gitleaks`
-      (plus `scraper-changes`, `api-changes`, `web-changes`).
+- [x] `main` protected: PR required; required checks `scraper-test`, `api-test`, `web-test`, `images-worker-test`, `gitleaks`
+      (plus `scraper-changes`, `api-changes`, `web-changes`, `images-worker-changes`).
       Jobs skipped by the `changes` gate report as passing, so path
       filtering does not block unrelated PRs.
 - [x] Dependabot alerts and version updates enabled.
@@ -70,6 +70,8 @@ Owner-checked 2026-11-25.
 | Subscriptions (Billing → Subscriptions) | **R2 only** |
 | Workers plan (Workers & Pages → Plans) | **Free** |
 | `workers.dev` subdomain | `moviespk.workers.dev` (Worker URL: `https://moviespk-img.moviespk.workers.dev`) |
+| Poster Workers (P1-20) | prod `moviespk-img` → `https://moviespk-img.moviespk.workers.dev` (bucket `moviespk-prod`); dev `moviespk-img-dev` → `https://moviespk-img-dev.moviespk.workers.dev` (bucket `moviespk-dev`). Deployed only by `deploy-images-worker.yml` (prod after `images-approval`). _First deploy: pending._ |
+| `NEXT_PUBLIC_IMAGE_BASE` (Vercel `moviespk-web`) | `https://moviespk-img.moviespk.workers.dev/img` (set once the prod Worker is deployed; the only place the image host appears, plan §11.3.4) |
 | Buckets | `moviespk-prod`, `moviespk-dev`: **private** (no `r2.dev`, no custom domain, no CORS) |
 | Budget alert | $1 to the owner's email; **includes R2** (resolves U-CF3) |
 | R2 tokens | `moviespk-scraper-prod` (Object Read & Write, `moviespk-prod` only) → env `production`; `moviespk-scraper-dev` (`moviespk-dev` only) → env `dev`. Dev token denied on prod: tested 2026-11-25 |
