@@ -1087,7 +1087,7 @@ No purge. The worst case is the edge TTL plus SWR (5 + 10 min), plus ISR at most
 - A Vercel quota or terms blocker → re-plan with an ADR (the only $0 candidates are other no-card hosts; no paid option).
 - A Cloudflare blocker → if Cloudflare requires anything beyond the R2 subscription (for example Workers Paid), or a budget alert cannot be set and the owner does not accept the monthly manual check: launch with `NEXT_PUBLIC_IMAGES_ENABLED=false` (placeholders) and re-plan images with an ADR. **No other paid product.**
 
-**G1:** the `scrape-full` schedule ran unattended at least twice; idempotency test green; a forced failure and a forced zero-result each open exactly one issue and change no data; `/api/v1/movies/:slug/showtimes` returns correct PKT-day data via `https://<web>.vercel.app/api/v1/...` with an edge cache HIT on the second request; **a first-cinema poster loads from the Worker URL with `Cf-Cache-Status: HIT` on the second request (P1-21).**
+**G1:** the `scrape-full` schedule ran unattended at least twice; idempotency test green; a forced failure and a forced zero-result each open exactly one issue and change no data; `/api/v1/movies/:slug/showtimes` returns correct PKT-day data via `https://<web>.vercel.app/api/v1/...` with an edge cache HIT on the second request; **a first-cinema poster loads from the Worker URL with `Cf-Cache-Status: HIT` on the second request (P1-21).** **→ G1 passed 2026-11-28 (evidence: `docs/runbook.md` "Gate G1 review").**
 
 **G2:** approved cinemas enabled; 3 consecutive unattended days with every run `ok` or explained; freshness targets met (§3.2); every alert type fired in a test; export restore verified; keepalive recorded; purge and orphan cleanup ran on dev (P2-10).
 
@@ -1309,7 +1309,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: the second identical request to `https://<web>.vercel.app/api/v1/cities` shows `x-vercel-cache: HIT`; a web **preview** deployment also reaches the API (no Deployment Protection page); a miss vs hit latency table is in `docs/performance.md`; if caching through the rewrite fails, apply the P0-05 fallback (the browser calls the API project origin directly with CORS) and record it.
   - Tests: non-functional (curl evidence).
 
-- [ ] **P1-17 — End-to-end demo and quickstart** · Should · 0.5 d (re-estimated, unchanged) · deps: P1-13, P1-16, P1-21
+- [x] **P1-17 — End-to-end demo and quickstart** · Should · 0.5 d (re-estimated, unchanged) · deps: P1-13, P1-16, P1-21
   - Details: README quickstart (local Mongo, seed, scraper dry run, API, web, `wrangler dev` for the Worker); runbook stub.
   - Accept: a real first-cinema showtime is visible via the production `/api/v1/movies/...` URL, and its poster key loads from the Worker URL in a browser.
   - Tests: manual.

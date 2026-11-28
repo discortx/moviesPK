@@ -55,4 +55,22 @@ reverted). Delete the branch afterwards.
 |---|---|---|
 | 2026-11-26 16:08 | A real first-cinema showtime through the production API | **OK**: `https://moviespk-api.vercel.app/api/v1/movies/belkis-2026/showtimes?city=lahore&date=2026-11-27` → Cinepax Packages Mall, 27 Nov 23:00 PKT, Screen 4, booking link (dev data). |
 | 2026-11-26 17:03 | README quickstart run end to end on Windows | **OK**: `npm run mongo:dev` → indexes → real scrape of Packages Mall (1 ok) → local API (`db: ok`, 4 movies tomorrow) → local web lists the cities and its `/api` rewrite reaches the local API. |
-| _pending (P1-21/P1-23)_ | That movie's poster loads from the Worker URL in a browser | |
+| 2026-11-28 12:29 | A real showtime and its poster in a browser | **OK** (owner): `https://moviespk-api.vercel.app/api/v1/movies/hexed-2026/showtimes?city=lahore&date=2026-11-29` → Hexed at Cinepax Packages Mall 29 Nov 13:15 and 15:00 PKT, `posterKey` `movies/6b08dedf90bcf1349ae4a3f0/poster-84b7da34`; `https://moviespk-img-dev.moviespk.workers.dev/img/movies/6b08dedf90bcf1349ae4a3f0/poster-84b7da34-w342.webp` shows the poster. (Dev data: the scraper still writes to `moviespk_dev`/`moviespk-dev`, so the dev Worker serves the posters until the production switch.) |
+
+## Gate G1 review (plan §14)
+
+| Criterion | Status | Evidence |
+|---|---|---|
+| `scrape-full` schedule ran unattended at least twice | **Met** | 5 scheduled runs, all success (#6-#10, 2026-11-26 10:43 → 2026-11-28 03:11 UTC); delivery by GitHub is irregular (see the schedule note above) |
+| Idempotency test green | **Met** | `scraper/tests/integration/test_upsert.py::test_running_the_fixture_pipeline_twice_is_identical`, in `ci-scraper` |
+| A forced zero-result opens exactly one issue and changes no data | **Met** | scrape-full #3 (2026-11-26) → issue #34, closed by #5; a failed run writes only `scrape_runs` (`test_reconcile.py` proves no showtime changes) |
+| A forced failure opens exactly one issue and changes no data | **Met** (2026-11-28) | scrape-full #12 on throwaway branch `test/forced-blocked` (Packages Mall pointed at `https://web.cinepax.invalid`): robots.txt `ConnectError` → `disallow_all` → `[blocked]`, 0 rows, exit 1, issue #61 `[alert] cinepax-packages-mall: blocked` (labels `alert`, `alert:blocked`); the 13 visible showtimes were identical before (12:38) and after (12:45); recovery #13 on `main` closed #61 with "Recovered" at 12:46:39 UTC. Branch deleted. |
+| `/api/v1/movies/:slug/showtimes` via `https://moviespk-web.vercel.app/api/v1/...`: correct PKT day, edge HIT on the second request | **Met** (2026-11-28 12:37 UTC) | `hexed-2026`, `date=2026-11-29`: MISS then HIT; both shows (13:15, 15:00 PKT) on 2026-11-29 |
+| A first-cinema poster loads from the Worker URL with `Cf-Cache-Status: HIT` on the second request | **Met** | P1-21, `docs/performance.md` §3 |
+
+**G1 decision: PASSED, 2026-11-28.** Every criterion is met on the dev database and the
+dev bucket. Carried forward: GitHub's scheduler delivers only part of the hourly slots
+(the canary staleness alert in P2 is the safety net); the API cold start is a recorded
+risk (`docs/performance.md` §1); production switch-over steps are in "Switching from dev
+to production" above.
+
