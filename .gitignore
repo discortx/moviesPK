@@ -35,3 +35,7 @@ web/AGENTS.md
 .DS_Store
 Thumbs.db
 .idea/
+
+# Export artifacts (P2-05): downloaded for restores or written by --job export
+/export/
+/restore/
