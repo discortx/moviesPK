@@ -119,6 +119,7 @@ Drill log (repeat quarterly and in P4-05):
 
 | Date (UTC) | Export run | Target | Counts (movies / aliases / cinemas) | Result |
 |---|---|---|---|---|
+| 2026-11-28 15:00 | dev export of 14:57 (artifact) | local MongoDB 7, `moviespk_restore_test` | 28 / 24 / 5 (= manifest) | OK. Validated, restored, indexes created; `--target-db moviespk` without `--force` refused. One live `full` run into it (no TMDB key): 5 cinemas `ok`, 155 showtimes, still 28 movies (no duplicates; 54 of 60 listings matched through the restored aliases alone), no orphan showtimes. Local API on it: `/health` ok, 5 cinemas, Lahore 14 / Karachi 5 / Islamabad 2 films today; `sanjog-2026` same slug and poster as before. |
 
 ## Live observations (P1-13 acceptance)
 

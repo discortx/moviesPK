@@ -1399,12 +1399,13 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Tests: scraper integration.
   - Done 2026-11-28: `scripts/review_aliases.py`; showtimes re-link when a movie's key changes (`pipeline/upsert.py`), so a TMDB alias or a local-key alias leaves no duplicates (`tests/integration/test_relink.py`, which fails without the re-link). Runbook section "Alias review".
 
-- [ ] **P2-05 — Weekly export and restore** · Should · 1.0 d (re-estimated, unchanged) · deps: P1-10
+- [x] **P2-05 — Weekly export and restore** · Should · 1.0 d (re-estimated, unchanged) · deps: P1-10
   - Details: `--job export` writes gzip JSON of `movies`, `movie_aliases` and `cinemas` to `export/`, plus a `manifest.json` (collection names, document counts, export time, schema version); `export.yml` uploads it as an artifact with **`retention-days: 60`** (the TMDB 6-month rule, §11.3.5; the maximum would be 90 [V]). Not stored in R2 (§19).
     - **Deliverable: `scripts/restore_export.py --input <export dir> --target-db <name> [--force]`.** It refuses `moviespk` without `--force`. It validates the **whole** export before the first write: manifest present, all three collection files present and readable, gzip and JSON valid, document counts equal to the manifest, and the schema version known. Any failure exits non-zero with a clear message and **writes nothing**. It then restores the three collections and runs `create_indexes.js` (or prints the command). It never prints the connection string.
     - Runbook section "Restore from export" with the exact invocation (§17.3, §19).
   - Accept: restoring a valid export into `moviespk_restore_test` reproduces the document counts; restore + one `full` run gives a working API; a truncated gzip, a missing collection file, a count mismatch and a missing manifest are each rejected with zero documents written; `--target-db moviespk` without `--force` is refused; §17.3 and the runbook cite `scripts/restore_export.py` with the same arguments.
   - Tests: scraper integration (service container: valid and invalid exports); manual drill recorded in the runbook (and repeated in P4-05).
+  - Done 2026-11-28: `--job export`, `scripts/restore_export.py`, `export.yml` (60-day artifact); 15 integration tests; drill with the first dev export recorded in the runbook (restore, live `full` run, local API).
 
 - [ ] **P2-06 — Keepalive** · Must · 0.5 d (re-estimated, unchanged) · deps: P0-05
   - Details: the mechanism is fixed (architecture §10.5); it is no longer chosen in P0-05:
