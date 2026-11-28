@@ -87,6 +87,39 @@ re-links again. Deleting the entry does not undo a TMDB match (a matched movie i
 downgraded), so correct it rather than delete it. An alias never moves showtimes away from
 a `matched` movie.
 
+## Restore from export (P2-05, plan §17.3, §19)
+
+The `export` workflow (Sundays 03:41 UTC, or Actions → export → Run workflow) keeps
+`movies`, `movie_aliases` and `cinemas` as an artifact `export-<db>-<run id>` for 60 days:
+three `*.json.gz` files and `manifest.json` (counts, checksums, schema version). Showtimes
+are not exported: one `full` run brings them back. Everything human-curated is in git
+anyway (cinemas, coordinates, aliases); the export saves the TMDB matches, slugs and
+`movie_aliases` history, so URLs stay the same after a restore.
+
+1. Actions → export → the latest green run → download the artifact and unzip it into a
+   new, empty directory (e.g. `restore/`).
+2. With the target cluster's URI in the shell only (`MONGODB_URI_SCRAPER`) and the
+   scraper's virtual environment active, from the repository root:
+
+   ```
+   python scripts/restore_export.py --input restore --target-db moviespk_restore_test
+   ```
+
+   For the production database after a loss (§17.3) the same command with
+   `--target-db moviespk --force`; without `--force` it is refused.
+3. The script first validates the whole export (manifest and schema version, all three
+   files, gzip, JSON, checksums, counts). Any problem: exit 1, a message, and nothing
+   written. Then it replaces the three collections, prints the counts and runs
+   `scripts/create_indexes.js` (or prints that command when Node.js is missing). It never
+   prints the connection string.
+4. Dispatch `scrape-full` against the restored database (showtimes), then check
+   `/api/v1/movies?city=lahore`.
+
+Drill log (repeat quarterly and in P4-05):
+
+| Date (UTC) | Export run | Target | Counts (movies / aliases / cinemas) | Result |
+|---|---|---|---|---|
+
 ## Live observations (P1-13 acceptance)
 
 | Date (UTC) | Check | Run | Result |

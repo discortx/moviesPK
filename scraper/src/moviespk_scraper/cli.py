@@ -33,13 +33,14 @@ from .pipeline.normalize import NormalizedShowtime
 from .pipeline.sync_cinemas import sync_cinemas
 from .runner import CinemaResult, RunReport, Services, run_job
 from .services.alerts import Alert, Alerter, GitHubAlerter, PrintAlerter, run_url
+from .services.export import count_documents, write_export
 from .services.health import RunError, RunRecord, github_run_id, run_document
 from .services.images import ImageStep
 from .services.r2 import MAX_UPLOADS_PER_RUN, R2Settings, R2Store, make_client
 from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
-IMPLEMENTED_JOBS = ("full", "canary")
+IMPLEMENTED_JOBS = ("full", "canary", "export")
 OFFLINE_USER_AGENT = "MoviesPKBot/1.0 (+offline fixtures)"
 SAMPLE_ROWS = 5
 
@@ -77,6 +78,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path("debug"),
         help="where raw payloads are kept when parsing fails (uploaded as an artifact)",
+    )
+    run.add_argument(
+        "--export-dir",
+        type=Path,
+        default=Path("export"),
+        help="where --job export writes its files (uploaded as an artifact)",
     )
     run.add_argument(
         "--config-dir",
@@ -254,6 +261,28 @@ def _canary(
     return report.exit_code
 
 
+def _export(args: argparse.Namespace) -> int:
+    """``--job export`` (P2-05): reads the database, writes files; a dry run only counts."""
+    if args.offline is not None:
+        return _error("--job export reads the database; --offline does not apply")
+    try:
+        client, db = connect(DbSettings.from_env())
+    except DatabaseUnavailableError as exc:
+        return _error(str(exc))
+    try:
+        if args.dry_run:
+            for name, count in count_documents(db).items():
+                print(f"{name}: {count} documents (dry run: nothing written)")
+            return EXIT_OK
+        manifest = write_export(db, args.export_dir, datetime.now(UTC))
+    finally:
+        client.close()
+    for name, entry in manifest["collections"].items():
+        print(f"{name}: {entry['count']} documents → {args.export_dir / entry['file']}")
+    print(f"manifest: {args.export_dir / 'manifest.json'} (schema {manifest['schemaVersion']})")
+    return EXIT_OK
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.job not in IMPLEMENTED_JOBS:
@@ -262,6 +291,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         config = load_config(args.config_dir)
     except ConfigError as exc:
         return _error(str(exc))
+    if args.job == "export":
+        return _export(args)
 
     if args.cinema:
         try:
