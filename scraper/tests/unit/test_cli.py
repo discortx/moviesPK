@@ -223,9 +223,36 @@ def test_unknown_cinema_exits_2(tmp_path: Path, capsys: pytest.CaptureFixture[st
     assert "unknown cinema" in capsys.readouterr().err
 
 
-@pytest.mark.parametrize("job", ["seats", "canary", "export"])
-def test_unimplemented_jobs_exit_2(job: str) -> None:
-    assert main(["run", "--job", job, "--dry-run"]) == 2
+def test_unimplemented_jobs_exit_2(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["run", "--job", "seats", "--dry-run"]) == 2
+    assert "not implemented" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("job", "unset", "message"),
+    [
+        ("export", "MONGODB_URI_SCRAPER", "MONGODB_URI_SCRAPER"),
+        ("canary", "SCRAPER_USER_AGENT", "SCRAPER_USER_AGENT"),
+    ],
+)
+def test_new_jobs_need_their_settings(
+    job: str,
+    unset: str,
+    message: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The same everywhere: CI sets database variables for the whole job."""
+    monkeypatch.delenv(unset, raising=False)
+    assert main(["run", "--job", job]) == 2
+    assert message in capsys.readouterr().err
+
+
+def test_export_does_not_take_offline_fixtures(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["run", "--job", "export", "--offline", str(tmp_path)]) == 2
+    assert "--offline does not apply" in capsys.readouterr().err
 
 
 def test_a_writing_run_needs_database_settings(
