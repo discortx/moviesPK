@@ -160,6 +160,33 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | P5-7a | Sentry free plan needs a card? | 2026-11-25 | Not stated directly. Sign-up starts a 14-day Business trial "with no credit card" and then "you will be automatically assigned a free Developer plan". Sentry is optional (D7) and not planned for v1. | **OK (inferred; only relevant if Sentry is adopted)** | https://docs.sentry.io/pricing/ ; https://sentry.io/pricing/ |
 | P5-7b | Docker Desktop licence fit | 2026-11-25 | Personal subscription: "Use is limited to a single, individual developer acting in a personal, non-commercial capacity to develop Open Source Software or free applications." Fits this project (OD5). Docker is optional anyway: dev setup also supports native MongoDB or mongodb-memory-server. | **OK** | https://www.docker.com/legal/docker-subscription-service-agreement/ (§3.1(b)) |
 
+### 8.1 Keepalive for the 60-day rule (P2-06)
+
+The mechanism does not depend on what GitHub counts as activity (P5-5):
+
+1. **REST enable, monthly.** `keepalive.yml` (`53 5 1 * *` plus manual dispatch,
+   `permissions: actions: write, issues: write`) runs `scripts/keepalive.py`, which finds
+   every workflow with `on.schedule` in `.github/workflows/` and calls
+   `PUT /repos/{owner}/{repo}/actions/workflows/{file}/enable` for each, then reads back
+   its `state` (`active` expected). The call is idempotent; a workflow already disabled for
+   inactivity comes back. Endpoint documented at
+   https://docs.github.com/en/rest/actions/workflows#enable-a-workflow (checked
+   2026-11-28): "Enables a workflow and sets the state of the workflow to active. You can
+   replace workflow_id with the workflow file name"; success is `204 No Content`. The page
+   names no `GITHUB_TOKEN` permission (only `repo` scope for classic tokens); that
+   `actions: write` is enough is shown by the first dispatch (evidence below).
+2. **Monthly maintenance issue** `[maintenance] YYYY-MM`, assigned to the owner, with the
+   §18.2 checklist and the enable results.
+3. **Human maintenance commit** by the owner each month (closing the issue). No bot
+   commits: they are not documented as activity, and `GITHUB_TOKEN` pushes trigger no
+   workflows.
+
+Safety nets: the canary's `stale` alert (18 h without a successful full run) and GitHub's
+email to the last editor of a cron line when a schedule is disabled.
+
+| Date (UTC) | Evidence | Result |
+|---|---|---|
+
 ---
 
 ## 9. P0-11 re-verification (2026-11-25)
