@@ -1447,7 +1447,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: G2 criteria (§14).
   - Tests: observation log in `docs/runbook.md`.
 
-- [ ] **P2-10 — TMDB 6-month purge, R2 usage record and orphan-image cleanup (v2.1)** · Must · 1.0 d (re-estimated after OD11, unchanged) · deps: P1-23, P2-03
+- [x] **P2-10 — TMDB 6-month purge, R2 usage record and orphan-image cleanup (v2.1)** · Must · 1.0 d (re-estimated after OD11, unchanged) · deps: P1-23, P2-03
   - Details: inside the existing canary job (no new workflow), implement §11.3.5 and §7.4.3 item 6:
     - **Daily:** purge movies with `lastShowingAt` older than `PURGE_AFTER_DAYS` (a constant in `core/config.py`, default 90; validation rejects > 112 while the export retention is 60 days (§11.3.5), and never allows > 150; not an environment variable) — delete their R2 objects and clear their TMDB-derived fields.
     - **Daily:** sum bucket object sizes, record the total in the canary `scrape_runs` doc, and alert once above 1 GB. There is no automatic upload stop (OD11).
@@ -1455,6 +1455,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
     - Log counts in the canary `scrape_runs` doc.
   - Accept: integration test against the dev bucket and a seeded DB: a movie last shown 91 days ago loses its poster objects and TMDB fields, a movie last shown 89 days ago is untouched; an orphan older than 7 days is deleted, a referenced object and a 1-day-old orphan are kept; a simulated 1.1 GB size opens exactly one `r2: storage` issue and does not block uploads; `PURGE_AFTER_DAYS = 113` fails config validation (with 60-day export retention).
   - Tests: scraper unit, image integration (dev).
+  - Done 2026-11-28: `pipeline/maintenance.py` as the canary's maintenance hook; unit (purge window, 113 refused, orphan selection, one `r2: storage` issue at 1.1 GB with uploads unaffected), MongoDB integration (91 vs 89 days, dry run, day-1-only cleanup) and dev-bucket tests (`tests/integration_r2/test_maintenance_r2.py`, test-only prefix). integration-r2 run #2 and scrape-canary run #3 green on the merged commit.
 
 ### Phase 3 — API completion and frontend (18.0 d)
 
