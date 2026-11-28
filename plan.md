@@ -1407,7 +1407,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Tests: scraper integration (service container: valid and invalid exports); manual drill recorded in the runbook (and repeated in P4-05).
   - Done 2026-11-28: `--job export`, `scripts/restore_export.py`, `export.yml` (60-day artifact); 15 integration tests; drill with the first dev export recorded in the runbook (restore, live `full` run, local API).
 
-- [ ] **P2-06 — Keepalive** · Must · 0.5 d (re-estimated, unchanged) · deps: P0-05
+- [x] **P2-06 — Keepalive** · Must · 0.5 d (re-estimated, unchanged) · deps: P0-05
   - Details: the mechanism is fixed (architecture §10.5); it is no longer chosen in P0-05:
     1. `keepalive.yml` (monthly cron plus `workflow_dispatch`, `permissions: actions: write, issues: write`) calls `PUT /repos/{owner}/{repo}/actions/workflows/{id}/enable` [V] for each scheduled workflow (idempotent).
     2. It opens or updates the monthly **maintenance issue** assigned to the owner. The issue also holds the §18.2 monthly checklist (Z1, R2 usage, Worker graph).
@@ -1416,6 +1416,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
     - Safety nets: the staleness alert, `/status`, and GitHub's notification to the last editor of the cron.
   - Accept: a manual dispatch enables every scheduled workflow and opens the issue; the mechanism and evidence link are in `docs/free-tier-verification.md`.
   - Tests: manual dispatch.
+  - Done 2026-11-28: keepalive run #1 enabled all four scheduled workflows (HTTP 204, `active`) and opened issue #73; evidence in `docs/free-tier-verification.md` §8.1.
 
 - [ ] **P2-07 — Blocked-site handling (no paid fallback) and `purge_cinema.py`** · Must · **1.0 d (re-estimated from 0.5 d: +0.5 d for the purge script)** · deps: P2-01, P1-10
   - Details: for any `blocked` cinema, try a slower delay, a different allowed endpoint and fewer requests. If still blocked after 3 runs, set `enabled: false`, record it in its investigation doc, and remove it from scope. **Never a proxy, VPS or IP rotation.** A robots refusal is never routed around.
