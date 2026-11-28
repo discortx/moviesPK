@@ -68,6 +68,7 @@ def env(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_finds_every_scheduled_workflow(keepalive: ModuleType) -> None:
     assert keepalive.scheduled_workflows() == [
         "export.yml",
+        "healthcheck.yml",
         "keepalive.yml",
         "scrape-canary.yml",
         "scrape-full.yml",
