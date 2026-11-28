@@ -205,6 +205,32 @@ and `MONGODB_DB` in the shell only (never printed).
 |---|---|---|
 | 2026-11 | owner | P2-06 evidence and this log (closes #73) |
 
+## Unattended operations run (P2-09, gate G2)
+
+**Window:** 2026-11-28 16:30 UTC → 2026-12-01 16:30 UTC, on **dev** (owner decision
+2026-11-28; the plan says production, which comes after G2 via "Switching from dev to
+production"). No manual dispatches of scheduled workflows during the window: only the
+schedules count. Fixes go through normal PRs.
+
+Daily report (read-only, public API):
+
+```
+python scripts/ops_report.py --since 2026-11-28T16:30Z
+```
+
+It lists every run that was not `success` (each must be fixed or explained below), the
+longest gap between successful `scrape-full` runs against the freshness targets (12 h
+nominal, 18 h alert) and every issue opened or closed.
+
+**Known risk at the start:** GitHub cron delivery for this repository is poor. Since the
+hourly cron took effect (workflow change 2026-11-28 11:44 UTC), no scheduled
+`scrape-full` had run by 16:24 UTC; the last scheduled run was 03:11 UTC. Earlier, 4 of
+about 13 three-hourly slots arrived. The window measures this; the canary's `stale` alert
+(18 h) is the safety net.
+
+| Day (UTC) | Report | Not-success runs and explanation | Freshness (longest gap) | Issues |
+|---|---|---|---|---|
+
 ## Live observations (P1-13 acceptance)
 
 | Date (UTC) | Check | Run | Result |
