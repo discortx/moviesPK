@@ -41,7 +41,7 @@ here.
 | `[alert] <cinema>: low-results` | The latest `ok` full run found under 50% of the median of the 7 `ok` runs before it (needs 8 runs). | Compare with the cinema's website; an off-season dip is fine, a half-parsed page is drift. | when the count recovers |
 | `[alert] <cinema>: stale` / `stale-seats` | No successful `full` run in 18 h (`seats`: 6 h). | Check the `scrape-full` runs: missed schedules, failures, blocked. | after the next success |
 | `[alert] atlas: storage` | Data + indexes above 70% of 512 MB. | Check `showtimes` TTL and `scrape_runs` TTL indexes; see `docs/capacity.md`. | below 70% |
-| `[digest] unmatched titles <date>` | Provisional and unmatched titles created in the last 24 h. | Add `aliases.yml` entries (P2-04 adds the review tool). | after 7 days |
+| `[digest] unmatched titles <date>` | Provisional and unmatched titles created in the last 24 h. | [Alias review](#alias-review-weekly-p2-04). | after 7 days |
 
 robots and terms alerts are posted once per change and never repeated: an open one means
 an unreviewed change. A robots.txt change that alters no verdict is only logged.
@@ -56,6 +56,36 @@ an unreviewed change. A robots.txt change that alters no verdict is only logged.
    whichever database this names: with the wrong one, every list is empty (seen on
    2026-11-26). A redeploy also discards edge-cached responses of the old deployment.
 5. Check `/api/v1/cinemas` and `/api/v1/movies?city=lahore` on the site.
+
+## Alias review (weekly, P2-04)
+
+Titles the matcher could not settle: TMDB suggestions with a score of 70-89 (`pending`)
+and `unmatched` movies that still have upcoming shows. The daily `[digest]` issue lists the
+new ones; review weekly, or sooner when a digest names a film that is clearly mis-shown.
+
+1. With the environment's database URI and a TMDB key in the shell (never in a file):
+   `python scripts/review_aliases.py` from the repository root, with the scraper's virtual
+   environment active (`--list` only lists). It reads
+   `MONGODB_URI_SCRAPER`, `MONGODB_DB` and `TMDB_API_KEY`, and writes nothing but
+   `scraper/config/aliases.yml`.
+2. For each title: type the number of the right TMDB candidate, `t <id>` for a TMDB id you
+   looked up, `l <localKey>` to join it to a movie already on the site (the slug in its
+   URL; e.g. the same film listed with and without a year), `s` to skip, `q` to stop.
+   Without `TMDB_API_KEY` there are no candidates; `t` and `l` still work.
+3. The tool validates the file (as every run does) and leaves it untouched on any problem.
+   Check `git diff scraper/config/aliases.yml`, then open a PR.
+4. After merge the next `full` run uses the alias: the movie gains its TMDB data and the
+   existing showtimes move to the new ids (no duplicates; `relinked` in the `upsert.done`
+   log line). Posters follow in the same run.
+
+One alias without the database: `python scripts/review_aliases.py --add "<alias>"
+--tmdb-id <id> --note "<why>"` (or `--local-key`, optional `--cinema-id`). The alias is the
+normalized title as the digest shows it: lowercase, punctuation as spaces.
+
+A wrong alias: point the entry at the right film (or local movie) and merge; the next run
+re-links again. Deleting the entry does not undo a TMDB match (a matched movie is never
+downgraded), so correct it rather than delete it. An alias never moves showtimes away from
+a `matched` movie.
 
 ## Live observations (P1-13 acceptance)
 

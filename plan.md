@@ -1393,10 +1393,11 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Tests: unit, live canary.
   - Done 2026-11-28: live canary runs #1 (dry run) and #2 green; #2 posted digest issue #67 (3 unmatched titles) and no alerts.
 
-- [ ] **P2-04 — Alias review tool** · Must · 1.0 d · deps: P1-09
+- [x] **P2-04 — Alias review tool** · Must · 1.0 d · deps: P1-09
   - Details: `scripts/review_aliases.py` lists pending and unmatched titles from the DB with TMDB candidates; the reviewer picks one; the tool appends to `scraper/config/aliases.yml`, then the reviewer opens a PR. The next `full` run re-links the showtimes. Runbook section "Alias review" (weekly).
   - Accept: an integration test shows that an alias added to the YAML re-links a provisional movie's showtimes on the next run, with no duplicate showtimes.
   - Tests: scraper integration.
+  - Done 2026-11-28: `scripts/review_aliases.py`; showtimes re-link when a movie's key changes (`pipeline/upsert.py`), so a TMDB alias or a local-key alias leaves no duplicates (`tests/integration/test_relink.py`, which fails without the re-link). Runbook section "Alias review".
 
 - [ ] **P2-05 — Weekly export and restore** · Should · 1.0 d (re-estimated, unchanged) · deps: P1-10
   - Details: `--job export` writes gzip JSON of `movies`, `movie_aliases` and `cinemas` to `export/`, plus a `manifest.json` (collection names, document counts, export time, schema version); `export.yml` uploads it as an artifact with **`retention-days: 60`** (the TMDB 6-month rule, §11.3.5; the maximum would be 90 [V]). Not stored in R2 (§19).

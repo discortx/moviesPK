@@ -17,6 +17,13 @@ Showtimes
   ``expireAt = startsAt + 7 d``; denormalized ``cinema`` and ``movie`` blocks.
 * ``bulk_write(ordered=False)``.
 
+Re-linking (P2-04): a movie's key can change. It gains a ``tmdbId`` (a new alias or TMDB
+match), or a new alias points its title at another movie. The showtimes keyed by the old
+key are then moved to the new id (same fields, new ``_id`` and ``movieId``), so the next
+run never leaves duplicates behind. A key change of one movie document moves its
+showtimes at every cinema; an alias that points this cinema's title at another movie moves
+only this cinema's showtimes, and only away from a movie that is not ``matched``.
+
 Aliases: ``auto``/``pending`` aliases from new TMDB matches; never over a manual alias,
 and a ``pending`` alias may become ``auto``.
 """
@@ -81,6 +88,8 @@ class UpsertCounts:
     showtimes: int
     aliases: int
     showtime_ids: frozenset[str] = frozenset()
+    #: Showtimes moved to a new id because their movie's key changed (P2-04).
+    relinked: int = 0
     #: Stored movies by title key (for the image step).
     stored: dict[str, StoredMovie] = field(default_factory=dict)
 
@@ -133,15 +142,50 @@ def _unique_slug(db: DB, base: str, existing_id: Any) -> str:
     return slug
 
 
-def upsert_movie(db: DB, movie: NormalizedMovie, match: MatchResult, now: datetime) -> StoredMovie:
+def upsert_movie(
+    db: DB, movie: NormalizedMovie, match: MatchResult, now: datetime, cinema_id: str
+) -> tuple[StoredMovie, int]:
+    """The stored movie and the number of showtimes re-linked to it."""
     with _MOVIE_LOCK:
-        return _upsert_movie(db, movie, match, now)
+        return _upsert_movie(db, movie, match, now, cinema_id)
 
 
-def _upsert_movie(db: DB, movie: NormalizedMovie, match: MatchResult, now: datetime) -> StoredMovie:
+def relink_showtimes(
+    db: DB,
+    from_movie_id: Any,
+    from_key: str,
+    to_movie_id: Any,
+    to_key: str,
+    cinema_id: str | None = None,
+) -> int:
+    """Move the showtimes of ``from_movie_id`` that were keyed by ``from_key`` to the id
+    built from ``to_key`` (all cinemas, or only ``cinema_id``). Returns how many moved."""
+    if from_movie_id == to_movie_id and from_key == to_key:
+        return 0
+    query: Document = {"movieId": from_movie_id}
+    if cinema_id is not None:
+        query["cinemaId"] = cinema_id
+    moved = 0
+    for doc in list(db[repo.SHOWTIMES].find(query)):
+        parts = (doc["startsAt"], doc.get("hall"), doc["format"])
+        if doc["_id"] != showtime_id(doc["cinemaId"], from_key, *parts):
+            continue  # keyed by something else: not this move's business
+        new_id = showtime_id(doc["cinemaId"], to_key, *parts)
+        if db[repo.SHOWTIMES].count_documents({"_id": new_id}, limit=1) == 0:
+            db[repo.SHOWTIMES].insert_one({**doc, "_id": new_id, "movieId": to_movie_id})
+        db[repo.SHOWTIMES].delete_one({"_id": doc["_id"]})
+        moved += 1
+    return moved
+
+
+def _upsert_movie(
+    db: DB, movie: NormalizedMovie, match: MatchResult, now: datetime, cinema_id: str
+) -> tuple[StoredMovie, int]:
     tmdb_id = match.tmdb_id if match.status == "matched" else None
-    local_key = match.local_key if match.via_alias and match.local_key else local_key_for(movie)
+    natural_key = local_key_for(movie)
+    local_key = match.local_key if match.via_alias and match.local_key else natural_key
     existing = repo.find_movie(db, tmdb_id=tmdb_id, local_key=local_key)
+    old_key = movie_key(existing.get("tmdbId"), existing["localKey"]) if existing else None
 
     if existing is not None:
         movie_id = existing["_id"]
@@ -172,16 +216,28 @@ def _upsert_movie(db: DB, movie: NormalizedMovie, match: MatchResult, now: datet
         {"_id": movie_id}, {"title": 1, "genres": 1, "runtimeMin": 1, "poster": 1, "tmdbId": 1}
     )
     assert stored is not None
+    key = movie_key(stored.get("tmdbId"), local_key)
+
+    relinked = 0
+    if old_key is not None and old_key != key:  # the document gained a tmdbId
+        relinked += relink_showtimes(db, movie_id, old_key, movie_id, key)
+    if natural_key != local_key or (existing is not None and existing["localKey"] != natural_key):
+        # The title now resolves to another movie than its own local one (alias or TMDB).
+        own = db[repo.MOVIES].find_one({"localKey": natural_key})
+        if own is not None and own["_id"] != movie_id and own.get("matchStatus") != "matched":
+            own_key = movie_key(own.get("tmdbId"), own["localKey"])
+            relinked += relink_showtimes(db, own["_id"], own_key, movie_id, key, cinema_id)
+
     poster = stored.get("poster") or {}
     return StoredMovie(
         id=movie_id,
-        key=movie_key(stored.get("tmdbId"), local_key),
+        key=key,
         slug=slug,
         title=stored["title"],
         genres=list(stored.get("genres") or []),
         runtime_min=stored.get("runtimeMin"),
         poster_key=poster.get("key") if isinstance(poster, dict) else None,
-    )
+    ), relinked
 
 
 def showtime_update(
@@ -265,6 +321,7 @@ def upsert_cinema(
     """Write one cinema's validated, matched rows. Idempotent for the same input and now."""
     by_key = {m.title_key: m for m in movies}
     stored: dict[str, StoredMovie] = {}
+    relinked = 0
     for key, match in sorted(matches.items()):
         movie = by_key.get(key)
         if movie is None:
@@ -282,7 +339,8 @@ def upsert_cinema(
                 year=None,
                 certification=None,
             )
-        stored[key] = upsert_movie(db, movie, match, now)
+        stored[key], moved = upsert_movie(db, movie, match, now, cinema.id)
+        relinked += moved
 
     built = [
         showtime_update(cinema, stored[s.title_key], s, now)
@@ -307,4 +365,5 @@ def upsert_cinema(
         aliases=len(alias_ops),
         showtime_ids=frozenset(sid for sid, _ in built),
         stored=stored,
+        relinked=relinked,
     )

@@ -9,10 +9,6 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 import json
-import os
-import shutil
-import subprocess
-from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -26,7 +22,7 @@ from moviespk_scraper.core.config import CinemaConfig, load_config
 from moviespk_scraper.core.http import ScraperHttpClient
 from moviespk_scraper.core.logging import get_logger
 from moviespk_scraper.core.offline import FixtureTransport, captured_at
-from moviespk_scraper.db.client import DB, DbSettings, connect
+from moviespk_scraper.db.client import DB
 from moviespk_scraper.pipeline.ids import showtime_id
 from moviespk_scraper.pipeline.match import Alias, AliasTable, Matcher, MatchResult
 from moviespk_scraper.pipeline.normalize import (
@@ -49,26 +45,6 @@ CAPTURES = {"cinepax": "2026-11-25", "vista": "2026-11-28"}
 ALIASES = AliasTable(manual=[Alias("resident evil", "manual", tmdb_id=1196970)])
 
 Rows = tuple[CinemaConfig, list[NormalizedMovie], list[NormalizedShowtime], dict[str, MatchResult]]
-
-
-@pytest.fixture
-def db(mongo_uri: str, db_name: str) -> Iterator[DB]:
-    node = shutil.which("node")
-    if node is None:
-        pytest.skip("node not installed (needed for scripts/create_indexes.js)")
-    env = os.environ | {"MONGODB_URI_SCRAPER": mongo_uri, "MONGODB_DB": db_name}
-    proc = subprocess.run(
-        [node, "scripts/create_indexes.js"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert proc.returncode == 0, proc.stderr
-    client, database = connect(DbSettings(mongo_uri, db_name))
-    yield database
-    client.close()
 
 
 def rows(cinema_id: str) -> tuple[Rows, datetime]:

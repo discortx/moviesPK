@@ -304,8 +304,8 @@ def storage_alert(used_bytes: int) -> Alert | None:
 
 def digest_body(titles: Sequence[dict[str, object]]) -> str:
     lines = [
-        "New provisional and unmatched titles from the last 24 h. Review them with the alias",
-        "review tool (runbook: Alias review) or add entries to `scraper/config/aliases.yml`.",
+        "New provisional and unmatched titles from the last 24 h. Review them with",
+        "`python scripts/review_aliases.py` (runbook: Alias review).",
         "",
     ]
     for t in titles:
