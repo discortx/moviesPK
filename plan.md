@@ -1359,7 +1359,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
 
 ### Phase 2 — Multi-cinema and operations (27.0 d)
 
-- [ ] **P2-01 — Adapter table rows (one task per row)** · Must · Σ rows (placeholder 16.0 d = 8 rows × 2 d) · deps: P1-13 (each row also depends on its P0-08 evidence)
+- [x] **P2-01 — Adapter table rows (one task per row)** · Must · Σ rows (placeholder 16.0 d = 8 rows × 2 d) · deps: P1-13 (each row also depends on its P0-08 evidence)
   - Details per row: adapter (or branch config for an existing chain), fixtures, tests, config entry with evidence and coordinates; enable after a clean `--dry-run` and one dev run; Playwright rows use a separate workflow job with `pip install ./scraper[browser]` and `playwright install --with-deps chromium`.
   - Accept per row: fixture tests green; dry run valid; robots check passes for every path; coordinates checked on a map; `enabled: true` merged.
   - Tests: adapter fixture; integration on the first run of each chain.
@@ -1370,7 +1370,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   | A02 | Cinepax World Trade Center (`0000000011`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | **done** 2026-11-28 (dry run clean; dev run #14: Karachi 7 films today / 9 on 30 Nov, Islamabad 3 today) |
   | A03 | Cinepax Ocean Mall (`0000000002`), branch of A | json (A) | S | Allowed (robots 404) | candidate | 0.5 | **done** 2026-11-28 (dry run clean; dev run #14: Karachi 7 films today / 9 on 30 Nov, Islamabad 3 today) |
   | A04 | Universal Cinemas Emporium Mall (`8888`), new Vista adapter B | html (B) | M | Allowed (robots soft 404) | no | 2.0 | **done** 2026-11-28 (adapter `vista`; live dry run clean: 23 films, 97 shows) |
-  | A05 | CineStar Township (`0005`), branch of B (other operator) | html (B) | S | Allowed (robots soft 404) | no | 0.5 | **done** 2026-11-28 (live dry run clean: 9 films, 20 shows) |
+  | A05 | CineStar Township (`0005`), branch of B (other operator) | html (B) | S | Allowed (robots soft 404) | no | 0.5 | **done** 2026-11-28 (live dry run clean: 9 films, 20 shows; dev run #15 ok for Universal and CineStar) |
   | | **Σ (from P0-08, 2026-11-25)** | | | | | **3.5** | |
 
   Replace the placeholder with the real sum at G0 and update §16. A branch of an existing chain is usually 0.5 d.
