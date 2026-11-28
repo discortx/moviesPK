@@ -32,6 +32,15 @@ here.
   hook crashed). Findings are issues, not red runs.
 - **Run record:** one `scrape_runs` document with `job: canary`, `cinemaId: canary`,
   findings in `errors` and the Atlas size in `storageBytes`.
+- **Maintenance (P2-10), every run:** TMDB 6-month rule — movies not shown for 90 days
+  (`PURGE_AFTER_DAYS` in `core/config.py`; config validation refuses more than 112 with the
+  60-day export retention, and never more than 150) lose their three poster objects and
+  their TMDB-derived fields (`tmdbId`, title, slug and aliases stay). The bucket's size and
+  object count go into `maintenance.r2Bytes`/`r2Objects` of the run record; above 1 GB one
+  `[alert] r2: storage` issue (posted once; uploads are never stopped, OD11). On UTC day 1,
+  objects under `movies/` that no movie references and that are older than 7 days are
+  deleted. Counts: `maintenance` in the run record and the job log. Without R2 settings
+  the purge waits (a poster reference is never dropped while its objects cannot be deleted).
 
 | Issue | Meaning | What to do | Closes |
 |---|---|---|---|

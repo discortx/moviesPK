@@ -179,6 +179,16 @@ export const ScrapeRun = z.strictObject({
   githubRunId: z.string().regex(/^\d+$/).optional(),
   /** canary only: Atlas data + index bytes (P2-03). */
   storageBytes: NonNegInt.optional(),
+  /** canary only: TMDB purge, R2 usage and orphan cleanup counts (P2-10). */
+  maintenance: z
+    .strictObject({
+      purgedMovies: NonNegInt,
+      purgedObjects: NonNegInt,
+      orphansDeleted: NonNegInt,
+      r2Bytes: NonNegInt.optional(),
+      r2Objects: NonNegInt.optional(),
+    })
+    .optional(),
 });
 
 export const Meta = z.strictObject({

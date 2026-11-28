@@ -36,7 +36,7 @@ from .services.alerts import Alert, Alerter, GitHubAlerter, PrintAlerter, run_ur
 from .services.export import count_documents, write_export
 from .services.health import RunError, RunRecord, github_run_id, run_document
 from .services.images import ImageStep
-from .services.r2 import MAX_UPLOADS_PER_RUN, R2Settings, R2Store, make_client
+from .services.r2 import MAX_UPLOADS_PER_RUN, R2Bucket, R2Settings, R2Store, make_client
 from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
@@ -176,6 +176,14 @@ def print_canary(report: CanaryReport, out: TextIO) -> None:
     if report.storage_bytes is not None:
         out.write(f"  atlas storage: {report.storage_bytes / 1024 / 1024:.1f} MB\n")
     out.write(f"  new unmatched/provisional titles (24 h): {report.digest_titles}\n")
+    m = report.maintenance
+    if m is not None:
+        if m.r2_bytes is not None:
+            out.write(f"  r2: {m.r2_objects} objects, {m.r2_bytes / 1024 / 1024:.1f} MB\n")
+        out.write(
+            f"  tmdb purge: {m.purged_movies} movies, {m.purged_objects} objects"
+            f"{'; orphans deleted: ' + str(m.orphans_deleted) if m.orphan_cleanup_ran else ''}\n"
+        )
     for a in report.alerts:
         out.write(f"[alert] {a.cinema_id}: {a.type}: {a.summary}\n")
     for e in report.errors:
@@ -202,7 +210,9 @@ def _canary_run_document(
     doc = run_document(record)
     if report.storage_bytes is not None:
         doc["storageBytes"] = report.storage_bytes
-        ScrapeRun.model_validate({k: v for k, v in doc.items() if k != "expireAt"})
+    if report.maintenance is not None:
+        doc["maintenance"] = report.maintenance.as_document()
+    ScrapeRun.model_validate({k: v for k, v in doc.items() if k != "expireAt"})
     return doc
 
 
@@ -236,6 +246,8 @@ def _canary(
         if alerter is None:
             print("note: alerts not posted (GITHUB_TOKEN or GITHUB_REPOSITORY not set)")
     started = now or datetime.now(UTC)
+    r2 = R2Settings.from_env() if args.offline is None else None
+    bucket = R2Bucket(make_client(r2), r2.bucket) if r2 is not None else None
     try:
         with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
             report = run_canary(
@@ -247,6 +259,7 @@ def _canary(
                 log=get_logger(),
                 dry_run=args.dry_run,
                 debug_dir=args.debug_dir,
+                bucket=bucket,
             )
         if db is not None and not args.dry_run:
             db[repo.SCRAPE_RUNS].insert_one(

@@ -2,7 +2,9 @@
 
 S3-compatible client: endpoint `https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com`, region
 `auto`, credentials from `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY` (a token scoped to ONE
-bucket), bucket from `R2_BUCKET`. Only HEAD and PUT are used.
+bucket), bucket from `R2_BUCKET`. The image step uses HEAD and PUT; the daily canary's
+maintenance (P2-10) lists the bucket (Class A, about 1 per 1,000 keys) and deletes objects
+(free).
 
 Write protection (basic by design, OD11): an object over 1 MB is refused, and at most 200
 uploads happen per run (thread-safe; the run then alerts `[alert] images: upload-cap`).
@@ -13,7 +15,9 @@ from __future__ import annotations
 
 import os
 import threading
+from collections.abc import Iterator
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 import boto3
@@ -117,3 +121,41 @@ class R2Store:
         except ClientError as exc:
             raise R2Error(f"PUT failed: {exc.response.get('Error', {}).get('Code')}") from exc
         return True
+
+
+@dataclass(frozen=True)
+class StoredObject:
+    key: str
+    size: int
+    last_modified: datetime
+
+
+def list_objects(client: Any, bucket: str, prefix: str = "") -> Iterator[StoredObject]:
+    """Every object under ``prefix`` (ListObjectsV2, 1,000 keys per call)."""
+    try:
+        for page in client.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=prefix):
+            for item in page.get("Contents", []):
+                yield StoredObject(item["Key"], int(item["Size"]), item["LastModified"])
+    except ClientError as exc:
+        raise R2Error(f"LIST failed: {exc.response.get('Error', {}).get('Code')}") from exc
+
+
+def delete_object(client: Any, bucket: str, key: str) -> None:
+    try:
+        client.delete_object(Bucket=bucket, Key=key)
+    except ClientError as exc:
+        raise R2Error(f"DELETE failed: {exc.response.get('Error', {}).get('Code')}") from exc
+
+
+class R2Bucket:
+    """List and delete for the canary's maintenance (``pipeline.maintenance.Bucket``)."""
+
+    def __init__(self, client: Any, bucket: str) -> None:
+        self._client = client
+        self.bucket = bucket
+
+    def list(self, prefix: str) -> Iterator[StoredObject]:
+        return list_objects(self._client, self.bucket, prefix)
+
+    def delete(self, key: str) -> None:
+        delete_object(self._client, self.bucket, key)

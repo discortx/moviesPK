@@ -265,6 +265,14 @@ class RunError(ContractModel):
     url: Annotated[str, StringConstraints(max_length=2048)] | None = None
 
 
+class MaintenanceCounts(ContractModel):
+    purged_movies: NonNegInt = Field(alias="purgedMovies")
+    purged_objects: NonNegInt = Field(alias="purgedObjects")
+    orphans_deleted: NonNegInt = Field(alias="orphansDeleted")
+    r2_bytes: NonNegInt | None = Field(default=None, alias="r2Bytes")
+    r2_objects: NonNegInt | None = Field(default=None, alias="r2Objects")
+
+
 class ScrapeRun(ContractModel):
     job: Job
     cinema_id: Slug = Field(alias="cinemaId")
@@ -278,6 +286,8 @@ class ScrapeRun(ContractModel):
     )
     #: canary only: Atlas data + index bytes (P2-03).
     storage_bytes: NonNegInt | None = Field(default=None, alias="storageBytes")
+    #: canary only: TMDB purge, R2 usage and orphan cleanup counts (P2-10).
+    maintenance: MaintenanceCounts | None = None
 
 
 class Meta(ContractModel):
