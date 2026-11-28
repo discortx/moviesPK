@@ -1433,13 +1433,14 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Tests: a live run per affected cinema; scraper integration for the purge script (service container): `--dry-run` deletes nothing; `--showtimes` removes only that cinema's showtimes and leaves other cinemas untouched; `--all` removes the cinema document, its `scrape_runs` and its non-manual cinema-specific aliases while `movies` stay; an unknown or malformed ID exits 2 with no writes; a wrong confirmation aborts with no writes; `--all` is refused while the YAML entry is enabled.
   - Done 2026-11-28: `scripts/purge_cinema.py` with 11 integration tests (`tests/integration/test_purge_cinema.py`); a blocked alert says to drop the cinema after 3 blocked runs in a row (`runner.py`, `tests/integration/test_blocked_streak.py`); runbook "Blocked site" and "Purge one cinema's data". All five venues Enabled, none blocked, so no live run was needed (`docs/cinema-investigation/README.md`).
 
-- [ ] **P2-08 — Health-check workflow and `/status` data** · Must · 0.5 d (re-estimated, unchanged) · deps: P1-16, P1-12, P1-21
+- [x] **P2-08 — Health-check workflow and `/status` data** · Must · 0.5 d (re-estimated, unchanged) · deps: P1-16, P1-12, P1-21
   - Details: `healthcheck.yml` (hourly) GETs the site home page and `/api/v1/health`. It also GETs **one current poster** (the first `poster.key` from `/api/v1/movies?city=<default>&date=<today>`, built with the production image base) and expects 200 `image/webp`.
     - On 2 consecutive failures it opens `[alert] site: down` or `[alert] images: down`, and closes it on recovery (state kept as the open issue).
     - A 1027 response is reported as "Workers Free daily limit reached, resets 00:00 UTC".
     - Make sure `cinemas.health` and the `scrape_runs` index serve the status query.
   - Accept: pointing either check at a non-existent path in a test dispatch opens the matching issue; restoring it closes the issue.
   - Tests: manual dispatch.
+  - Done 2026-11-28: healthcheck run #1 (site and image base pointed at missing paths) failed twice 120 s apart and opened #77 `[alert] site: down` and #78 `[alert] images: down`; run #2 (normal) closed both. "2 consecutive failures" is implemented as a retry 2 minutes later within the run (a scheduled run keeps no state). The `/status` query uses `cinemaId_startedAt` (`tests/integration/test_status_query.py`).
 
 - [ ] **P2-09 — 3-day unattended operations run** · Must · 1.0 d (spread over 3 calendar days) · deps: P2-01…P2-08, P2-10
   - Details: run all schedules on production for 3 days; review every run doc and issue; fix or explain each one.

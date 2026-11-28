@@ -73,6 +73,8 @@ an unreviewed change. A robots.txt change that alters no verdict is only logged.
 - **Test dispatch:** `site_url` = `https://moviespk-web.vercel.app/nonexistent` or
   `image_base` = `https://moviespk-img-dev.moviespk.workers.dev/nonexistent` opens the
   matching issue; a normal dispatch afterwards closes it.
+- **Verified 2026-11-28:** run #1 with both overrides opened #77 (`site: down`, home page
+  308) and #78 (`images: down`, poster 404); run #2 closed both.
 
 ### Switching from dev to production
 
