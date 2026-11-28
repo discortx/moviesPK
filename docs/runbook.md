@@ -49,7 +49,7 @@ an unreviewed change. A robots.txt change that alters no verdict is only logged.
 ### `keepalive` and `export` (plan §10.5, P2-05, P2-06)
 
 - **keepalive:** `53 5 1 * *` UTC (the 1st of each month) or Actions → keepalive → Run
-  workflow. Re-enables every scheduled workflow (`scrape-full`, `scrape-canary`, `export`,
+  workflow. Re-enables every scheduled workflow (`scrape-full`, `scrape-canary`, `export`, `healthcheck`,
   `keepalive`) and opens `[maintenance] YYYY-MM` for the owner, with the monthly checklist
   (plan §18.2) and a table of the enable results. A second run in the same month comments
   on that issue. Red only when a workflow could not be enabled.
@@ -57,6 +57,22 @@ an unreviewed change. A robots.txt change that alters no verdict is only logged.
   Dependabot PR, a fixture refresh, or a line in the maintenance log below), close the
   issue. Never automate the commit.
 - **export:** see [Restore from export](#restore-from-export-p2-05-plan-173-19).
+
+### `healthcheck` (plan §10.5, §18.1, P2-08)
+
+- **Schedule:** `17 * * * *` UTC (hourly) or Actions → healthcheck → Run workflow.
+- **Checks:** the site home page and `/api/v1/health` (database `ok`) → issue
+  `[alert] site: down`; one current poster (the first `poster.key` in today's Lahore list,
+  `<image base>/img/<key>-w342.webp`, expects `200 image/webp`) → `[alert] images: down`.
+  No poster in today's list → skipped. Error 1027 is named in the issue: the Workers Free
+  daily limit (100,000 requests), which resets 00:00 UTC; nothing is billed.
+- **Two failures:** a failing check is retried after 2 minutes in the same run; only a
+  second failure alerts (and makes the run red). A passing check closes its issue.
+- **Image base** follows `SCRAPE_ENVIRONMENT`: `moviespk-img-dev` while the API reads the
+  dev database, `moviespk-img` after the switch to production.
+- **Test dispatch:** `site_url` = `https://moviespk-web.vercel.app/nonexistent` or
+  `image_base` = `https://moviespk-img-dev.moviespk.workers.dev/nonexistent` opens the
+  matching issue; a normal dispatch afterwards closes it.
 
 ### Switching from dev to production
 
