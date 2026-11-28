@@ -20,6 +20,7 @@ anything else               ``failed``
 from __future__ import annotations
 
 from typing import Literal
+from urllib.parse import urlsplit
 
 from .robots import RobotsDisallowedError
 
@@ -74,6 +75,14 @@ class TooManyRedirectsError(HttpError):
 class RobotsUnavailableError(RobotsDisallowedError):
     """robots.txt answered 5xx or could not be fetched: everything is disallowed for this
     run and the run status is ``blocked`` (RFC 9309, plan §10.2)."""
+
+    def __init__(self, url: str, user_agent: str) -> None:
+        super().__init__(url, user_agent)
+        # Not "robots.txt disallows ...": the site did not answer, so nothing is fetched.
+        self.args = (
+            f"robots.txt could not be fetched (5xx or network error); not requesting "
+            f"{urlsplit(url).path or '/'} this run",
+        )
 
 
 class BlockedError(Exception):

@@ -229,3 +229,10 @@ def test_budget_is_checked_between_retries(
 )
 def test_run_status_for(exc: BaseException, status: str) -> None:
     assert run_status_for(exc) == status
+
+
+def test_unreachable_robots_message_does_not_claim_a_disallow() -> None:
+    message = str(RobotsUnavailableError("https://e.example/api/movies?cinemaId=14", UA))
+    assert "could not be fetched" in message and "/api/movies" in message
+    assert "disallows" not in message and "cinemaId" not in message
+    assert run_status_for(RobotsUnavailableError("https://e.example/x", UA)) == "blocked"
