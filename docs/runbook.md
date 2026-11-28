@@ -137,6 +137,7 @@ Drill log (repeat quarterly and in P4-05):
 
 | Month | By | What |
 |---|---|---|
+| 2026-11 | owner | P2-06 evidence and this log (closes #73) |
 
 ## Live observations (P1-13 acceptance)
 

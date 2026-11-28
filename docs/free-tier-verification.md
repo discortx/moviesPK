@@ -186,6 +186,7 @@ email to the last editor of a cron line when a schedule is disabled.
 
 | Date (UTC) | Evidence | Result |
 |---|---|---|
+| 2026-11-28 15:14 | keepalive run #1 (manual dispatch), https://github.com/discortx/moviesPK/actions/runs/46158831344 ; issue #73 `[maintenance] 2026-11` | **OK.** `GITHUB_TOKEN` with `actions: write` enabled all four scheduled workflows (`export`, `keepalive`, `scrape-canary`, `scrape-full`: HTTP 204, state `active`); the issue was opened and assigned to the owner. |
 
 ---
 
