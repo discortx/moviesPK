@@ -28,7 +28,7 @@ import re
 import threading
 import unicodedata
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -81,6 +81,8 @@ class UpsertCounts:
     showtimes: int
     aliases: int
     showtime_ids: frozenset[str] = frozenset()
+    #: Stored movies by title key (for the image step).
+    stored: dict[str, StoredMovie] = field(default_factory=dict)
 
 
 def _cinema_fields(movie: NormalizedMovie) -> Document:
@@ -304,4 +306,5 @@ def upsert_cinema(
         showtimes=len(ops),
         aliases=len(alias_ops),
         showtime_ids=frozenset(sid for sid, _ in built),
+        stored=stored,
     )

@@ -22,6 +22,10 @@ on:
         description: "Dry run: fetch and check, write nothing, post no issues"
         type: boolean
         default: false
+      rebuild_images:
+        description: "Re-check every matched movie's poster (recovery only)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -74,9 +78,15 @@ jobs:
         env:
           MONGODB_URI_SCRAPER: ${{ secrets.MONGODB_URI_SCRAPER }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          # Posters (plan §10.3 step 5a): a token scoped to this environment's bucket only.
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ vars.R2_BUCKET }}
           GITHUB_TOKEN: ${{ github.token }}
           CINEMA: ${{ inputs.cinema }}
           DRY_RUN: ${{ inputs.dry_run }}
+          REBUILD_IMAGES: ${{ inputs.rebuild_images }}
         run: |
           args=(run --job full --config-dir scraper/config)
           if [ -n "$CINEMA" ]; then
@@ -86,6 +96,7 @@ jobs:
             args+=(--cinema "$CINEMA")
           fi
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          if [ "$REBUILD_IMAGES" = "true" ]; then args+=(--rebuild-images); fi
           python -m moviespk_scraper "${args[@]}"
 
       - name: Upload debug payloads
