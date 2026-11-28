@@ -1380,7 +1380,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: a mapping table test (0/120 → sold_out, 30/120 → filling, 31/100 → available, an unrecognized category or missing counts → unknown, never sold_out); a cinema with `seats_allowed: false` makes zero seat requests; an integration test shows only `seats` fields change.
   - Tests: unit, integration, live observation.
 
-- [ ] **P2-03 — Canary: robots/terms re-check, structural probe, staleness, storage, digest** · Must · 2.5 d (re-estimated, unchanged) · deps: P2-01 (first rows), P1-12
+- [x] **P2-03 — Canary: robots/terms re-check, structural probe, staleness, storage, digest** · Must · 2.5 d (re-estimated, unchanged) · deps: P2-01 (first rows), P1-12
   - Details: `pipeline/canary.py` and `scrape-canary.yml`:
     1. Per enabled cinema, re-check robots per evidence path and the terms hash. A newly disallowed path → alert `robots` (the client already refuses it). A changed terms hash → alert `terms-changed` (scraping continues until the owner reviews, unless the owner sets `enabled: false`). A robots hash change without a verdict change is logged only.
     2. Structural probe: one known page per adapter must parse.
@@ -1391,6 +1391,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
     7. Hooks for P2-10 (TMDB purge, R2 usage record, monthly orphan cleanup); the workflow gets the R2 secrets from `environment: production`.
   - Accept: unit tests for each rule including warm-up (runs 1–7 no count alert, run 8 alerts); a mocked robots change fires once and is deduplicated; a mocked terms change fires once.
   - Tests: unit, live canary.
+  - Done 2026-11-28: live canary runs #1 (dry run) and #2 green; #2 posted digest issue #67 (3 unmatched titles) and no alerts.
 
 - [ ] **P2-04 — Alias review tool** · Must · 1.0 d · deps: P1-09
   - Details: `scripts/review_aliases.py` lists pending and unmatched titles from the DB with TMDB candidates; the reviewer picks one; the tool appends to `scraper/config/aliases.yml`, then the reviewer opens a PR. The next `full` run re-links the showtimes. Runbook section "Alias review" (weekly).
