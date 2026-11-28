@@ -25,12 +25,14 @@ from .core.http import ScraperHttpClient
 from .core.logging import configure_logging
 from .core.offline import FixtureTransport, captured_at
 from .db import repositories as repo
-from .db.client import DatabaseUnavailableError, DbSettings, connect
+from .db.client import DB, DatabaseUnavailableError, DbSettings, connect
 from .pipeline.match import Alias, AliasTable, Matcher
 from .pipeline.normalize import NormalizedShowtime
 from .pipeline.sync_cinemas import sync_cinemas
 from .runner import CinemaResult, RunReport, Services, run_job
-from .services.alerts import Alerter, GitHubAlerter, PrintAlerter
+from .services.alerts import Alert, Alerter, GitHubAlerter, PrintAlerter, run_url
+from .services.images import ImageStep
+from .services.r2 import MAX_UPLOADS_PER_RUN, R2Settings, R2Store, make_client
 from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
@@ -120,6 +122,44 @@ def _samples(result: CinemaResult) -> list[NormalizedShowtime]:
     return sorted(result.normalized_showtimes, key=lambda s: s.starts_at)[:SAMPLE_ROWS]
 
 
+def _image_step(
+    args: argparse.Namespace, db: DB | None, tmdb: TmdbClient | None, alerter: Alerter | None
+) -> ImageStep | None:
+    """The poster step runs only on writing runs with TMDB and R2 configured. A dry run makes
+    zero S3 calls (plan P1-23)."""
+    if db is None or tmdb is None:
+        return None
+    settings = R2Settings.from_env()
+    if settings is None:
+        print(
+            "note: posters skipped (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, "
+            "R2_SECRET_ACCESS_KEY and R2_BUCKET must all be set)"
+        )
+        return None
+
+    def cap_alert() -> None:
+        if alerter is not None:
+            alerter.raise_alert(
+                Alert(
+                    cinema_id="images",
+                    type="upload-cap",
+                    summary=f"The {MAX_UPLOADS_PER_RUN}-uploads-per-run cap was reached; "
+                    "remaining posters wait for the next run.",
+                    state="upload-cap",
+                    run_url=run_url(),
+                ),
+                datetime.now(UTC),
+            )
+
+    return ImageStep(
+        tmdb=tmdb,
+        store=R2Store(make_client(settings), settings.bucket),
+        db=db,
+        rebuild=args.rebuild_images,
+        on_cap_reached=cap_alert,
+    )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.job not in IMPLEMENTED_JOBS:
@@ -184,7 +224,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         alerter = GitHubAlerter.from_env()
         if alerter is None:
             print("note: alerts not posted (GITHUB_TOKEN or GITHUB_REPOSITORY not set)")
-    services = Services(matcher=Matcher(tmdb, aliases), db=db, alerter=alerter)
+    images = _image_step(args, db, tmdb, alerter)
+    services = Services(matcher=Matcher(tmdb, aliases), db=db, alerter=alerter, images=images)
     try:
         with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
             report = run_job(

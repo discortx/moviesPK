@@ -38,10 +38,11 @@ from .pipeline.normalize import (
     normalize_showtime,
 )
 from .pipeline.reconcile import MEDIAN_RUNS, guard_reason, reconcile
-from .pipeline.upsert import upsert_cinema
+from .pipeline.upsert import UpsertCounts, upsert_cinema
 from .pipeline.validate import validate
 from .services.alerts import Alert, Alerter, run_url
 from .services.health import RunError, RunRecord, github_run_id, last_success, record_run
+from .services.images import ImageStep
 
 MAX_PARALLEL_CINEMAS = 3
 SHOWTIME_DAYS = 7
@@ -59,6 +60,8 @@ class CinemaResult:
     matches: dict[str, MatchResult] = field(default_factory=dict)  # by title key
     upserted: int = 0
     cancelled: int = 0
+    images_uploaded: int = 0
+    images_failed: int = 0
     error: str | None = None
     error_type: str | None = None
     duration_s: float = 0.0
@@ -90,6 +93,8 @@ class Services:
     db: DB | None = None
     #: Where alerts go (GitHub Issues, or printed on a dry run); ``None`` = no alerts.
     alerter: Alerter | None = None
+    #: The poster step (writing runs with TMDB and R2 configured); ``None`` = no images.
+    images: ImageStep | None = None
 
 
 def _match_all(
@@ -172,6 +177,8 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
             until=max(s.starts_at for s in checked.showtimes),
         )
         result.cancelled = rec.cancelled
+        if services.images is not None:
+            _run_images(services.images, result, counts, ctx)
         ctx.log.info(
             "upsert.done",
             phase="upsert",
@@ -182,6 +189,25 @@ def _run_full(ctx: RunContext, cinema: CinemaConfig, services: Services) -> Cine
             cancelled=rec.cancelled,
         )
     return result
+
+
+def _run_images(
+    images: ImageStep, result: CinemaResult, counts: UpsertCounts, ctx: RunContext
+) -> None:
+    """Posters for matched movies that have none, were refreshed from TMDB this run, or on
+    --rebuild-images (plan §10.3 step 5a). Failures are counted, never raised."""
+    for key, match in result.matches.items():
+        stored = counts.stored.get(key)
+        if match.status != "matched" or match.tmdb_id is None or stored is None:
+            continue
+        if stored.poster_key is not None and match.details is None and not images.rebuild:
+            continue
+        outcome, puts = images.poster_for(
+            str(stored.id), match.tmdb_id, match.poster_path, stored.poster_key, ctx.now
+        )
+        result.images_uploaded += puts
+        if outcome == "failed":
+            result.images_failed += 1
 
 
 JOB_STEPS: dict[Job, Callable[[RunContext, CinemaConfig, Services], CinemaResult]] = {
@@ -254,6 +280,8 @@ def _report_health(
                     "upserted": result.upserted,
                     "invalid": result.invalid,
                     "cancelled": result.cancelled,
+                    "imagesUploaded": result.images_uploaded,
+                    "imagesFailed": result.images_failed,
                 },
                 errors=[RunError(result.error_type or "Error", result.error)]
                 if result.error

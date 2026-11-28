@@ -38,10 +38,17 @@ TIMEOUT_S = 10.0
 ATTEMPTS = 3
 RETRY_AFTER_MAX_S = 60.0
 CONFIG_MAX_AGE = timedelta(days=7)
+POSTER_SIZE = "w780"
+POSTER_MAX_BYTES = 5 * 1024 * 1024
+POSTER_TYPES = frozenset({"image/jpeg", "image/png", "image/webp"})
 
 
 class TmdbError(Exception):
     """TMDB could not answer (after retries). Callers degrade, never crash (§10.4 step 7)."""
+
+
+class PosterDownloadError(TmdbError):
+    """The poster could not be downloaded or was rejected (type, size)."""
 
 
 class _Retryable(Exception):
@@ -146,6 +153,9 @@ class TmdbClient:
         self._client = httpx.Client(
             base_url=API_BASE, headers=headers, timeout=TIMEOUT_S, transport=transport
         )
+        # Posters come from TMDB's image CDN through a separate client that carries no
+        # credentials (the API key is never sent to the CDN), sharing the same 5 req/s limit.
+        self._images = httpx.Client(timeout=TIMEOUT_S, transport=transport, follow_redirects=True)
         self.limiter = limiter or RateLimiter(sleep=sleep)
         self._sleep = sleep
         self._rng = rng or random.Random()  # noqa: S311 (jitter, not security)
@@ -157,6 +167,7 @@ class TmdbClient:
 
     def close(self) -> None:
         self._client.close()
+        self._images.close()
 
     def __enter__(self) -> Self:
         return self
@@ -284,3 +295,33 @@ class TmdbClient:
                 base = None
             self._config = TmdbConfiguration(base or DEFAULT_IMAGE_BASE, moment)
         return self._config
+
+    def download_poster(self, image_base_url: str, poster_path: str) -> bytes:
+        """The `w780` poster bytes (plan §10.3 step 5a.1): TMDB throttle, 10 s timeout,
+        JPEG/PNG/WebP only, aborted above 5 MB (Content-Length and while streaming)."""
+        if not poster_path.startswith("/") or "/" in poster_path[1:] or ".." in poster_path:
+            raise PosterDownloadError(f"unexpected poster path {poster_path!r}")
+        url = image_base_url.rstrip("/") + "/" + POSTER_SIZE + poster_path
+        self.limiter.wait()
+        self.calls += 1
+        try:
+            with self._images.stream("GET", url) as resp:
+                if resp.status_code != 200:
+                    raise PosterDownloadError(f"poster answered {resp.status_code}")
+                ctype = resp.headers.get("content-type", "").split(";")[0].strip().lower()
+                if ctype not in POSTER_TYPES:
+                    raise PosterDownloadError(f"poster content type {ctype or 'missing'}")
+                length = resp.headers.get("content-length")
+                if length is not None and length.isdigit() and int(length) > POSTER_MAX_BYTES:
+                    raise PosterDownloadError(f"poster is {length} bytes (max {POSTER_MAX_BYTES})")
+                chunks: list[bytes] = []
+                size = 0
+                for chunk in resp.iter_bytes():
+                    size += len(chunk)
+                    if size > POSTER_MAX_BYTES:
+                        raise PosterDownloadError(f"poster exceeds {POSTER_MAX_BYTES} bytes")
+                    chunks.append(chunk)
+        except httpx.HTTPError as exc:
+            raise PosterDownloadError(f"poster download failed: {type(exc).__name__}") from exc
+        self._log.info("tmdb.poster", url_path=POSTER_SIZE + poster_path, bytes=size)
+        return b"".join(chunks)
