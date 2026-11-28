@@ -1,0 +1,47 @@
+name: keepalive
+
+# Monthly keepalive (plan §10.5, P2-06; architecture §10.5). GitHub disables scheduled
+# workflows in a public repo after 60 days without "repository activity" (undefined).
+# This run re-enables every scheduled workflow through the REST API (idempotent) and opens
+# the month's maintenance issue for the owner, whose human maintenance commit closes the
+# loop. It never commits. Safety nets: the canary's staleness alert and GitHub's email to
+# the last editor of a cron line.
+on:
+  schedule:
+    - cron: "53 5 1 * *" # the 1st of each month, 10:53 PKT
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: false
+
+jobs:
+  keepalive:
+    if: github.repository == 'discortx/moviesPK'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scraper/pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install ./scraper
+
+      - name: Enable scheduled workflows and open the maintenance issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/keepalive.py

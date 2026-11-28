@@ -46,6 +46,18 @@ here.
 robots and terms alerts are posted once per change and never repeated: an open one means
 an unreviewed change. A robots.txt change that alters no verdict is only logged.
 
+### `keepalive` and `export` (plan §10.5, P2-05, P2-06)
+
+- **keepalive:** `53 5 1 * *` UTC (the 1st of each month) or Actions → keepalive → Run
+  workflow. Re-enables every scheduled workflow (`scrape-full`, `scrape-canary`, `export`,
+  `keepalive`) and opens `[maintenance] YYYY-MM` for the owner, with the monthly checklist
+  (plan §18.2) and a table of the enable results. A second run in the same month comments
+  on that issue. Red only when a workflow could not be enabled.
+- **Monthly:** work through the issue, make the **human maintenance commit** (a merged
+  Dependabot PR, a fixture refresh, or a line in the maintenance log below), close the
+  issue. Never automate the commit.
+- **export:** see [Restore from export](#restore-from-export-p2-05-plan-173-19).
+
 ### Switching from dev to production
 
 1. Two clean dev runs recorded below (one manual, one scheduled).
@@ -120,6 +132,11 @@ Drill log (repeat quarterly and in P4-05):
 | Date (UTC) | Export run | Target | Counts (movies / aliases / cinemas) | Result |
 |---|---|---|---|---|
 | 2026-11-28 15:00 | dev export of 14:57 (artifact) | local MongoDB 7, `moviespk_restore_test` | 28 / 24 / 5 (= manifest) | OK. Validated, restored, indexes created; `--target-db moviespk` without `--force` refused. One live `full` run into it (no TMDB key): 5 cinemas `ok`, 155 showtimes, still 28 movies (no duplicates; 54 of 60 listings matched through the restored aliases alone), no orphan showtimes. Local API on it: `/health` ok, 5 cinemas, Lahore 14 / Karachi 5 / Islamabad 2 films today; `sanjog-2026` same slug and poster as before. |
+
+## Maintenance log (monthly human commit, P2-06)
+
+| Month | By | What |
+|---|---|---|
 
 ## Live observations (P1-13 acceptance)
 
