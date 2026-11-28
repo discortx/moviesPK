@@ -109,9 +109,16 @@ _Target: per §11.3.2 / §7.4.2 forecast; no Error 1027._
   63 ms, p95 219 ms, max 339 ms; no 429, no Error 1027.
 - **Planned peak for comparison (§7.4.2):** 27,500 requests/day on a peak day, about
   0.32 req/s on average; the probe ran at about 6.5 times that rate.
-- **Dashboard (U-CF6: do HITs count as Worker requests? U-CF4: R2 Class B in the
-  window):** _pending owner reading of the Cloudflare dashboard._
-- **Verdict so far:** no throttling, hit ratio 100% (target 95%).
+- **Dashboard (owner, Workers & Pages → `moviespk-img-dev` → Metrics, 16:58-17:01 PKT):**
+  **Invocations 0**, Errors 0, CPU time 0 ms, **Workers Cache hit rate 100%**. The 300
+  cache HITs never ran the Worker (consistent with C-11: a HIT is served without running
+  the Worker).
+- **U-CF6:** HITs are not Worker invocations, so only cache misses use the Workers Free
+  daily request allowance. Plan §7.4.2 a9 keeps its conservative assumption (every
+  request counts) as a safety margin.
+- **U-CF4:** the private bucket is reachable only through the Worker; with 0 invocations
+  there were 0 R2 Class B reads in the window.
+- **Verdict: Pass.** No throttling (no 429/1027), hit ratio 100% (target 95%).
 
 ## 5. Lighthouse LCP and JS size (P3-13)
 
