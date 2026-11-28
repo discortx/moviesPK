@@ -14,5 +14,12 @@ export default defineConfig({
   ],
   test: {
     include: ["test/**/*.test.ts"],
+    // Istanbul, not V8: V8 coverage is not available inside workerd.
+    coverage: {
+      provider: "istanbul",
+      include: ["src/**"],
+      reporter: ["text", "text-summary"],
+      thresholds: { lines: 80, functions: 80, branches: 80, statements: 80 },
+    },
   },
 });

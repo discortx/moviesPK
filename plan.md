@@ -1319,7 +1319,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: `npm ci && npm run lint && npm run typecheck && npm test` pass on a hello-world handler; `npx wrangler deploy --dry-run` and `--env dev --dry-run` both succeed; the config contains exactly one bucket binding per environment and no zone settings.
   - Tests: Images Worker unit (smoke).
 
-- [ ] **P1-19 — images-worker implementation and unit tests (v2.1)** · Must · 1.5 d · deps: P1-18
+- [x] **P1-19 — images-worker implementation and unit tests (v2.1)** · Must · 1.5 d · deps: P1-18
   - Details: implement §11.3.2 exactly: method check (405), path allow-list (404 without R2), query-string rejection, `get`/`head`, streaming body, headers on 200 and 404, 503 on R2 exceptions; no logging of IPs or Referers.
   - Accept: every case in the §11.3.2 test list passes; a binding spy shows **zero** R2 calls for rejected methods, paths and query strings; coverage ≥ 80%.
   - Tests: Images Worker unit.

@@ -9,7 +9,7 @@
     "dev": "wrangler dev --env dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "format": "prettier --write .",
     "check:deploy": "wrangler deploy --env=\"\" --dry-run --outdir dist && wrangler deploy --env dev --dry-run --outdir dist"
   },
@@ -17,6 +17,7 @@
     "@cloudflare/vitest-plugin": "^1.8.0",
     "@cloudflare/workers-types": "^5.20261110.1",
     "@eslint/js": "^10.0.1",
+    "@vitest/coverage-istanbul": "^5.1.0",
     "eslint": "^10.15.0",
     "globals": "^17.14.0",
     "prettier": "^3.10.1",
