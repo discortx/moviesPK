@@ -36,6 +36,35 @@ from ..pipeline.text import normalize_text
 CONFIG_DIR = Path(__file__).resolve().parents[3] / "config"
 MIN_DELAY_FLOOR_MS = 1500
 
+# --- TMDB 6-month rule (plan §11.3.5, P2-10) ------------------------------------------------
+#: Purge TMDB-derived data of movies not shown for this many days (Q13). Not an env var.
+PURGE_AFTER_DAYS = 90
+#: Retention of the weekly export artifact (export.yml ``retention-days``, §19).
+EXPORT_RETENTION_DAYS = 60
+TMDB_REFRESH_DAYS = 7
+TMDB_CACHE_LIMIT_DAYS = 180  # "do not cache ... for longer than 6 months"
+PURGE_HARD_MAX_DAYS = 150  # the brief's cap, whatever the retention
+
+
+def purge_window_problems(
+    purge_after_days: int, export_retention_days: int = EXPORT_RETENTION_DAYS
+) -> list[str]:
+    """Worst-case age of TMDB data in an export: refresh (7) + N + daily purge (1) +
+    artifact retention must stay within 180 days; N never above 150."""
+    problems = []
+    limit = TMDB_CACHE_LIMIT_DAYS - TMDB_REFRESH_DAYS - 1 - export_retention_days
+    if purge_after_days < 1:
+        problems.append(f"PURGE_AFTER_DAYS must be at least 1 (is {purge_after_days})")
+    if purge_after_days > limit:
+        problems.append(
+            f"PURGE_AFTER_DAYS {purge_after_days} > {limit}: with {export_retention_days}-day "
+            f"export retention, TMDB data could be kept over {TMDB_CACHE_LIMIT_DAYS} days"
+        )
+    if purge_after_days > PURGE_HARD_MAX_DAYS:
+        problems.append(f"PURGE_AFTER_DAYS must never exceed {PURGE_HARD_MAX_DAYS}")
+    return problems
+
+
 Slug = Annotated[str, StringConstraints(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$", max_length=80)]
 HttpUrl = Annotated[str, StringConstraints(pattern=r"^https?://[^\s/]+(/\S*)?$", max_length=2048)]
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -262,6 +291,7 @@ def _duplicates(values: list[str]) -> list[str]:
 def load_config(config_dir: Path = CONFIG_DIR) -> AppConfig:
     """Load and validate all three files; raise :class:`ConfigError` listing every problem."""
     problems: list[str] = []
+    problems += purge_window_problems(PURGE_AFTER_DAYS, EXPORT_RETENTION_DAYS)
 
     raw_cities = _read_list(config_dir / "cities.yml", required=True)
     raw_cinemas = _read_list(config_dir / "cinemas.yml", required=True)

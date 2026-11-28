@@ -32,7 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e "./scraper[dev]"
-      - name: Image step twice against moviespk-dev
+      - name: Image step and maintenance (P2-10) against moviespk-dev
         working-directory: scraper
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}

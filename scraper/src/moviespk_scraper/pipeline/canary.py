@@ -20,8 +20,9 @@ once the condition clears:
 5. **Atlas storage**: data + indexes above 70% of 512 MB → ``storage`` on ``atlas``.
 6. **Digest**: new provisional and unmatched titles of the last 24 h in one issue
    ``[digest] unmatched titles YYYY-MM-DD`` (PKT date); digests close after 7 days.
-7. **Maintenance hooks** (P2-10: TMDB purge, R2 usage record, monthly orphan cleanup):
-   functions in :data:`MAINTENANCE_HOOKS`, run last.
+7. **Maintenance** (P2-10, ``pipeline/maintenance.py``): TMDB 6-month purge and R2 usage
+   record daily, orphan-image cleanup on UTC day 1; functions in :data:`MAINTENANCE_HOOKS`,
+   run last.
 
 Findings are issues, not job failures: the job's exit code is 1 only when a check could
 not run (for example the database is unreachable).
@@ -50,6 +51,7 @@ from ..core.robots import RobotsDisallowedError
 from ..db import repositories as repo
 from ..db.client import DB
 from ..services.alerts import REPEAT_AFTER, Alert, Alerter, run_url
+from .maintenance import Bucket, MaintenanceCounts, run_maintenance
 
 COUNT_HISTORY = 7  # runs in the median
 COUNT_RATIO = 0.5
@@ -72,6 +74,7 @@ class CanaryReport:
     errors: list[str] = field(default_factory=list)
     storage_bytes: int | None = None
     digest_titles: int = 0
+    maintenance: MaintenanceCounts | None = None
 
     @property
     def exit_code(self) -> int:
@@ -87,10 +90,23 @@ class CanaryContext:
     dry_run: bool
     report: CanaryReport
     log: FilteringBoundLogger
+    alerter: Alerter | None = None
+    bucket: Bucket | None = None
 
 
-#: P2-10 appends the TMDB purge, the R2 usage record and the monthly orphan cleanup here.
-MAINTENANCE_HOOKS: list[Callable[[CanaryContext], None]] = []
+def maintenance_hook(ctx: CanaryContext) -> None:
+    """P2-10: TMDB purge, R2 usage record, orphan cleanup on UTC day 1."""
+    if ctx.db is None:
+        ctx.report.notes.append("maintenance skipped (no database)")
+        return
+    counts = run_maintenance(ctx.db, ctx.bucket, ctx.alerter, ctx.now, dry_run=ctx.dry_run)
+    ctx.report.maintenance = counts
+    ctx.report.notes.extend(counts.notes)
+    if counts.r2_bytes is not None and counts.r2_bytes > 1024**3:
+        ctx.report.alerts.append(Alert("r2", "storage", "bucket above 1 GB", "storage"))
+
+
+MAINTENANCE_HOOKS: list[Callable[[CanaryContext], None]] = [maintenance_hook]
 
 
 def _alert(
@@ -327,6 +343,7 @@ def run_canary(
     log: FilteringBoundLogger,
     dry_run: bool = False,
     debug_dir: Path | None = None,
+    bucket: Bucket | None = None,
 ) -> CanaryReport:
     report = CanaryReport()
 
@@ -360,7 +377,9 @@ def run_canary(
         except Exception as exc:
             report.errors.append(f"database checks failed: {type(exc).__name__}")
 
-    ctx = CanaryContext(db=db, now=now, dry_run=dry_run, report=report, log=log)
+    ctx = CanaryContext(
+        db=db, now=now, dry_run=dry_run, report=report, log=log, alerter=alerter, bucket=bucket
+    )
     for hook in MAINTENANCE_HOOKS:
         try:
             hook(ctx)

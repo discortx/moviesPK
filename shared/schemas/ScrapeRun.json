@@ -53,6 +53,19 @@
       "description": "canary only: Atlas data + index bytes (P2-03)",
       "type": "integer",
       "minimum": 0
+    },
+    "maintenance": {
+      "description": "canary only: TMDB purge, R2 usage and orphan cleanup counts (P2-10)",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purgedMovies", "purgedObjects", "orphansDeleted"],
+      "properties": {
+        "purgedMovies": { "type": "integer", "minimum": 0 },
+        "purgedObjects": { "type": "integer", "minimum": 0 },
+        "orphansDeleted": { "type": "integer", "minimum": 0 },
+        "r2Bytes": { "type": "integer", "minimum": 0 },
+        "r2Objects": { "type": "integer", "minimum": 0 }
+      }
     }
   }
 }
