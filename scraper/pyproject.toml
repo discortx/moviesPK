@@ -78,5 +78,6 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 markers = [
   "integration: needs a MongoDB at MONGODB_URI_SCRAPER (CI service container)",
+  "r2: needs the dev R2 bucket credentials (integration-r2.yml only)",
 ]
 addopts = "-ra"

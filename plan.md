@@ -474,7 +474,7 @@ The per-page image budget used here is defined once, in §11.3.4: at most **18 p
 | a4 | Share of poster requests **not** served from the browser cache | 50%. Names are immutable and cached for 1 year, and returning visitors and in-site navigation reuse the same posters. Worst case: 100%. |
 | a5 | Workers Caching miss ratio | **25%.** Conservative: the cache may be filled separately per Cloudflare location [U]; rarely viewed posters may be evicted; at most about 900 objects exist. Even 3 locations × 900 objects = 2,700 fills/month would be about 1% of a4's traffic. Worst case: 100%. |
 | a6 | Movies with posters retained | **300.** About 60 now showing + 8 new titles/week × 13 weeks (N = 90-day purge) ≈ 165, doubled for margin and rounded up. |
-| a7 | Bytes per movie (3 WebP variants, q80) | w185 ≈ 15 KB + w342 ≈ 40 KB + w780 ≈ 145 KB = **200 KB** (planning estimate; measured in P1-23) |
+| a7 | Bytes per movie (3 WebP variants, q80) | w185 ≈ 15 KB + w342 ≈ 40 KB + w780 ≈ 145 KB = **200 KB** (planning estimate). **Measured in P1-23 (2026-11-28, 10 real TMDB posters): w185 10.0 + w342 26.0 + w780 113.6 = 149.6 KB per movie**, 25% below the estimate (inside ±50%, so the forecast is kept as a safety margin). |
 | a8 | New or changed posters | **60 per month** (about 40 new titles + 20 changed posters) |
 | a9 | Every request counts toward the Workers Free daily limit, HIT or MISS | Conservative, per [V C-12] and [I/U-CF6] |
 
@@ -1337,7 +1337,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: a PR touching `images-worker/**` runs only `ci-images-worker`; a merge deploys dev automatically and prod only after approval; the token works without zone or R2 permissions (resolves U-CF8); `grep secrets. ci-images-worker.yml` returns nothing.
   - Tests: CI itself; live deploy evidence.
 
-- [ ] **P1-21 — Cache HIT and immutable-header test against dev (v2.1)** · Must · 0.5 d · deps: P1-20, P1-23
+- [x] **P1-21 — Cache HIT and immutable-header test against dev (v2.1)** · Must · 0.5 d · deps: P1-20, P1-23
   - Details: `scripts/check_image_cache.sh <worker-url> <key>`: request a poster twice and record `Cf-Cache-Status` (MISS then HIT [V C-9]), `Cache-Control`, `Content-Type`, `ETag`. Also check a missing allow-listed key twice (404, `max-age=60`, HIT on the second request: resolves U-CF7), a rejected path (404), a query string (404), and POST (405). Redeploy the dev Worker with no code change and confirm the poster is still a HIT (`cross_version_cache`).
   - Accept: all expectations met, evidence in `docs/performance.md`; a failure blocks G1.
   - Tests: Images Worker live.
@@ -1347,7 +1347,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: no throttling (no 429/1027), hit ratio ≥ 95% after the first request per URL, results and the HIT-counting conclusion recorded in `docs/performance.md` and `docs/free-tier-verification.md`.
   - Tests: Images Worker live.
 
-- [ ] **P1-23 — Scraper image pipeline (v2.1)** · Must · 2.0 d · deps: P1-09, P1-10, P0-12
+- [x] **P1-23 — Scraper image pipeline (v2.1)** · Must · 2.0 d · deps: P1-09, P1-10, P0-12
   - Details: `services/images.py` and `services/r2.py` (boto3 S3 client, endpoint from `R2_ACCOUNT_ID`, region `auto`, credentials from env, bucket from `R2_BUCKET`) implementing §10.3 step 5a: download caps, Pillow processing, `hash8`, HEAD-then-PUT with metadata, 1 MB and 200-per-run caps, DB update only after all three variants exist, `counts.imagesUploaded/imagesFailed`, never failing the cinema. Add `--rebuild-images`. Measure the real average bytes per movie and update §7.4.2 a7 if it is off by more than 50%.
   - Accept: unit tests per §13 (Stubber); a dry run makes zero S3 calls; a dev run uploads three WebP objects for each matched first-cinema movie.
   - Tests: scraper unit.

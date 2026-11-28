@@ -70,13 +70,48 @@ _Target: edge-cache hit p95 under 300 ms; miss p95 under 1,500 ms._
 
 _Target: `Cf-Cache-Status` MISS then HIT; immutable `Cache-Control`; 404/405 behaviour._
 
-No measurements yet.
+### 2026-11-28 11:52 UTC: dev, `https://moviespk-img-dev.moviespk.workers.dev`, real TMDB poster
+
+- **Method:** `scripts/check_image_cache.sh <worker-url> movies/6b08dedc90bcf1349ae4a3ee/poster-2e3986cd-w342.webp`
+  (poster uploaded by scrape-full #11). The same poster's very first request, a few
+  minutes earlier, returned `MISS` and the next one `HIT`, both with ETag
+  `"c57262ed3f17bac62ebe4936645b1ed1"`.
+- **Result:**
+
+  | Request | Status | Content-Type | Cf-Cache-Status | Cache-Control | ETag | Verdict |
+  |---|---|---|---|---|---|---|
+  | poster, 1st | 200 | image/webp | HIT | public, max-age=31536000, immutable | "c57262ed3f17bac62ebe4936645b1ed1" | ok |
+  | poster, 2nd | 200 | image/webp | HIT | public, max-age=31536000, immutable | "c57262ed3f17bac62ebe4936645b1ed1" | ok |
+  | missing key, 1st | 404 | text/plain; charset=utf-8 | HIT | public, max-age=60 | - | ok |
+  | missing key, 2nd | 404 | text/plain; charset=utf-8 | HIT | public, max-age=60 | - | ok |
+  | rejected path | 404 | text/plain; charset=utf-8 | HIT | public, max-age=60 | - | ok |
+  | query string | 404 | text/plain; charset=utf-8 | HIT | public, max-age=60 | - | ok |
+  | POST | 405 | text/plain; charset=utf-8 | - | no-store | - | ok |
+
+- **Also seen:** a cached 404 reported `EXPIRED` once its 60 s had passed, then `HIT`
+  again: 404s are cached for exactly their `max-age` (U-CF7).
+- **Redeploy with no code change (`cross_version_cache`):** deploy-images-worker run #2
+  (`workflow_dispatch`, 2026-11-28; dev live 11:56:22 UTC). The first requests afterwards
+  were still `HIT` with `Age: 412`-`422` s, i.e. cached before the redeploy: the cache
+  survives deploys.
+- **Verdict: Pass** (all P1-21 expectations met).
 
 ## 4. Worker load probe (P1-22)
 
 _Target: per §11.3.2 / §7.4.2 forecast; no Error 1027._
 
-No measurements yet.
+### 2026-11-28 11:58:07-12:00:30 UTC: dev, `moviespk-img-dev`, 5 real posters (w342)
+
+- **Method:** one client, sequential, 300 requests round-robin over 5 poster URLs. Paced
+  at one request per 200 ms but the Windows loop ran slower: 300 requests in 143 s
+  (about 2.1 req/s instead of the planned 5 req/s).
+- **Raw numbers:** status 300 × `200`; `Cf-Cache-Status` 300 × `HIT` (100%); latency p50
+  63 ms, p95 219 ms, max 339 ms; no 429, no Error 1027.
+- **Planned peak for comparison (§7.4.2):** 27,500 requests/day on a peak day, about
+  0.32 req/s on average; the probe ran at about 6.5 times that rate.
+- **Dashboard (U-CF6: do HITs count as Worker requests? U-CF4: R2 Class B in the
+  window):** _pending owner reading of the Cloudflare dashboard._
+- **Verdict so far:** no throttling, hit ratio 100% (target 95%).
 
 ## 5. Lighthouse LCP and JS size (P3-13)
 
