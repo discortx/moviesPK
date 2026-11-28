@@ -136,9 +136,9 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | U-CF1 | Workers Caching: GA or beta status (C-2). Re-checked 2026-11-25: still no label | P0-11 (re-check); P1-21 (behaviour); risk R22 |
 | U-CF2 | ✅ resolved 2026-11-25 (only R2 subscribed, Workers Free) — Workers Free needs no payment method; adding a payment method for R2 does **not** subscribe the account to Workers Paid (W-6, W-7) | P0-12 (screenshots of the billing and Workers plan pages) |
 | U-CF3 | ✅ resolved 2026-11-25 (alert set, includes R2) — A budget alert is available on the account and includes R2 spend (R2-9) | P0-12. If it is unavailable or excludes R2, the monthly usage record (`plan.md` §7.4.3 item 6, §18.2) is the only spend signal. This is recorded and accepted by the owner (OD11). |
-| U-CF4 | Binding `get()`/`head()` are billed as Class B (B-5) | P1-22 |
+| U-CF4 | ✅ resolved for the cache path 2026-11-28 (P1-22): with 0 Worker invocations during 300 HITs, no binding call and so no Class B read reached R2 — Binding `get()`/`head()` are billed as Class B (B-5) | P1-22 |
 | U-CF5 | ✅ resolved 2026-11-25 (subdomain created) — How the account `workers.dev` subdomain is first created (D-1) | P0-12 |
-| U-CF6 | Workers Caching HITs count toward the Free 100,000/day limit (C-13) | P1-22 |
+| U-CF6 | ✅ resolved 2026-11-28 (P1-22): 300 cache HITs on `moviespk-img-dev` showed **0 invocations** and a 100% cache hit rate in the dashboard, so HITs do not run the Worker; plan a9 stays conservative — Workers Caching HITs count toward the Free 100,000/day limit (C-13) | P1-22 |
 | U-CF7 | ✅ resolved 2026-11-28: a repeat request for a missing poster on both deployed Workers returned `CF-Cache-Status: HIT` (`Age: 1`) — A 404 with `Cache-Control: public, max-age=60` is cached by Workers Caching for 60 s | P1-21 |
 | U-CF8 | ✅ resolved 2026-11-28: `CF_WORKERS_DEPLOY_TOKEN` (Workers Scripts Write only) deployed `moviespk-img-dev` and `moviespk-img`, each with its R2 binding — A deploy token with Workers Scripts Write only (no zone, no R2) can deploy a `workers.dev` Worker with an R2 binding (CI-1) | P1-20 |
 | U-CF9 | R2 free allowance permanence (R2-2) | Z5 quarterly re-check |

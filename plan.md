@@ -1342,7 +1342,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: all expectations met, evidence in `docs/performance.md`; a failure blocks G1.
   - Tests: Images Worker live.
 
-- [ ] **P1-22 — Worker load probe (v2.1)** · Should · 0.5 d · deps: P1-21
+- [x] **P1-22 — Worker load probe (v2.1)** · Should · 0.5 d · deps: P1-21
   - Details: 300 sequential requests over 60 s spread over 5 dev poster URLs (one client, no parallelism); record the status codes, `Cf-Cache-Status` distribution, p50/p95 latency and any 429 or 1027. Compare the Cloudflare dashboard request count for `moviespk-img-dev` (resolves U-CF6: do HITs count?) and the R2 Class B count for the window (resolves U-CF4). Write down the planned peak rate (§7.4.2: 27,500/day ≈ 0.32 req/s average on a peak day) next to the measured result.
   - Accept: no throttling (no 429/1027), hit ratio ≥ 95% after the first request per URL, results and the HIT-counting conclusion recorded in `docs/performance.md` and `docs/free-tier-verification.md`.
   - Tests: Images Worker live.
@@ -1352,7 +1352,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: unit tests per §13 (Stubber); a dry run makes zero S3 calls; a dev run uploads three WebP objects for each matched first-cinema movie.
   - Tests: scraper unit.
 
-- [ ] **P1-24 — Image step integration test against the dev bucket (v2.1)** · Must · 0.5 d · deps: P1-23
+- [x] **P1-24 — Image step integration test against the dev bucket (v2.1)** · Must · 0.5 d · deps: P1-23
   - Details: `scraper/tests/integration_r2/` run by a `workflow_dispatch` workflow with `environment: dev` (never on PRs): run the image step twice for 2 fixture movies; list `movies/<id>/`; HEAD each object.
   - Accept: the second run creates **no** new objects (same keys, Class A count unchanged per the run's counters); every object has `Content-Type: image/webp` and `Cache-Control: public, max-age=31536000, immutable`; a changed source image creates a new key and leaves the old objects for cleanup.
   - Tests: image integration.
