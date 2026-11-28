@@ -276,6 +276,8 @@ class ScrapeRun(ContractModel):
     github_run_id: Annotated[str, StringConstraints(pattern=r"^\d+$")] | None = Field(
         default=None, alias="githubRunId"
     )
+    #: canary only: Atlas data + index bytes (P2-03).
+    storage_bytes: NonNegInt | None = Field(default=None, alias="storageBytes")
 
 
 class Meta(ContractModel):

@@ -1,0 +1,75 @@
+name: scrape-canary
+
+# The daily canary (plan §10.5, P2-03): robots/terms re-check per enabled cinema, one
+# structural probe per adapter, count rule, staleness, Atlas storage and the unmatched-
+# titles digest. Findings become GitHub issues ([alert] ..., [digest] ...); the job fails
+# only when a check itself could not run (for example the database is unreachable).
+# Environment: like scrape-full, the repository variable SCRAPE_ENVIRONMENT selects `dev`
+# (default) or `production`. The R2 secrets are for the P2-10 hooks (TMDB purge, R2 usage
+# record, monthly orphan cleanup). Never runs on pull_request (it uses secrets).
+on:
+  schedule:
+    - cron: "23 4 * * *" # 09:23 PKT
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: check everything, write nothing, post no issues"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    if: github.repository == 'discortx/moviesPK'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: ${{ vars.SCRAPE_ENVIRONMENT || 'dev' }}
+    env:
+      SCRAPER_USER_AGENT: ${{ vars.SCRAPER_USER_AGENT }}
+      MONGODB_DB: ${{ vars.MONGODB_DB }}
+      LOG_LEVEL: INFO
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scraper/pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install ./scraper
+
+      - name: Canary
+        env:
+          MONGODB_URI_SCRAPER: ${{ secrets.MONGODB_URI_SCRAPER }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ vars.R2_BUCKET }}
+          GITHUB_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=(run --job canary --config-dir scraper/config)
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          python -m moviespk_scraper "${args[@]}"
+
+      - name: Upload debug payloads
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: canary-debug-${{ github.run_id }}
+          path: debug/
+          retention-days: 7
+          if-no-files-found: ignore

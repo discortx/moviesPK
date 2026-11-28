@@ -17,9 +17,34 @@ here.
 - **Concurrency:** group `scrape`, shared with `scrape-seats`; runs queue, never overlap.
 - **Exit code:** 1 when any cinema is `failed`, `blocked` or `drift` → the run is red and
   GitHub emails the user who last edited the cron line.
-- **Alerts:** issues `[alert] <cinema>: <type>`; closed automatically by the next `ok` run.
+- **Alerts:** issues `[alert] <cinema>: <type>`; closed automatically by the next `ok` run. The canary adds its own alert types and a daily digest (below).
 - **Debug:** on failure, the `debug-<run id>` artifact holds the cleaned raw payloads
   (7 days).
+
+### `scrape-canary` (plan §10.5, P2-03)
+
+- **Schedule:** `23 4 * * *` UTC (09:23 PKT), daily. Manual: Actions → scrape-canary → Run
+  workflow (`dry_run` checks everything, writes nothing, posts no issues). Same
+  `SCRAPE_ENVIRONMENT`, environment secrets and `scrape` concurrency group as `scrape-full`.
+- **Local dry run:** `python -m moviespk_scraper run --job canary --dry-run` (reads the
+  database only when `MONGODB_URI_SCRAPER` and `MONGODB_DB` are set).
+- **Exit code:** 1 only when a check could not run (database unreachable, a maintenance
+  hook crashed). Findings are issues, not red runs.
+- **Run record:** one `scrape_runs` document with `job: canary`, `cinemaId: canary`,
+  findings in `errors` and the Atlas size in `storageBytes`.
+
+| Issue | Meaning | What to do | Closes |
+|---|---|---|---|
+| `[alert] <cinema>: robots` | robots.txt now disallows an evidence path that was Allowed. The scraper already refuses it. | Re-run `scripts/snapshot_evidence.py` for the cinema. Disallowed → set `enabled: false` (or obtain written permission); otherwise update the `evidence` block. | automatically, once robots allows the paths again |
+| `[alert] <cinema>: terms-changed` | The terms page text changed since `checked_at`. Scraping continues. | Read the new terms. Fine → re-run `snapshot_evidence.py` and update `terms_sha256` and `checked_at`. Not fine → `enabled: false`. | automatically, once the hash in `cinemas.yml` matches |
+| `[alert] adapter-<id>: probe` | The adapter's known page no longer parses (site redesign or hijacked domain). | As for `drift`: look at the `canary-debug-<run>` artifact, fix the adapter and its fixtures. | on the next clean probe |
+| `[alert] <cinema>: low-results` | The latest `ok` full run found under 50% of the median of the 7 `ok` runs before it (needs 8 runs). | Compare with the cinema's website; an off-season dip is fine, a half-parsed page is drift. | when the count recovers |
+| `[alert] <cinema>: stale` / `stale-seats` | No successful `full` run in 18 h (`seats`: 6 h). | Check the `scrape-full` runs: missed schedules, failures, blocked. | after the next success |
+| `[alert] atlas: storage` | Data + indexes above 70% of 512 MB. | Check `showtimes` TTL and `scrape_runs` TTL indexes; see `docs/capacity.md`. | below 70% |
+| `[digest] unmatched titles <date>` | Provisional and unmatched titles created in the last 24 h. | Add `aliases.yml` entries (P2-04 adds the review tool). | after 7 days |
+
+robots and terms alerts are posted once per change and never repeated: an open one means
+an unreviewed change. A robots.txt change that alters no verdict is only logged.
 
 ### Switching from dev to production
 

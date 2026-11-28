@@ -13,30 +13,33 @@ import os
 import sys
 import time
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TextIO
+from typing import Any, TextIO
 
 from . import __version__
 from .core.clock import PKT
-from .core.config import CONFIG_DIR, ConfigError, load_config
+from .core.config import CONFIG_DIR, CinemaConfig, ConfigError, load_config
 from .core.http import ScraperHttpClient
-from .core.logging import configure_logging
+from .core.logging import configure_logging, get_logger
 from .core.offline import FixtureTransport, captured_at
 from .db import repositories as repo
 from .db.client import DB, DatabaseUnavailableError, DbSettings, connect
+from .models.contract import ScrapeRun
+from .pipeline.canary import CanaryReport, run_canary
 from .pipeline.match import Alias, AliasTable, Matcher
 from .pipeline.normalize import NormalizedShowtime
 from .pipeline.sync_cinemas import sync_cinemas
 from .runner import CinemaResult, RunReport, Services, run_job
 from .services.alerts import Alert, Alerter, GitHubAlerter, PrintAlerter, run_url
+from .services.health import RunError, RunRecord, github_run_id, run_document
 from .services.images import ImageStep
 from .services.r2 import MAX_UPLOADS_PER_RUN, R2Settings, R2Store, make_client
 from .services.tmdb import TmdbClient
 
 JOBS = ("full", "seats", "canary", "export")
-IMPLEMENTED_JOBS = ("full",)
+IMPLEMENTED_JOBS = ("full", "canary")
 OFFLINE_USER_AGENT = "MoviesPKBot/1.0 (+offline fixtures)"
 SAMPLE_ROWS = 5
 
@@ -160,6 +163,97 @@ def _image_step(
     )
 
 
+def print_canary(report: CanaryReport, out: TextIO) -> None:
+    for note in report.notes:
+        out.write(f"  {note}\n")
+    if report.storage_bytes is not None:
+        out.write(f"  atlas storage: {report.storage_bytes / 1024 / 1024:.1f} MB\n")
+    out.write(f"  new unmatched/provisional titles (24 h): {report.digest_titles}\n")
+    for a in report.alerts:
+        out.write(f"[alert] {a.cinema_id}: {a.type}: {a.summary}\n")
+    for e in report.errors:
+        out.write(f"[error] {e}\n")
+    out.write(f"canary: {len(report.alerts)} alerts, {len(report.errors)} check errors\n")
+
+
+def _canary_run_document(
+    report: CanaryReport, started: datetime, finished: datetime
+) -> dict[str, Any]:
+    """The canary's own ``scrape_runs`` record (cinemaId ``canary``)."""
+    errors = [RunError(a.type, f"{a.cinema_id}: {a.summary}") for a in report.alerts]
+    errors += [RunError("check", e) for e in report.errors]
+    record = RunRecord(
+        job="canary",
+        cinema_id="canary",
+        started_at=started,
+        finished_at=finished,
+        status="ok" if not errors else "partial",
+        counts={},
+        errors=errors,
+        github_run_id=github_run_id(),
+    )
+    doc = run_document(record)
+    if report.storage_bytes is not None:
+        doc["storageBytes"] = report.storage_bytes
+        ScrapeRun.model_validate({k: v for k, v in doc.items() if k != "expireAt"})
+    return doc
+
+
+def _canary(
+    args: argparse.Namespace,
+    cinemas: list[CinemaConfig],
+    user_agent: str,
+    transport: FixtureTransport | None,
+    sleep: Callable[[float], None],
+    now: datetime | None,
+) -> int:
+    """``--job canary`` (P2-03). A dry run reads the database when it is configured but
+    writes nothing and posts no issues."""
+    if args.offline is not None and not args.dry_run:
+        return _error("--offline runs are always --dry-run (fixtures are never written)")
+    db_client = None
+    db = None
+    has_db = bool(os.environ.get("MONGODB_URI_SCRAPER", "").strip())
+    if args.offline is None and (has_db or not args.dry_run):
+        try:
+            db_client, db = connect(DbSettings.from_env())
+        except DatabaseUnavailableError as exc:
+            if not args.dry_run:
+                return _error(str(exc))
+            print(f"note: database checks skipped ({exc})")
+    alerter: Alerter | None
+    if args.dry_run:
+        alerter = PrintAlerter()
+    else:
+        alerter = GitHubAlerter.from_env()
+        if alerter is None:
+            print("note: alerts not posted (GITHUB_TOKEN or GITHUB_REPOSITORY not set)")
+    started = now or datetime.now(UTC)
+    try:
+        with ScraperHttpClient(user_agent, transport=transport, sleep=sleep) as http:
+            report = run_canary(
+                http,
+                cinemas,
+                db=db,
+                alerter=alerter,
+                now=started,
+                log=get_logger(),
+                dry_run=args.dry_run,
+                debug_dir=args.debug_dir,
+            )
+        if db is not None and not args.dry_run:
+            db[repo.SCRAPE_RUNS].insert_one(
+                _canary_run_document(report, started, datetime.now(UTC))
+            )
+    finally:
+        if db_client is not None:
+            db_client.close()
+        if isinstance(alerter, GitHubAlerter):
+            alerter.close()
+    print_canary(report, sys.stdout)
+    return report.exit_code
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.job not in IMPLEMENTED_JOBS:
@@ -198,6 +292,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _error("set SCRAPER_USER_AGENT (MoviesPKBot/1.0 (+<repo URL>; <contact email>))")
 
     configure_logging(os.environ.get("LOG_LEVEL", "INFO"), stream=sys.stderr)
+    if args.job == "canary":
+        return _canary(args, cinemas, user_agent, transport, sleep, now)
     tmdb_key = os.environ.get("TMDB_API_KEY", "").strip()
     # Offline runs never reach the network, TMDB included; aliases still apply.
     tmdb = TmdbClient(tmdb_key) if tmdb_key and args.offline is None else None

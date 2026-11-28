@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 from collections.abc import Iterator
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -33,6 +34,7 @@ class FakeGitHub:
         self.comments: dict[int, list[dict[str, Any]]] = {}
         self.created = 0
         self.fail = False
+        self.clock = T0  # created_at of new issues
 
     def install(self, router: respx.MockRouter) -> None:
         router.get(f"{BASE}/issues").mock(side_effect=self.list_issues)
@@ -47,14 +49,15 @@ class FakeGitHub:
     def list_issues(self, request: httpx.Request) -> httpx.Response:
         if self.fail:
             return httpx.Response(500)
-        assert request.url.params["labels"] == "alert"
-        open_ = [i for i in self.issues.values() if i["state"] == "open"]
+        label = request.url.params["labels"]
+        open_ = [i for i in self.issues.values() if i["state"] == "open" and label in i["labels"]]
         return httpx.Response(200, json=open_)
 
     def create_issue(self, request: httpx.Request) -> httpx.Response:
         data = json.loads(request.content)
         number = len(self.issues) + 1
-        self.issues[number] = {"number": number, "state": "open", **data}
+        created_at = self.clock.isoformat().replace("+00:00", "Z")
+        self.issues[number] = {"number": number, "state": "open", "created_at": created_at, **data}
         self.comments[number] = []
         self.created += 1
         return httpx.Response(201, json=self.issues[number])
@@ -169,6 +172,52 @@ def test_posting_failures_never_raise(github: FakeGitHub) -> None:
     alerter = GitHubAlerter("token", REPO)
     alerter.resolve("cinepax-packages-mall", T0)
     alerter.close()
+
+
+def test_review_alert_is_never_repeated_for_the_same_state(github: FakeGitHub) -> None:
+    """robots/terms alerts (repeat_after=None) fire once; days later still no comment."""
+    review = replace(alert(state="terms:abc"), type="terms-changed", repeat_after=None)
+    for days in (0, 1, 2, 9):
+        run(github, review, T0 + timedelta(days=days))
+    assert github.created == 1 and github.comments[1] == []
+    run(github, replace(review, state="terms:def"), T0 + timedelta(days=10))
+    assert len(github.comments[1]) == 1  # a different change is posted
+
+
+def test_resolve_closes_only_the_given_types(github: FakeGitHub) -> None:
+    run(github, replace(alert(), type="stale", state="stale"), T0)
+    run(github, alert(), T0)
+    alerter = GitHubAlerter("token", REPO)
+    alerter.resolve("cinepax-packages-mall", T0, ("stale",))
+    alerter.close()
+    states = {i["title"]: i["state"] for i in github.issues.values()}
+    assert states == {
+        "[alert] cinepax-packages-mall: stale": "closed",
+        "[alert] cinepax-packages-mall: drift": "open",
+    }
+
+
+# --- digests ---------------------------------------------------------------------------
+
+
+def test_digest_is_posted_once_per_title(github: FakeGitHub) -> None:
+    for _ in range(2):
+        alerter = GitHubAlerter("token", REPO)
+        alerter.post_digest("[digest] unmatched titles 2026-11-26", "- **Belkis**")
+        alerter.close()
+    assert github.created == 1
+    assert github.issues[1]["labels"] == ["digest"]
+
+
+def test_digests_close_after_7_days(github: FakeGitHub) -> None:
+    alerter = GitHubAlerter("token", REPO)
+    alerter.post_digest("[digest] unmatched titles 2026-11-26", "old")
+    github.clock = T0 + timedelta(days=6)
+    alerter.post_digest("[digest] unmatched titles 2026-12-02", "new")
+    alerter.close_digests(T0 + timedelta(days=7, hours=1) - timedelta(days=7))
+    alerter.close()
+    assert [i["state"] for i in github.issues.values()] == ["closed", "open"]
+    assert "after 7 days" in github.comments[1][0]["body"]
 
 
 # --- body ------------------------------------------------------------------------------
