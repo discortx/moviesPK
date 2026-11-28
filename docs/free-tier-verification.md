@@ -139,8 +139,8 @@ The owner judges these allowances sufficient (OD11). The warnings in §1 (no har
 | U-CF4 | Binding `get()`/`head()` are billed as Class B (B-5) | P1-22 |
 | U-CF5 | ✅ resolved 2026-11-25 (subdomain created) — How the account `workers.dev` subdomain is first created (D-1) | P0-12 |
 | U-CF6 | Workers Caching HITs count toward the Free 100,000/day limit (C-13) | P1-22 |
-| U-CF7 | A 404 with `Cache-Control: public, max-age=60` is cached by Workers Caching for 60 s | P1-21 |
-| U-CF8 | A deploy token with Workers Scripts Write only (no zone, no R2) can deploy a `workers.dev` Worker with an R2 binding (CI-1) | P1-20 |
+| U-CF7 | ✅ resolved 2026-11-28: a repeat request for a missing poster on both deployed Workers returned `CF-Cache-Status: HIT` (`Age: 1`) — A 404 with `Cache-Control: public, max-age=60` is cached by Workers Caching for 60 s | P1-21 |
+| U-CF8 | ✅ resolved 2026-11-28: `CF_WORKERS_DEPLOY_TOKEN` (Workers Scripts Write only) deployed `moviespk-img-dev` and `moviespk-img`, each with its R2 binding — A deploy token with Workers Scripts Write only (no zone, no R2) can deploy a `workers.dev` Worker with an R2 binding (CI-1) | P1-20 |
 | U-CF9 | R2 free allowance permanence (R2-2) | Z5 quarterly re-check |
 | U-CF10 | Exact Cache API wording for `workers.dev` (CA-1) | Not needed: the Cache API is not used |
 

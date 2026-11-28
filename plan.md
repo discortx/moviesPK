@@ -1324,7 +1324,7 @@ Format: **ID — title** · Priority (Must / Should / Could) · Estimate in work
   - Accept: every case in the §11.3.2 test list passes; a binding spy shows **zero** R2 calls for rejected methods, paths and query strings; coverage ≥ 80%.
   - Tests: Images Worker unit.
 
-- [ ] **P1-20 — CI and deploy workflows for the Worker (v2.1)** · Must · 0.5 d · deps: P1-19, P0-03, P0-04 (`images-approval` environment), P0-12
+- [x] **P1-20 — CI and deploy workflows for the Worker (v2.1)** · Must · 0.5 d · deps: P1-19, P0-03, P0-04 (`images-approval` environment), P0-12
   - Details:
     - `ci-images-worker.yml`: on PRs, path filter `images-worker/**`; lint, typecheck, test; no secrets.
     - `deploy-images-worker.yml`: on push to `main` with path filter `images-worker/**`, plus `workflow_dispatch`.

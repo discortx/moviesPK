@@ -70,7 +70,7 @@ Owner-checked 2026-11-25.
 | Subscriptions (Billing → Subscriptions) | **R2 only** |
 | Workers plan (Workers & Pages → Plans) | **Free** |
 | `workers.dev` subdomain | `moviespk.workers.dev` (Worker URL: `https://moviespk-img.moviespk.workers.dev`) |
-| Poster Workers (P1-20) | prod `moviespk-img` → `https://moviespk-img.moviespk.workers.dev` (bucket `moviespk-prod`); dev `moviespk-img-dev` → `https://moviespk-img-dev.moviespk.workers.dev` (bucket `moviespk-dev`). Deployed only by `deploy-images-worker.yml` (prod after `images-approval`). _First deploy: pending._ |
+| Poster Workers (P1-20) | prod `moviespk-img` → `https://moviespk-img.moviespk.workers.dev` (bucket `moviespk-prod`); dev `moviespk-img-dev` → `https://moviespk-img-dev.moviespk.workers.dev` (bucket `moviespk-dev`). Deployed only by `deploy-images-worker.yml` (prod after `images-approval`). **First deploy 2026-11-28** (run 46138021098: dev, then prod after owner approval); both pass the smoke test. |
 | `NEXT_PUBLIC_IMAGE_BASE` (Vercel `moviespk-web`) | `https://moviespk-img.moviespk.workers.dev/img` (set once the prod Worker is deployed; the only place the image host appears, plan §11.3.4) |
 | Buckets | `moviespk-prod`, `moviespk-dev`: **private** (no `r2.dev`, no custom domain, no CORS) |
 | Budget alert | $1 to the owner's email; **includes R2** (resolves U-CF3) |
