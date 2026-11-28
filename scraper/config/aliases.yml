@@ -4,4 +4,8 @@
 #   tmdb_id: 123                   # or local_key: "...", exactly one of the two
 #   cinema_id: cinepax-packages-mall   # optional: only for this cinema
 #   note: why this correction exists
-[]
+
+- alias: "belkis"
+  local_key: "belkis-2026"
+  cinema_id: universal-emporium-mall-lahore
+  note: "Universal lists it without a year, Cinepax with 2026, so Lahore showed it twice (2026-11-28). Not on TMDB yet."
